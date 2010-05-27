@@ -27,6 +27,8 @@
    \doifelse{\namedexternalfilterparameter{#1}{auto}}\v!yes
     {\setvalue{\e!stop#1}{\doprocessexternalfilter{#1}}}
     {\letvalue{\e!stop#1}=\relax}
+   \setvalue{readprocessedfile#1}{\doreadprocessedfile{#1}}
+   % stop#1 and readprocessedfile#1 may be overwritten by child modules.
    %TODO: Inline.
    %\setvalue{#1}##1{\save ##1 to file}
    }
@@ -40,11 +42,14 @@
         \externalfilterinputfile.tmp}%
    \loggingall
    \doiffileelse{\externalfilteroutputfile}
-      {\setups{externalfilter:#1}%
-       \namedexternalfilterparameter{#1}\c!before
-       \input \externalfilteroutputfile
-       \namedexternalfilterparameter{#1}\c!after}
+      {\getvalue{readprocessedfile#1}}
       {TODO: Show an error}}
+
+\def\doreadprocessedfile#1%
+  {\setups{externalfilter:#1}%
+   \namedexternalfilterparameter{#1}\c!before
+   \input \externalfilteroutputfile
+   \namedexternalfilterparameter{#1}\c!after}
 
 \setupexternalfilters
   [\c!auto=\v!yes,
