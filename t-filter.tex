@@ -1,0 +1,48 @@
+\unprotect
+
+\def\??externalfilter??{externalfilter}
+
+\def\namedexternalfilterparameter#1#2%
+  {\executeifdefined{\??externalfilter??::#1::#2}
+     {\executeifdefined{\??externalfilter??::#2}{}}}
+
+\def\setupexternalfilters
+  {\dodoubleargument\dosetupexternalfilters}
+  
+\def\dosetupexternalfilters[#1][#2]%
+  {\ifsecondargument
+     \getparameters[\??externalfilter??::#1::][#2]%
+   \else
+      \getparameters[\??externalfilter??::][#2]%
+   \fi}
+
+
+\def\defineexternalfilter
+  {\dodoubleargument\dodefineexternalfilter}
+
+\def\dodefineexternalfilter[#1][#2]%
+  {\setupexternalfilters[#1][#2]%
+   \setvalue{\e!start#1}%
+      {\dostartbuffer[\??externalfilter??-#1][\e!start#1][\e!stop#1]}%
+   \setvalue{\e!stop#1}%
+      {\doprocessexternalfilter{#1}}%
+   %TODO: Inline.
+   %\setvalue{#1}##1{\save ##1 to file}
+   }
+
+\def\doprocessexternalfilter#1%
+  {\doifmode{*mkiv}{\savebuffer[\??externalfilter??-#1]}%
+   \edef\externalfilterinputfile {\jobname-\??externalfilter??-#1}%
+   \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}{output}}%
+   \executesystemcommand
+      {\namedexternalfilterparameter{#1}\c!command\space
+        \externalfilterinputfile.tmp}%
+   \loggingall
+   \doiffileelse{\externalfilteroutputfile}
+      {\setups{externalfilter:#1}%
+       \namedexternalfilterparameter{#1}\c!before
+       \input \externalfilteroutputfile
+       \namedexternalfilterparameter{#1}\c!after}
+      {TODO: Show an error}}
+   
+\protect
