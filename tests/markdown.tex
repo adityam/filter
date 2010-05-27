@@ -1,0 +1,18 @@
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [command={pandoc -w context -o \externalfilterinputfile.tex },
+   output=\externalfilterinputfile.tex]
+
+\starttext
+\startmarkdown
+* This is a list
+* that has **markdown** syntax
+* does it _work_
+\stopmarkdown
+
+Outside  **markdown**
+\stoptext
+\endinput
+
