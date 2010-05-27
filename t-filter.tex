@@ -24,8 +24,9 @@
   {\setupexternalfilters[#1][#2]%
    \setvalue{\e!start#1}%
       {\dostartbuffer[\??externalfilter??-#1][\e!start#1][\e!stop#1]}%
-   \setvalue{\e!stop#1}%
-      {\doprocessexternalfilter{#1}}%
+   \doifelse{\namedexternalfilterparameter{#1}{auto}}\v!yes
+    {\setvalue{\e!stop#1}{\doprocessexternalfilter{#1}}}
+    {\letvalue{\e!stop#1}=\relax}
    %TODO: Inline.
    %\setvalue{#1}##1{\save ##1 to file}
    }
@@ -44,5 +45,9 @@
        \input \externalfilteroutputfile
        \namedexternalfilterparameter{#1}\c!after}
       {TODO: Show an error}}
+
+\setupexternalfilters
+  [\c!auto=\v!yes,
+   output=\externalfilterinputfile.tex]
    
 \protect
