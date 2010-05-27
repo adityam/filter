@@ -13,7 +13,7 @@
   {\ifsecondargument
      \getparameters[\??externalfilter??::#1::][#2]%
    \else
-      \getparameters[\??externalfilter??::][#2]%
+      \getparameters[\??externalfilter??::][#1]%
    \fi}
 
 
@@ -51,6 +51,7 @@
    \input \externalfilteroutputfile
    \namedexternalfilterparameter{#1}\c!after}
 
+\loggingall
 \setupexternalfilters
   [\c!auto=\v!yes,
    output=\externalfilterinputfile.tex]
