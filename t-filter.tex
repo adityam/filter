@@ -1,8 +1,9 @@
 \unprotect
 
 \startinterface all
-  \setinterfaceconstant {filter}    {filter}
-  \setinterfaceconstant {output}    {output} 
+  \setinterfaceconstant {filter}           {filter}
+  \setinterfaceconstant {filtercommand}    {filtercommand}
+  \setinterfaceconstant {output}           {output} 
 \stopinterface
 
 \def\??externalfilter??{externalfilter}
@@ -41,11 +42,12 @@
 
 \def\doprocessexternalfilter#1%
   {\doifmode{*mkiv}{\savebuffer[\??externalfilter??-#1]}%
+   \edef\currentexternalfilter   {#1}%
    \edef\externalfilterbasefile  {\jobname-\??externalfilter??-#1}%
    \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
    \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
    \executesystemcommand
-      {\namedexternalfilterparameter{#1}\c!filter\space \externalfilterinputfile}%
+      {\namedexternalfilterparameter{#1}\c!filtercommand}%
    \doiffileelse{\externalfilteroutputfile}
       {\getvalue{readprocessedfile#1}}
       {TODO: Show an error}}
@@ -59,6 +61,8 @@
 \setupexternalfilters
   [\c!auto=\v!yes,
    \c!output=\externalfilterinputfile.tex,
-   \c!filter=]
+   \c!filter=,
+   \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
+ ]
    
 \protect
