@@ -38,7 +38,7 @@
    \edef\externalfilterinputfile {\jobname-\??externalfilter??-#1}%
    \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}{output}}%
    \executesystemcommand
-      {\namedexternalfilterparameter{#1}\c!command\space
+      {\namedexternalfilterparameter{#1}{filter}\space
         \externalfilterinputfile.tmp}%
    \loggingall
    \doiffileelse{\externalfilteroutputfile}
@@ -54,6 +54,7 @@
 \loggingall
 \setupexternalfilters
   [\c!auto=\v!yes,
-   output=\externalfilterinputfile.tex]
+   output=\externalfilterinputfile.tex,
+   filter=]
    
 \protect
