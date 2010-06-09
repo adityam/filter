@@ -1,6 +1,12 @@
 \unprotect
 
+\startinterface all
+  \setinterfaceconstant {filter}    {filter}
+  \setinterfaceconstant {output}    {output} 
+\stopinterface
+
 \def\??externalfilter??{externalfilter}
+
 
 \def\namedexternalfilterparameter#1#2%
   {\executeifdefined{\??externalfilter??::#1::#2}
@@ -36,9 +42,9 @@
 \def\doprocessexternalfilter#1%
   {\doifmode{*mkiv}{\savebuffer[\??externalfilter??-#1]}%
    \edef\externalfilterinputfile {\jobname-\??externalfilter??-#1}%
-   \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}{output}}%
+   \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
    \executesystemcommand
-      {\namedexternalfilterparameter{#1}{filter}\space
+      {\namedexternalfilterparameter{#1}\c!filter\space
         \externalfilterinputfile.tmp}%
    \loggingall
    \doiffileelse{\externalfilteroutputfile}
@@ -54,7 +60,7 @@
 \loggingall
 \setupexternalfilters
   [\c!auto=\v!yes,
-   output=\externalfilterinputfile.tex,
-   filter=]
+   \c!output=\externalfilterinputfile.tex,
+   \c!filter=]
    
 \protect
