@@ -3,6 +3,7 @@
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
   \setinterfaceconstant {filtercommand}    {filtercommand}
+  \setinterfaceconstant {tmpfile}          {tmpfile}
   \setinterfaceconstant {output}           {output} 
 \stopinterface
 
@@ -29,24 +30,45 @@
 
 \def\dodefineexternalfilter[#1][#2]%
   {\setupexternalfilters[#1][#2]%
-   \setvalue{\e!start#1}%
-      {\dostartbuffer[\??externalfilter??-#1][\e!start#1][\e!stop#1]}%
+   \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
+      {\expandafter\newcounter\csname\??externalfilter??-#1-counter\endcsname%
+       \setvalue{\e!start#1}%
+          {\dostartbuffer[\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}]
+                         [\e!start#1][\e!stop#1]}}%
+      {\setvalue{\e!start#1}%
+          {\dostartbuffer[\??externalfilter??-#1]
+                         [\e!start#1][\e!stop#1]}}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter{#1}}%
    %TODO: Inline.
    %\setvalue{#1}##1{\save ##1 to file}
    }
 
 \def\doprocessexternalfilter#1%
-  {\doifmode{*mkiv}{\savebuffer[\??externalfilter??-#1]}%
+  {% Initializations
    \edef\currentexternalfilter   {#1}%
-   \edef\externalfilterbasefile  {\jobname-\??externalfilter??-#1}%
+   \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
+      {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
+      {\edef\externalfiltertmpfile{\??externalfilter??-#1}}%
+   \doifmode{*mkiv}{\savebuffer[\externalfiltertmpfile]}%
+   \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
    \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
    \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
-   \executesystemcommand
-      {\namedexternalfilterparameter{#1}\c!filtercommand}%
+   % Run external command
+   \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
+   {\doifmode{*first}
+     {\executesystemcommand
+      {mtxrun --ifchanged=\externalfilterinputfile\space --exec
+          bin:\namedexternalfilterparameter{#1}\c!filtercommand}}}%
+   {\executesystemcommand
+      {\namedexternalfilterparameter{#1}\c!filtercommand}}%
+   % Process output
    \doiffileelse{\externalfilteroutputfile}
-      {\getvalue{readprocessedfile#1}}
-      {TODO: Show an error}}
+      {\doreadprocessedfile{#1}}
+      {TODO: File \externalfilteroutputfile\ not found! Check your definition}%
+   % Finalization
+   \doif{\namedexternalfilterparameter{#1}\c!continue}\v!yes
+        {\expandafter\increment\csname\??externalfilter??-#1-counter\endcsname}%
+   }
 
 \def\doreadprocessedfile#1%
   {\setups{externalfilter:#1}%
@@ -56,6 +78,7 @@
 
 \setupexternalfilters
   [
+   \c!continue=\v!no,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
    \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
