@@ -46,7 +46,6 @@
    \executesystemcommand
       {\namedexternalfilterparameter{#1}\c!filter\space
         \externalfilterinputfile.tmp}%
-   \loggingall
    \doiffileelse{\externalfilteroutputfile}
       {\getvalue{readprocessedfile#1}}
       {TODO: Show an error}}
@@ -57,7 +56,6 @@
    \input \externalfilteroutputfile
    \namedexternalfilterparameter{#1}\c!after}
 
-\loggingall
 \setupexternalfilters
   [\c!auto=\v!yes,
    \c!output=\externalfilterinputfile.tex,
