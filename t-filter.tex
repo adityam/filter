@@ -41,11 +41,11 @@
 
 \def\doprocessexternalfilter#1%
   {\doifmode{*mkiv}{\savebuffer[\??externalfilter??-#1]}%
-   \edef\externalfilterinputfile {\jobname-\??externalfilter??-#1}%
+   \edef\externalfilterbasefile  {\jobname-\??externalfilter??-#1}%
+   \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
    \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
    \executesystemcommand
-      {\namedexternalfilterparameter{#1}\c!filter\space
-        \externalfilterinputfile.tmp}%
+      {\namedexternalfilterparameter{#1}\c!filter\space \externalfilterinputfile}%
    \doiffileelse{\externalfilteroutputfile}
       {\getvalue{readprocessedfile#1}}
       {TODO: Show an error}}
