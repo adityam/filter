@@ -3,8 +3,8 @@
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
   \setinterfaceconstant {filtercommand}    {filtercommand}
-  \setinterfaceconstant {tmpfile}          {tmpfile}
   \setinterfaceconstant {output}           {output} 
+  \setinterfaceconstant {readcommand}      {readcommand} 
 \stopinterface
 
 \def\??externalfilter??{externalfilter}
@@ -49,9 +49,14 @@
    \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
       {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
       {\edef\externalfiltertmpfile{\??externalfilter??-#1}}%
+   % By defualt, buffers are in memory in MkIV
    \doifmode{*mkiv}{\savebuffer[\externalfiltertmpfile]}%
+   % The following  macros are useful for filter= and filtercommand= options
+   % The basename of the external file 
    \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
+   % The name of the buffer to which data is written
    \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
+   % The name of the file to which the output is written
    \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
    % Run external command
    \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
@@ -73,12 +78,13 @@
 \def\doreadprocessedfile#1%
   {\setups{externalfilter:#1}%
    \namedexternalfilterparameter{#1}\c!before
-   \input \externalfilteroutputfile
+   \namedexternalfilterparameter{#1}\c!readcommand\externalfilteroutputfile
    \namedexternalfilterparameter{#1}\c!after}
 
 \setupexternalfilters
   [
    \c!continue=\v!no,
+   \c!readcommand=\input,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
    \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
