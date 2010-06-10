@@ -4,6 +4,7 @@
   \setinterfaceconstant {filter}           {filter}
   \setinterfaceconstant {filtercommand}    {filtercommand}
   \setinterfaceconstant {output}           {output} 
+  \setinterfaceconstant {read}             {read} 
   \setinterfaceconstant {readcommand}      {readcommand} 
 \stopinterface
 
@@ -67,9 +68,10 @@
    {\executesystemcommand
       {\namedexternalfilterparameter{#1}\c!filtercommand}}%
    % Process output
-   \doiffileelse{\externalfilteroutputfile}
-      {\doreadprocessedfile{#1}}
-      {TODO: File \externalfilteroutputfile\ not found! Check your definition}%
+   \doif{\namedexternalfilterparameter{#1}\c!read}\v!yes
+      {\doiffileelse{\externalfilteroutputfile}
+          {\doreadprocessedfile{#1}}
+          {TODO: File \externalfilteroutputfile\ not found! Check your definition}}%
    % Finalization
    \doif{\namedexternalfilterparameter{#1}\c!continue}\v!yes
         {\expandafter\increment\csname\??externalfilter??-#1-counter\endcsname}%
@@ -84,6 +86,7 @@
 \setupexternalfilters
   [
    \c!continue=\v!no,
+   \c!read=\v!yes,
    \c!readcommand=\input,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
