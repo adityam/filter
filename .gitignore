@@ -9,4 +9,5 @@
 *.tui
 *.tuc
 
-
+# Output files
+*.pdf
