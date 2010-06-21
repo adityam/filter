@@ -93,4 +93,13 @@
    \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
  ]
    
+% For tracing
+\def\showexternalfilterstate
+  {\starttable[|l|l|]
+  \NC currentexternalfilter     \NC \currentexternalfilter      \NC \AR
+  \NC externalfilterinputfile   \NC \externalfilterinputfile    \NC \AR
+  \NC externalfilteroutputfile  \NC \externalfilteroutputfile   \NC \AR
+  \NC externalfilterbasefile    \NC \externalfilterbasefile     \NC \AR
+  \stoptable}
+   
 \protect
