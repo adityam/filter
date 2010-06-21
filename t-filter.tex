@@ -78,7 +78,7 @@
    }
 
 \def\doreadprocessedfile#1%
-  {\setups{externalfilter:#1}%
+  {%TODO: \setups{externalfilter:#1}%
    \namedexternalfilterparameter{#1}\c!before
    \namedexternalfilterparameter{#1}\c!readcommand\externalfilteroutputfile
    \namedexternalfilterparameter{#1}\c!after}
