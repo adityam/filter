@@ -60,22 +60,26 @@
    % The name of the file to which the output is written
    \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
    % Run external command
-   \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
-   {\doifmode{*first}
-     {\executesystemcommand
-      {mtxrun --ifchanged=\externalfilterinputfile\space 
-          bin:\namedexternalfilterparameter{#1}\c!filtercommand}}}%
-   {\executesystemcommand
-      {\namedexternalfilterparameter{#1}\c!filtercommand}}%
-   % Process output
-   \doif{\namedexternalfilterparameter{#1}\c!read}\v!yes
-      {\doiffileelse{\externalfilteroutputfile}
-          {\doreadprocessedfile}
-          {TODO: File \externalfilteroutputfile\ not found! Check your definition}}%
+   \doexecuteexternalfilter
    % Finalization
    \doif{\namedexternalfilterparameter{#1}\c!continue}\v!yes
         {\expandafter\increment\csname\??externalfilter??-#1-counter\endcsname}%
    }
+
+\def\doexecuteexternalfilter%
+  {\doifelse{\namedexternalfilterparameter\currentexternalfilter\c!continue}\v!yes
+   {\doifmode{*first}
+     {\executesystemcommand
+      {mtxrun --ifchanged=\externalfilterinputfile\space 
+          bin:\namedexternalfilterparameter\currentexternalfilter\c!filtercommand}}}%
+   {\executesystemcommand
+      {\namedexternalfilterparameter\currentexternalfilter\c!filtercommand}}%
+   % Process output
+   \doif{\namedexternalfilterparameter\currentexternalfilter\c!read}\v!yes
+      {\doiffileelse{\externalfilteroutputfile}
+          {\doreadprocessedfile}
+          {TODO: File \externalfilteroutputfile\ not found! Check your definition}}%
+  }
 
 \def\doreadprocessedfile%
   {%TODO: \setups{externalfilter:#1}%
