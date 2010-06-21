@@ -63,7 +63,7 @@
    \doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
    {\doifmode{*first}
      {\executesystemcommand
-      {mtxrun --ifchanged=\externalfilterinputfile\space --exec
+      {mtxrun --ifchanged=\externalfilterinputfile\space 
           bin:\namedexternalfilterparameter{#1}\c!filtercommand}}}%
    {\executesystemcommand
       {\namedexternalfilterparameter{#1}\c!filtercommand}}%
