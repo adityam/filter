@@ -70,18 +70,18 @@
    % Process output
    \doif{\namedexternalfilterparameter{#1}\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
-          {\doreadprocessedfile{#1}}
+          {\doreadprocessedfile}
           {TODO: File \externalfilteroutputfile\ not found! Check your definition}}%
    % Finalization
    \doif{\namedexternalfilterparameter{#1}\c!continue}\v!yes
         {\expandafter\increment\csname\??externalfilter??-#1-counter\endcsname}%
    }
 
-\def\doreadprocessedfile#1%
+\def\doreadprocessedfile%
   {%TODO: \setups{externalfilter:#1}%
-   \namedexternalfilterparameter{#1}\c!before
-   \namedexternalfilterparameter{#1}\c!readcommand\externalfilteroutputfile
-   \namedexternalfilterparameter{#1}\c!after}
+   \namedexternalfilterparameter\currentexternalfilter\c!before
+   \namedexternalfilterparameter\currentexternalfilter\c!readcommand\externalfilteroutputfile
+   \namedexternalfilterparameter\currentexternalfilter\c!after}
 
 \setupexternalfilters
   [
