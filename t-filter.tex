@@ -85,10 +85,12 @@
   }
 
 \def\doreadprocessedfile%
-  {%TODO: \setups{externalfilter:#1}%
+  {\bgroup
+   \doprocesslocalsetups{\namedexternalfilterparameter\currentexternalfilter\c!setups}%
    \namedexternalfilterparameter\currentexternalfilter\c!before
    \namedexternalfilterparameter\currentexternalfilter\c!readcommand\externalfilteroutputfile
-   \namedexternalfilterparameter\currentexternalfilter\c!after}
+   \namedexternalfilterparameter\currentexternalfilter\c!after
+   \egroup}
 
 \def\doprocessexternalfile[#1][#2]%
   {\edef\currentexternalfilter    {#1}%
@@ -104,6 +106,7 @@
   [
    \c!before=,
    \c!after=,
+   \c!setups=,
    \c!continue=\v!no,
    \c!read=\v!yes,
    \c!readcommand=\input,
