@@ -1,0 +1,63 @@
+\startmodule[vim]
+
+\unprotect
+
+\usemodule[filter]
+
+\startinterface all
+  \setinterfaceconstant {syntax}      {syntax} 
+\stopinterface
+
+\def\??vimsyntax??{vimsyntax}
+
+\def\namedvimsyntaxparameter#1#2%
+  {\executeifdefined{\??vimsyntax??::#1::#2}
+     {\executeifdefined{\??vimsyntax??::#2}{}}}
+  
+\def\setupvimtyping
+  {\dodoubleargument\dosetupvimtyping}
+
+\def\dosetupvimtyping[#1][#2]%
+  {\ifsecondargument
+     \getparameters[\??vimsyntax??::#1::][#2]%
+   \else
+      \getparameters[\??vimsyntax??::][#1]%
+   \fi}
+
+\def\definevimtyping
+  {\dodoubleargument\dodefinevimtyping}
+
+\def\dodefinevimtyping[#1][#2]% 
+  {\setupvimtyping[#1][#2]%
+   \edef\currentvimtyping{#1}%
+   \defineexternalfilter[#1]
+    [\c!continue=yes,
+     \c!read=\v!yes,
+     \c!readcommand=\typefile,
+     \c!output=\externalfilterbasefile.vimout,
+     \c!filter={
+      vim -u NONE % don't read global config file
+          -e % run in ex mode
+          -C % set compatible
+          -n % no swap file
+          -c "set tabstop=\namedvimsyntaxparameter\currentvimtyping\c!tab" %
+          -c "syntax on" %
+          -c "set syntax=\namedvimsyntaxparameter\currentvimtyping\c!syntax" %
+          -c "let contextstartline=\namedvimsyntaxparameter\currentvimtyping\c!start" %
+          -c "let  contextstopline=\namedvimsyntaxparameter\currentvimtyping\c!stop" %
+          -c "source 2context.vim" % TODO: kpse:
+          -c "wqa"},
+    ]%
+  }
+
+\setupvimtyping
+  [\c!tab=4,
+   \c!start=1,
+   \c!stop=0,
+   \c!syntax=context,
+  ]
+
+\protect
+
+\stopmodule
+
