@@ -103,11 +103,13 @@
   {\doquadrupleargument\dosetvimsyntax}
 
 \def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
-  {\definecolor[\??vimsyntax??:\currentvimalternative:#1:color] [#2]%
-   \getparameters[\??vimsyntax??::\currentvimalternative::#1]
-                 [\c!color={\??vimsyntax??:\currentvimalternative:#1:color},
-                  \c!style=#3,
-                  \c!command=#4]}
+  {\def\dodosetupvimsyntax##1%
+    {\definecolor[\??vimsyntax??:\currentvimalternative:##11:color] [#2]%
+     \getparameters[\??vimsyntax??::\currentvimalternative::##1]
+                   [\c!color={\??vimsyntax??:\currentvimalternative:##1:color},
+                    \c!style=#3,
+                    \c!command=#4]}%
+     \processcommalist[#1]\dodosetupvimsyntax}
 
 
 \def\vimsyntax[#1]#2% style content
@@ -119,18 +121,83 @@
 
 \startvimalternative[pscolor]
   \setvimsyntax [Normal]    [\maintextcolor][\tttf]
-  \setvimsyntax [Special]   [h=907000]      [\v!mono]
-  \setvimsyntax [Comment]   [h=606000]      [\v!mono]
-  \setvimsyntax [Number]    [h=907000]      [\v!mono]
-  \setvimsyntax [Constant]  [h=007068]      [\v!mono]
-  \setvimsyntax [PreProc]   [h=009030]      [\v!mono]
-  \setvimsyntax [Statement] [h=2060a8]      [\v!mono]
-  \setvimsyntax [Type]      [h=0850a0]      [\v!mono]
-  \setvimsyntax [Todo]      [h=e0e090]      [\v!mono]
-  \setvimsyntax [Error]     [h=c03000]      [\v!mono]
-  \setvimsyntax [Identifier][h=a030a0]      [\v!mono]
-  \setvimsyntax [SpecialKey][h=1050a0]      [\v!mono]
-  \setvimsyntax [Underline] [h=6a5acd]      [\v!mono]
+
+  \setvimsyntax 
+    [Constant,Character,Boolean,Float]  
+    [h=007068]      
+
+  \setvimsyntax [Number]    [h=907000]
+
+  \setvimsyntax
+    [Identifier, Function]
+    [h=a030a0]      
+
+  \setvimsyntax 
+    [Statement,Conditional,Repeat,Label,Operator,Keyword,Exception] 
+    [h=2060a8]      
+
+  \setvimsyntax 
+    [PreProc, Include, Define, Macro, PreCondit] 
+    [h=009030]
+
+  \setvimsyntax 
+    [Type,StorageClass, Structure, Typedef]      
+    [h=0850a0]      
+
+  \setvimsyntax [Special]   [h=907000]
+  \setvimsyntax [SpecialKey][h=1050a0]
+
+  \setvimsyntax
+    [Tag, Delmiter]
+    [\maintextcolor]
+
+  \setvimsyntax 
+    [Comment, SpecialComment]
+    [h=606000]
+
+  \setvimsyntax
+    [Debug,Ignore]
+    [\maintextcolor]
+
+  \setvimsyntax [Todo]      [h=e0e090]
+  \setvimsyntax [Error]     [h=c03000]
+  \setvimsyntax [Underlined][h=6a5acd][\v!mono][\underbar]
+
+\stopvimalternative
+
+\startvimalternative[blackandwhite]
+  \setvimsyntax [Normal]    [\maintextcolor][\tttf]
+
+  \setvimsyntax 
+    [Constant,Character,Boolean,Float,Number,Identifier,Function]  
+
+  \setvimsyntax 
+    [Statement,Conditional,Repeat,Label,Operator,Keyword,Exception] 
+    [][][\bold]
+
+  \setvimsyntax 
+    [PreProc, Include, Define, Macro, PreCondit] 
+    [][][\bold]
+
+  \setvimsyntax 
+    [Type,StorageClass, Structure, Typedef]      
+    [][][\bold]
+
+  \setvimsyntax [Special, SpecialKey]
+
+  \setvimsyntax [Tag, Delmiter]
+
+  \setvimsyntax 
+    [Comment, SpecialComment]
+    [][][\slanted]
+
+  \setvimsyntax
+    [Debug,Ignore]
+
+  \setvimsyntax [Todo]      [][][\inframed]
+  \setvimsyntax [Error]     [][][\overstrike]
+  \setvimsyntax [Underlined][][][\underbar]
+
 \stopvimalternative
 
 \setupvimtyping
