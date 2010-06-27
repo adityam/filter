@@ -104,7 +104,7 @@
 
 \def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
   {\def\dodosetupvimsyntax##1%
-    {\definecolor[\??vimsyntax??:\currentvimalternative:##11:color] [#2]%
+    {\definecolor[\??vimsyntax??:\currentvimalternative:##1:color] [#2]%
      \getparameters[\??vimsyntax??::\currentvimalternative::##1]
                    [\c!color={\??vimsyntax??:\currentvimalternative:##1:color},
                     \c!style=#3,
