@@ -50,6 +50,10 @@
   \edef\currentvimtyping{\currentexternalfilter}
   \edef\currentvimalternative{\namedvimsyntaxparameter\currentvimtyping\c!alternative}
   \let\syn\vimsyntax
+  \def\nl{\strut} % TODO: Add line numbering
+  \def\tab##1%
+    {\dorecurse{\namedvimsyntaxparameter\currentvimtyping\c!tab}
+    {\space}}
 \stopsetups
 
 \def\vimfiltercommand
@@ -72,7 +76,7 @@
   \catcode`\}   = \endgroupcatcode
   \catcode`\^^M = \activecatcode
   \catcode`\^^L = \activecatcode
-  \catcode`\    = \othercatcode
+  \catcode`\    = \activecatcode
   \catcode`\^^Z = \ignorecatcode
   \catcode`\~   = \othercatcode
   \catcode`\#   = \othercatcode 
