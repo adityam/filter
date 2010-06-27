@@ -39,7 +39,7 @@
    \defineexternalfilter[#1]
     [\c!continue=yes,
      \c!read=\v!yes,
-     \c!readcommand=\viminputfile,
+     \c!readcommand=\input,
      \c!output=\externalfilterbasefile.vimout,
      \c!filter=\vimfiltercommand,
      \c!setups=vimsetup,
@@ -49,12 +49,6 @@
   \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
   }
 
-\def\viminputfile#1%
-  {\pushcatcodetable
-   \setcatcodetable\vimcatcodes
-   \input{#1}\relax
-   \popcatcodetable}
-
 \startsetups[vimsetup]
   \edef\currentvimtyping{\currentexternalfilter}
   \edef\currentvimalternative{\namedvimsyntaxparameter\currentvimtyping\c!alternative}
@@ -63,6 +57,7 @@
   \def\tab##1%
     {\dorecurse{\namedvimsyntaxparameter\currentvimtyping\c!tab}
     {\space}}
+  \setcatcodetable\vimcatcodes
 \stopsetups
 
 \def\vimfiltercommand
