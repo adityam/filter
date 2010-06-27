@@ -87,7 +87,7 @@
 \def\doreadprocessedfile%
   {\bgroup
    \namedexternalfilterparameter\currentexternalfilter\c!before
-   \doprocesslocalsetups{\namedexternalfilterparameter\currentexternalfilter\c!setups}%
+   \processcommacommand[\namedexternalfilterparameter\currentexternalfilter\c!setups]\directsetup%
    \namedexternalfilterparameter\currentexternalfilter\c!readcommand\externalfilteroutputfile\relax
    \namedexternalfilterparameter\currentexternalfilter\c!after
    \egroup}
