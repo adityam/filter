@@ -33,12 +33,18 @@
    \defineexternalfilter[#1]
     [\c!continue=yes,
      \c!read=\v!yes,
-     \c!readcommand=\input,
+     \c!readcommand=\viminputfile,
      \c!output=\externalfilterbasefile.vimout,
      \c!filter=\vimfiltercommand,
      \c!setups=vimsetup,
     ]%
   }
+
+\def\viminputfile#1%
+  {\pushcatcodetable
+   \setcatcodetable\vimcatcodes
+   \input{#1}\relax
+   \popcatcodetable}
 
 \startsetups[vimsetup]
   \edef\currentvimtyping{\currentexternalfilter}
@@ -59,6 +65,29 @@
        -c "source 2context.vim" % TODO: kpse:
        -c "wqa"}
 
+\newcatcodetable \vimcatcodes
+\startcatcodetable \vimcatcodes 
+  \catcode`\\   = \escapecatcode
+  \catcode`\{   = \begingroupcatcode  
+  \catcode`\}   = \endgroupcatcode
+  \catcode`\^^M = \activecatcode
+  \catcode`\^^L = \activecatcode
+  \catcode`\    = \othercatcode
+  \catcode`\^^Z = \ignorecatcode
+  \catcode`\~   = \othercatcode
+  \catcode`\#   = \othercatcode 
+  \catcode`\$   = \othercatcode 
+  \catcode`\%   = \othercatcode
+  \catcode`\^   = \othercatcode
+  \catcode`\&   = \othercatcode
+  \catcode`\_   = \othercatcode
+  \catcode`\<   = \othercatcode
+  \catcode`\>   = \othercatcode
+  \catcode`\"   = \othercatcode
+  \catcode`\'   = \othercatcode
+  \catcode`\/   = \othercatcode
+  \catcode`\|   = \othercatcode
+\stopcatcodetable 
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
@@ -77,8 +106,8 @@
   {\definecolor[\??vimsyntax??:\currentvimalternative:#1:color] [#2]%
    \getparameters[\??vimsyntax??::\currentvimalternative::#1]
                  [\c!color={\??vimsyntax??:\currentvimalternative:#1:color},
-                  \c!style=#2,
-                  \c!command=#3]}
+                  \c!style=#3,
+                  \c!command=#4]}
 
 
 \def\vimsyntax[#1]#2% style content
@@ -89,7 +118,7 @@
    \dostopattributes}
 
 \startvimalternative[pscolor]
-  \setvimsyntax [Normal]    [\maintextcolor][\ttff]
+  \setvimsyntax [Normal]    [\maintextcolor][\tttf]
   \setvimsyntax [Special]   [h=907000]      [\v!mono]
   \setvimsyntax [Comment]   [h=606000]      [\v!mono]
   \setvimsyntax [Number]    [h=907000]      [\v!mono]
