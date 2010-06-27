@@ -33,28 +33,83 @@
    \defineexternalfilter[#1]
     [\c!continue=yes,
      \c!read=\v!yes,
-     \c!readcommand=\typefile,
+     \c!readcommand=\input,
      \c!output=\externalfilterbasefile.vimout,
-     \c!filter={
-      vim -u NONE % don't read global config file
-          -e % run in ex mode
-          -C % set compatible
-          -n % no swap file
-          -c "set tabstop=\namedvimsyntaxparameter\currentvimtyping\c!tab" %
-          -c "syntax on" %
-          -c "set syntax=\namedvimsyntaxparameter\currentvimtyping\c!syntax" %
-          -c "let contextstartline=\namedvimsyntaxparameter\currentvimtyping\c!start" %
-          -c "let  contextstopline=\namedvimsyntaxparameter\currentvimtyping\c!stop" %
-          -c "source 2context.vim" % TODO: kpse:
-          -c "wqa"},
+     \c!filter=\vimfiltercommand,
+     \c!setups=vimsetup,
     ]%
   }
+
+\startsetups[vimsetup]
+  \edef\currentvimtyping{\currentexternalfilter}
+  \edef\currentvimalternative{\namedvimsyntaxparameter\currentvimtyping\c!alternative}
+  \let\syn\vimsyntax
+\stopsetups
+
+\def\vimfiltercommand
+  {vim -u NONE % don't read global config file
+       -e % run in ex mode
+       -C % set compatible
+       -n % no swap file
+       -c "set tabstop=\namedvimsyntaxparameter\currentvimtyping\c!tab" %
+       -c "syntax on" %
+       -c "set syntax=\namedvimsyntaxparameter\currentvimtyping\c!syntax" %
+       -c "let contextstartline=\namedvimsyntaxparameter\currentvimtyping\c!start" %
+       -c "let  contextstopline=\namedvimsyntaxparameter\currentvimtyping\c!stop" %
+       -c "source 2context.vim" % TODO: kpse:
+       -c "wqa"}
+
+
+\def\startvimalternative
+  {\dosingleargument\dostartvimalternative}
+
+\def\dostartvimalternative[#1]%
+  {\pushmacro\currentvimalternative
+   \edef\currentvimalternative{#1}}
+
+\def\stopvimalternative
+  {\popmacro\currentvimalternative}
+
+\def\setvimsyntax
+  {\doquadrupleargument\dosetvimsyntax}
+
+\def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
+  {\definecolor[\??vimsyntax??:\currentvimalternative:#1:color] [#2]%
+   \getparameters[\??vimsyntax??::\currentvimalternative::#1]
+                 [\c!color={\??vimsyntax??:\currentvimalternative:#1:color},
+                  \c!style=#2,
+                  \c!command=#3]}
+
+
+\def\vimsyntax[#1]#2% style content
+  {\dostartattributes{\??vimsyntax??::\currentvimalternative::Normal}\c!style\c!color\empty%
+   \dostartattributes{\??vimsyntax??::\currentvimalternative::#1}\c!style\c!color\empty%
+   \getvalue{\??vimsyntax??::\currentvimalternative::#1\c!command}{#2}%
+   \dostopattributes
+   \dostopattributes}
+
+\startvimalternative[pscolor]
+  \setvimsyntax [Normal]    [\maintextcolor][\ttff]
+  \setvimsyntax [Special]   [h=907000]      [\v!mono]
+  \setvimsyntax [Comment]   [h=606000]      [\v!mono]
+  \setvimsyntax [Number]    [h=907000]      [\v!mono]
+  \setvimsyntax [Constant]  [h=007068]      [\v!mono]
+  \setvimsyntax [PreProc]   [h=009030]      [\v!mono]
+  \setvimsyntax [Statement] [h=2060a8]      [\v!mono]
+  \setvimsyntax [Type]      [h=0850a0]      [\v!mono]
+  \setvimsyntax [Todo]      [h=e0e090]      [\v!mono]
+  \setvimsyntax [Error]     [h=c03000]      [\v!mono]
+  \setvimsyntax [Identifier][h=a030a0]      [\v!mono]
+  \setvimsyntax [SpecialKey][h=1050a0]      [\v!mono]
+  \setvimsyntax [Underline] [h=6a5acd]      [\v!mono]
+\stopvimalternative
 
 \setupvimtyping
   [\c!tab=4,
    \c!start=1,
    \c!stop=0,
    \c!syntax=context,
+   \c!alternative=pscolor,
   ]
 
 \protect
