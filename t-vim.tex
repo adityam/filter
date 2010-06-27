@@ -1,0 +1,214 @@
+\startmodule[vim]
+
+\unprotect
+
+\usemodule[filter]
+
+\startinterface all
+  \setinterfaceconstant {syntax}      {syntax} 
+\stopinterface
+
+\def\??vimsyntax??{vimsyntax}
+
+\def\namedvimsyntaxparameter#1#2%
+  {\executeifdefined{\??vimsyntax??::#1::#2}
+     {\executeifdefined{\??vimsyntax??::#2}{}}}
+  
+\def\setupvimtyping
+  {\dodoubleargument\dosetupvimtyping}
+
+\def\dosetupvimtyping[#1][#2]%
+  {\ifsecondargument
+     \getparameters[\??vimsyntax??::#1::][#2]%
+   \else
+      \getparameters[\??vimsyntax??::][#1]%
+   \fi}
+
+\def\definevimtyping
+  {\dodoubleargument\dodefinevimtyping}
+
+\def\dodefinevimtyping[#1][#2]% 
+  {\setupvimtyping[#1][#2]%
+   \edef\currentvimtyping{#1}%
+   \defineexternalfilter[#1]
+    [\c!continue=yes,
+     \c!read=\v!yes,
+     \c!readcommand=\viminputfile,
+     \c!output=\externalfilterbasefile.vimout,
+     \c!filter=\vimfiltercommand,
+     \c!setups=vimsetup,
+    ]%
+  }
+
+\def\viminputfile#1%
+  {\pushcatcodetable
+   \setcatcodetable\vimcatcodes
+   \input{#1}\relax
+   \popcatcodetable}
+
+\startsetups[vimsetup]
+  \edef\currentvimtyping{\currentexternalfilter}
+  \edef\currentvimalternative{\namedvimsyntaxparameter\currentvimtyping\c!alternative}
+  \let\syn\vimsyntax
+\stopsetups
+
+\def\vimfiltercommand
+  {vim -u NONE % don't read global config file
+       -e % run in ex mode
+       -C % set compatible
+       -n % no swap file
+       -c "set tabstop=\namedvimsyntaxparameter\currentvimtyping\c!tab" %
+       -c "syntax on" %
+       -c "set syntax=\namedvimsyntaxparameter\currentvimtyping\c!syntax" %
+       -c "let contextstartline=\namedvimsyntaxparameter\currentvimtyping\c!start" %
+       -c "let  contextstopline=\namedvimsyntaxparameter\currentvimtyping\c!stop" %
+       -c "source 2context.vim" % TODO: kpse:
+       -c "wqa"}
+
+\newcatcodetable \vimcatcodes
+\startcatcodetable \vimcatcodes 
+  \catcode`\\   = \escapecatcode
+  \catcode`\{   = \begingroupcatcode  
+  \catcode`\}   = \endgroupcatcode
+  \catcode`\^^M = \activecatcode
+  \catcode`\^^L = \activecatcode
+  \catcode`\    = \othercatcode
+  \catcode`\^^Z = \ignorecatcode
+  \catcode`\~   = \othercatcode
+  \catcode`\#   = \othercatcode 
+  \catcode`\$   = \othercatcode 
+  \catcode`\%   = \othercatcode
+  \catcode`\^   = \othercatcode
+  \catcode`\&   = \othercatcode
+  \catcode`\_   = \othercatcode
+  \catcode`\<   = \othercatcode
+  \catcode`\>   = \othercatcode
+  \catcode`\"   = \othercatcode
+  \catcode`\'   = \othercatcode
+  \catcode`\/   = \othercatcode
+  \catcode`\|   = \othercatcode
+\stopcatcodetable 
+
+\def\startvimalternative
+  {\dosingleargument\dostartvimalternative}
+
+\def\dostartvimalternative[#1]%
+  {\pushmacro\currentvimalternative
+   \edef\currentvimalternative{#1}}
+
+\def\stopvimalternative
+  {\popmacro\currentvimalternative}
+
+\def\setvimsyntax
+  {\doquadrupleargument\dosetvimsyntax}
+
+\def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
+  {\def\dodosetupvimsyntax##1%
+    {\definecolor[\??vimsyntax??:\currentvimalternative:##1:color] [#2]%
+     \getparameters[\??vimsyntax??::\currentvimalternative::##1]
+                   [\c!color={\??vimsyntax??:\currentvimalternative:##1:color},
+                    \c!style=#3,
+                    \c!command=#4]}%
+     \processcommalist[#1]\dodosetupvimsyntax}
+
+
+\def\vimsyntax[#1]#2% style content
+  {\dostartattributes{\??vimsyntax??::\currentvimalternative::Normal}\c!style\c!color\empty%
+   \dostartattributes{\??vimsyntax??::\currentvimalternative::#1}\c!style\c!color\empty%
+   \getvalue{\??vimsyntax??::\currentvimalternative::#1\c!command}{#2}%
+   \dostopattributes
+   \dostopattributes}
+
+\startvimalternative[pscolor]
+  \setvimsyntax [Normal]    [\maintextcolor][\tttf]
+
+  \setvimsyntax 
+    [Constant,Character,Boolean,Float]  
+    [h=007068]      
+
+  \setvimsyntax [Number]    [h=907000]
+
+  \setvimsyntax
+    [Identifier, Function]
+    [h=a030a0]      
+
+  \setvimsyntax 
+    [Statement,Conditional,Repeat,Label,Operator,Keyword,Exception] 
+    [h=2060a8]      
+
+  \setvimsyntax 
+    [PreProc, Include, Define, Macro, PreCondit] 
+    [h=009030]
+
+  \setvimsyntax 
+    [Type,StorageClass, Structure, Typedef]      
+    [h=0850a0]      
+
+  \setvimsyntax [Special]   [h=907000]
+  \setvimsyntax [SpecialKey][h=1050a0]
+
+  \setvimsyntax
+    [Tag, Delmiter]
+    [\maintextcolor]
+
+  \setvimsyntax 
+    [Comment, SpecialComment]
+    [h=606000]
+
+  \setvimsyntax
+    [Debug,Ignore]
+    [\maintextcolor]
+
+  \setvimsyntax [Todo]      [h=e0e090]
+  \setvimsyntax [Error]     [h=c03000]
+  \setvimsyntax [Underlined][h=6a5acd][\v!mono][\underbar]
+
+\stopvimalternative
+
+\startvimalternative[blackandwhite]
+  \setvimsyntax [Normal]    [\maintextcolor][\tttf]
+
+  \setvimsyntax 
+    [Constant,Character,Boolean,Float,Number,Identifier,Function]  
+
+  \setvimsyntax 
+    [Statement,Conditional,Repeat,Label,Operator,Keyword,Exception] 
+    [][][\bold]
+
+  \setvimsyntax 
+    [PreProc, Include, Define, Macro, PreCondit] 
+    [][][\bold]
+
+  \setvimsyntax 
+    [Type,StorageClass, Structure, Typedef]      
+    [][][\bold]
+
+  \setvimsyntax [Special, SpecialKey]
+
+  \setvimsyntax [Tag, Delmiter]
+
+  \setvimsyntax 
+    [Comment, SpecialComment]
+    [][][\slanted]
+
+  \setvimsyntax
+    [Debug,Ignore]
+
+  \setvimsyntax [Todo]      [][][\inframed]
+  \setvimsyntax [Error]     [][][\overstrike]
+  \setvimsyntax [Underlined][][][\underbar]
+
+\stopvimalternative
+
+\setupvimtyping
+  [\c!tab=4,
+   \c!start=1,
+   \c!stop=0,
+   \c!syntax=context,
+   \c!alternative=pscolor,
+  ]
+
+\protect
+
+\stopmodule
+

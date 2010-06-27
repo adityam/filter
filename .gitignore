@@ -8,6 +8,9 @@
 *.log
 *.tui
 *.tuc
+*.tmp
+mpgraph.mp
+*-mpgraph.mp
 
 # Output files
 *.pdf

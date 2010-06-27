@@ -1,0 +1,12 @@
+\usemodule[filter]
+
+\defineexternalfilter
+  [textile]
+  [filtercommand={redcloth \externalfilterinputfile | pandoc -r html -w context -o \externalfilteroutputfile}]
+
+\setupinteraction[state=start]
+
+\starttext
+% We run tests from parent directory
+\processtextilefile[tests/examples/textile.txt]
+\stoptext

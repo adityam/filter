@@ -1,0 +1,125 @@
+\usemodule  [vim]
+
+\definevimtyping  [LUA]  [syntax=lua,alternative=blackandwhite]
+
+\starttext
+\startLUA
+-- version   : 1.0.0 - 07/2005
+-- author    : Hans Hagen - PRAGMA ADE - www.pragma-ade.com
+-- copyright : public domain or whatever suits
+-- remark    : part of the context distribution
+
+-- TODO: name space for local functions
+
+-- loading: scite-ctx.properties
+
+-- generic functions
+
+local crlf = "\n"
+
+function traceln(str)
+    trace(str .. crlf)
+    io.flush()
+end
+
+table.len  = table.getn
+table.join = table.concat
+
+function table.found(tab, str)
+    local l, r, p
+    if string.len(str) == 0 then
+        return false
+    else
+        l, r = 1, table.len(tab)
+        while l <= r do
+            p = math.floor((l+r)/2)
+            if str < tab[p] then
+                r = p - 1
+            elseif str > tab[p] then
+                l = p + 1
+            else
+                return true
+            end
+        end
+        return false
+    end
+end
+
+function string.grab(str, delimiter)
+    local list = {}
+    for snippet in string.gfind(str,delimiter) do
+        table.insert(list, snippet)
+    end
+    return list
+end
+
+function string.join(list, delimiter)
+    local size, str = table.len(list), ''
+    if size > 0 then
+        str = list[1]
+        for i = 2, size, 1 do
+            str = str .. delimiter .. list[i]
+        end
+    end
+    return str
+end
+
+function string.spacy(str)
+    if string.find(str,"^%s*$") then
+        return true
+    else
+        return false
+    end
+end
+
+function string.alphacmp(a,b,i) -- slow but ok
+    if i and i > 0 then
+        return string.lower(string.gsub(string.sub(a,i),'0',' ')) < string.lower(string.gsub(string.sub(b,i),'0',' '))
+    else
+        return string.lower(a) < string.lower(b)
+    end
+end
+
+function table.alphasort(list,i)
+    table.sort(list, function(a,b) return string.alphacmp(a,b,i) end)
+end
+
+function io.exists(filename)
+    local ok, result, message = pcall(io.open,filename)
+    if result then
+        io.close(result)
+        return true
+    else
+        return false
+    end
+end
+
+function os.envvar(str)
+    if os.getenv(str) ~= '' then
+        return os.getenv(str)
+    elseif os.getenv(string.upper(str)) ~= '' then
+        return os.getenv(string.upper(str))
+    elseif os.getenv(string.lower(str)) ~= '' then
+        return os.getenv(string.lower(str))
+    else
+        return ''
+    end
+end
+
+function string.expand(str)
+    return string.gsub(str, "ENV%((%w+)%)", os.envvar)
+end
+
+function string.strip(str)
+    return string.gsub(string.gsub(str,"^%s+",''),"%s+$",'')
+end
+
+function string.replace(original,pattern,replacement)
+    local str = string.gsub(original,pattern,replacement)
+--     print(str) -- indirect, since else str + nofsubs
+    return str -- indirect, since else str + nofsubs
+end
+
+\stopLUA
+
+\stoptext
