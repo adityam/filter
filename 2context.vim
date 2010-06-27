@@ -79,7 +79,7 @@ while s:lnum <= s:end
       let s:temp = substitute( s:temp,  '}',  '\\letterclosebrace||||||||||$$$$$$$$$$', 'g')
       let s:temp = substitute( s:temp,  '||||||||||' , '{' , 'g')
       let s:temp = substitute( s:temp,  '\$\$\$\$\$\$\$\$\$\$' , '}' , 'g')
-      let s:new  = s:new . '\syn[' . s:id_name . ']{' . s:temp .  '}'
+      let s:new  = s:new . '\SYN[' . s:id_name . ']{' . s:temp .  '}'
     endif
 
 " Why will we ever enter this loop
