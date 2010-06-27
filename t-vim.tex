@@ -24,6 +24,12 @@
       \getparameters[\??vimsyntax??::][#1]%
    \fi}
 
+\def\dotypevimfile[#1][#2][#3]% id options file
+  {\bgroup
+   \setupvimtyping[#1][#2]%
+   \getvalue{process#1file}[#3]%
+   \egroup}
+
 \def\definevimtyping
   {\dodoubleargument\dodefinevimtyping}
 
@@ -37,7 +43,10 @@
      \c!output=\externalfilterbasefile.vimout,
      \c!filter=\vimfiltercommand,
      \c!setups=vimsetup,
+     \c!before=\namedvimsyntaxparameter\currentvimtyping\c!before,
+     \c!after=\namedvimsyntaxparameter\currentvimtyping\c!after,
     ]%
+  \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
   }
 
 \def\viminputfile#1%
@@ -210,6 +219,8 @@
    \c!stop=0,
    \c!syntax=context,
    \c!alternative=pscolor,
+   \c!before=,
+   \c!after=,
   ]
 
 \protect
