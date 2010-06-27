@@ -47,7 +47,7 @@ while s:lnum <= s:end
 " Get the current line
   let s:line = getline(s:lnum)
   let s:len  = strlen(s:line)
-  let s:new  = "\\nl{}"
+  let s:new  = "\\NL{}"
 
 " Loop over each character in the line
   let s:col = 1

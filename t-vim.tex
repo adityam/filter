@@ -53,7 +53,7 @@
   \edef\currentvimtyping{\currentexternalfilter}
   \edef\currentvimalternative{\namedvimsyntaxparameter\currentvimtyping\c!alternative}
   \let\SYN\vimsyntax
-  \def\nl{\strut} % TODO: Add line numbering
+  \def\NL{\strut} % TODO: Add line numbering
   \def\tab##1%
     {\dorecurse{\namedvimsyntaxparameter\currentvimtyping\c!tab}
     {\space}}
@@ -143,7 +143,6 @@
 
   \setvimsyntax
     [Tag, Delmiter]
-    [\maintextcolor]
 
   \setvimsyntax 
     [Comment, SpecialComment]
@@ -151,14 +150,15 @@
 
   \setvimsyntax
     [Debug,Ignore]
-    [\maintextcolor]
 
   \setvimsyntax [Todo]      [h=e0e090]
   \setvimsyntax [Error]     [h=c03000]
-  \setvimsyntax [Underlined][h=6a5acd][\v!mono][\underbar]
+  \setvimsyntax [Underlined][h=6a5acd][][\underbar]
 
 \stopvimalternative
 
+%TODO
+%   \setvimsyntax [id] [bg=, fc=, style=, command=] == \localframed[options]
 \startvimalternative[blackandwhite]
   \setvimsyntax [Normal]    [\maintextcolor][\tttf]
 
