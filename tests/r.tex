@@ -44,7 +44,7 @@ ls()
 \stopR
 
 Then a small test of generating a graphic, in this case a pdf
-\startR
+\startR[ushape]
 ushape <- c(rexp(500000), 12-rexp(500000))
 pdf("ushape.pdf")
 par(mfrow=c(1,2))
