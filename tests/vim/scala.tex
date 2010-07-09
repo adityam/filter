@@ -1,0 +1,17 @@
+\setupcolors[state=start]
+\usemodule[vim]
+
+\definevimtyping[SCALA][syntax=scala]
+
+\starttext
+
+\startSCALA 
+trait Service1[A, B] {
+  def apply (a: A): B               // implementation detail
+  def pre   (a: A): Boolean         // precondition
+  def post  (a: A, b: B): Boolean   // postcondition
+  def verify(a: A): Boolean = { pre(a) && post(a, apply(a)) }
+}
+\stopSCALA
+
+\stoptext

@@ -4,6 +4,9 @@
 
 \usemodule[filter]
 
+% We specify colors in hex so
+\setupcolor[hex]
+
 \startinterface all
   \setinterfaceconstant {syntax}      {syntax} 
 \stopinterface
@@ -98,7 +101,8 @@
 
 \def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
   {\def\dodosetupvimsyntax##1%
-    {\definecolor[\??vimsyntax??:\currentvimalternative:##1:color] [#2]%
+    { \doifsomething{#2}
+      {\definecolor[\??vimsyntax??:\currentvimalternative:##1:color] [#2]}%
      \getparameters[\??vimsyntax??::\currentvimalternative::##1]
                    [\c!color={\??vimsyntax??:\currentvimalternative:##1:color},
                     \c!style=#3,
