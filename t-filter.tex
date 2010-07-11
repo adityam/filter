@@ -45,6 +45,7 @@
 
 \def\dostartexternalfilter[#1][#2]% filter file
   {% Initializations
+   \egroup %\bgroup in \start#1
    \edef\currentexternalfilter   {#1}%
    % Set the name of temp file
    \doifelsenothing{#2}
@@ -85,14 +86,15 @@
       {\doiffileelse{\externalfilteroutputfile}
           {\doreadprocessedfile}
           {TODO: File \externalfilteroutputfile\ not found! Check your definition}}%
-  \egroup
   }
 
 \def\doreadprocessedfile%
-  {\namedexternalfilterparameter\currentexternalfilter\c!before
+  {\bgroup
+   \namedexternalfilterparameter\currentexternalfilter\c!before
    \processcommacommand[\namedexternalfilterparameter\currentexternalfilter\c!setups]\directsetup%
    \namedexternalfilterparameter\currentexternalfilter\c!readcommand\externalfilteroutputfile\relax
-   \namedexternalfilterparameter\currentexternalfilter\c!after}
+   \namedexternalfilterparameter\currentexternalfilter\c!after
+   \egroup}
 
 
 \def\doprocessexternalfile[#1][#2]%
