@@ -14,18 +14,18 @@
 
 \def\currentexternalfilter{}
 
-\def\namedexternalfilterparameter#1#2%
-  {\executeifdefined{\??externalfilter??::#1::#2}
-     {\executeifdefined{\??externalfilter??::#2}{}}}
+\def\externalfilterparameter          #1{\csname\doexternalfilterparameter{\??externalfilter??\currentexternalfilter}#1\endcsname}
+\def\doexternalfilterparameter      #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\doexternalfilterparentparameter\csname#1\s!parent\endcsname#2\fi}
+\def\doexternalfilterparentparameter#1#2{\ifx#1\relax\s!empty\else\doexternalfilterparameter#1#2\fi}
 
 \def\setupexternalfilters
   {\dodoubleargument\dosetupexternalfilters}
   
 \def\dosetupexternalfilters[#1][#2]%
   {\ifsecondargument
-     \getparameters[\??externalfilter??::#1::][#2]%
+     \getparameters[\??externalfilter??#1][#2]%
    \else
-      \getparameters[\??externalfilter??::][#1]%
+     \getparameters[\??externalfilter??][#1]%
    \fi}
 
 
@@ -33,8 +33,9 @@
   {\dodoubleargument\dodefineexternalfilter}
 
 \def\dodefineexternalfilter[#1][#2]%
-  {\setupexternalfilters[#1][#2]%
-   \doif{\namedexternalfilterparameter{#1}\c!continue}\v!yes
+  {\edef\currentexternalfilter{#1}%
+  \setupexternalfilters[#1][#2]%
+   \doif{\externalfilterparameter\c!continue}\v!yes
       {\expandafter\newcounter\csname\??externalfilter??-#1-counter\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter}%
@@ -45,10 +46,11 @@
 
 \def\dostartexternalfilter[#1][#2]% filter file
   {% Initializations
+   \egroup %\bgroup in \start#1
    \edef\currentexternalfilter   {#1}%
    % Set the name of temp file
    \doifelsenothing{#2}
-    {\doifelse{\namedexternalfilterparameter{#1}\c!continue}\v!yes
+    {\doifelse{\externalfilterparameter\c!continue}\v!yes
         {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
         {\edef\externalfiltertmpfile{\??externalfilter??-#1}}}
     {\edef\externalfiltertmpfile{#2}}%
@@ -58,7 +60,7 @@
    % The name of the buffer to which data is written
    \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
    % The name of the file to which the output is written
-   \edef\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
+   \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
    % Capture the contents of the buffer
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
@@ -68,32 +70,32 @@
    % Run external command
    \doexecuteexternalfilter
    % Finalization
-   \doif{\namedexternalfilterparameter\currentexternalfilter\c!continue}\v!yes
+   \doif{\externalfilterparameter\c!continue}\v!yes
         {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
    }
 
-\def\doexecuteexternalfilter%
-  {\doifelse{\namedexternalfilterparameter\currentexternalfilter\c!continue}\v!yes
+\def\doexecuteexternalfilter
+  {\doifelse{\externalfilterparameter\c!continue}\v!yes
    {\doifmode{*first}
      {\executesystemcommand
       {mtxrun --ifchanged=\externalfilterinputfile\space 
-          bin:\namedexternalfilterparameter\currentexternalfilter\c!filtercommand}}}%
+          bin:\externalfilterparameter\c!filtercommand}}}
    {\executesystemcommand
-      {\namedexternalfilterparameter\currentexternalfilter\c!filtercommand}}%
+      {\externalfilterparameter\c!filtercommand}}%
    % Process output
-   \doif{\namedexternalfilterparameter\currentexternalfilter\c!read}\v!yes
+   \doif{\externalfilterparameter\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
           {\doreadprocessedfile}
-          {TODO: File \externalfilteroutputfile\ not found! Check your definition}}%
-  \egroup
+          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}%
   }
 
 \def\doreadprocessedfile%
-  {\namedexternalfilterparameter\currentexternalfilter\c!before
-   \processcommacommand[\namedexternalfilterparameter\currentexternalfilter\c!setups]\directsetup%
-   \namedexternalfilterparameter\currentexternalfilter\c!readcommand\externalfilteroutputfile\relax
-   \namedexternalfilterparameter\currentexternalfilter\c!after}
-
+  {\bgroup
+   \externalfilterparameter\c!before
+   \processcommacommand[\externalfilterparameter\c!setups]\directsetup
+   \externalfilterparameter\c!readcommand\externalfilteroutputfile
+   \externalfilterparameter\c!after
+   \egroup}
 
 \def\doprocessexternalfile[#1][#2]%
   {\edef\currentexternalfilter    {#1}%
@@ -101,7 +103,7 @@
    \splitfiletype {#2}%
    %BEWARE. \edef doesn not work
    \def\externalfilterbasefile   {\splitoffname}
-   \def\externalfilteroutputfile{\namedexternalfilterparameter{#1}\c!output}%
+   \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
    \doexecuteexternalfilter}
    
 
@@ -112,7 +114,7 @@
    \c!setups=,
    \c!continue=\v!no,
    \c!read=\v!yes,
-   \c!readcommand=\input,
+   \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
    \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
