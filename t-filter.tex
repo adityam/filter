@@ -23,7 +23,7 @@
   
 \def\dosetupexternalfilters[#1][#2]%
   {\ifsecondargument
-     \getparameters[\??externalfilter??#1][#2]%
+     \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
    \else
      \getparameters[\??externalfilter??][#1]%
    \fi}
@@ -117,7 +117,7 @@
    \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
-   \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
+   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
  ]
    
 % For tracing
