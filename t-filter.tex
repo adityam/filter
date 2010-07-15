@@ -14,9 +14,10 @@
 
 \def\currentexternalfilter{}
 
-\def\externalfilterparameter          #1{\csname\doexternalfilterparameter{\??externalfilter??\currentexternalfilter}#1\endcsname}
-\def\doexternalfilterparameter      #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\doexternalfilterparentparameter\csname#1\s!parent\endcsname#2\fi}
-\def\doexternalfilterparentparameter#1#2{\ifx#1\relax\s!empty\else\doexternalfilterparameter#1#2\fi}
+\def\externalfilterparameter   #1{\csname\docheckparentparameter{\??externalfilter??\currentexternalfilter}#1\endcsname}
+
+\def\docheckparentparameter  #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\redocheckparentparameter\csname#1\s!parent\endcsname#2\fi}
+\def\redocheckparentparameter#1#2{\ifx#1\relax\s!empty\else\docheckparentparameter#1#2\fi}
 
 \def\setupexternalfilters
   {\dodoubleargument\dosetupexternalfilters}
