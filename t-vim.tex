@@ -37,17 +37,7 @@
 \def\dodefinevimtyping[#1][#2]% 
   {\setupvimtyping[#1][\s!parent=\??vimtyping??,#2]%
    \edef\currentvimtyping{#1}%
-   \defineexternalfilter[#1]
-    [\c!continue=yes,
-     \c!read=\v!yes,
-     \c!readcommand=\ReadFile,
-     \c!output=\externalfilterbasefile.vimout,
-     \c!filter=\vimfiltercommand,
-     \c!setups=vimsetup,
-     \c!before=\vimtypingparameter\c!before,
-     \c!after=\vimtypingparameter\c!after,
-     \s!parent=\??vimtyping??,
-    ]%
+   \defineexternalfilter[#1][\s!parent=\??vimtyping??]%
   \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
   }
 
@@ -206,7 +196,13 @@
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
+   \c!filter=\vimfiltercommand,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
+   \c!continue=yes,
+   \c!read=\v!yes,
+   \c!readcommand=\ReadFile,
+   \c!output=\externalfilterbasefile.vimout,
+   \c!setups=vimsetup,
   ]
 
 \protect
