@@ -23,7 +23,7 @@
   
 \def\dosetupexternalfilters[#1][#2]%
   {\ifsecondargument
-     \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
+     \getparameters[\??externalfilter??#1][#2]%
    \else
      \getparameters[\??externalfilter??][#1]%
    \fi}
@@ -34,7 +34,7 @@
 
 \def\dodefineexternalfilter[#1][#2]%
   {\edef\currentexternalfilter{#1}%
-  \setupexternalfilters[#1][#2]%
+  \setupexternalfilters[#1][\s!parent=\??externalfilter??,#2]%
    \doif{\externalfilterparameter\c!continue}\v!yes
       {\expandafter\newcounter\csname\??externalfilter??-#1-counter\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
