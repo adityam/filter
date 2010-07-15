@@ -14,9 +14,10 @@
 
 \def\currentexternalfilter{}
 
-\def\externalfilterparameter          #1{\csname\doexternalfilterparameter{\??externalfilter??\currentexternalfilter}#1\endcsname}
-\def\doexternalfilterparameter      #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\doexternalfilterparentparameter\csname#1\s!parent\endcsname#2\fi}
-\def\doexternalfilterparentparameter#1#2{\ifx#1\relax\s!empty\else\doexternalfilterparameter#1#2\fi}
+\def\externalfilterparameter   #1{\csname\docheckparentparameter{\??externalfilter??\currentexternalfilter}#1\endcsname}
+
+\def\docheckparentparameter  #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\redocheckparentparameter\csname#1\s!parent\endcsname#2\fi}
+\def\redocheckparentparameter#1#2{\ifx#1\relax\s!empty\else\docheckparentparameter#1#2\fi}
 
 \def\setupexternalfilters
   {\dodoubleargument\dosetupexternalfilters}
@@ -34,7 +35,7 @@
 
 \def\dodefineexternalfilter[#1][#2]%
   {\edef\currentexternalfilter{#1}%
-  \setupexternalfilters[#1][#2]%
+  \setupexternalfilters[#1][\s!parent=\??externalfilter??,#2]%
    \doif{\externalfilterparameter\c!continue}\v!yes
       {\expandafter\newcounter\csname\??externalfilter??-#1-counter\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
@@ -117,7 +118,7 @@
    \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
-   \c!filtercommand={\namedexternalfilterparameter\currentexternalfilter\c!filter\space \externalfilterinputfile},
+   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
  ]
    
 % For tracing

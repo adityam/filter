@@ -11,20 +11,18 @@
   \setinterfaceconstant {syntax}      {syntax} 
 \stopinterface
 
-\def\??vimsyntax??{vimsyntax}
+\def\??vimtyping??{vimtyping}
 
-\def\namedvimsyntaxparameter#1#2%
-  {\executeifdefined{\??vimsyntax??::#1::#2}
-     {\executeifdefined{\??vimsyntax??::#2}{}}}
-  
+\def\vimtypingparameter #1{\csname\docheckparentparameter{\??vimtyping??\currentvimtyping}#1\endcsname}
+
 \def\setupvimtyping
   {\dodoubleargument\dosetupvimtyping}
 
 \def\dosetupvimtyping[#1][#2]%
   {\ifsecondargument
-     \getparameters[\??vimsyntax??::#1::][#2]%
+     \getparameters[\??vimtyping??#1][#2]%
    \else
-      \getparameters[\??vimsyntax??::][#1]%
+      \getparameters[\??vimtyping??][#1]%
    \fi}
 
 \def\dotypevimfile[#1][#2][#3]% id options file
@@ -37,7 +35,7 @@
   {\dodoubleargument\dodefinevimtyping}
 
 \def\dodefinevimtyping[#1][#2]% 
-  {\setupvimtyping[#1][#2]%
+  {\setupvimtyping[#1][\s!parent=\??vimtyping??,#2]%
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1]
     [\c!continue=yes,
@@ -46,19 +44,20 @@
      \c!output=\externalfilterbasefile.vimout,
      \c!filter=\vimfiltercommand,
      \c!setups=vimsetup,
-     \c!before=\namedvimsyntaxparameter\currentvimtyping\c!before,
-     \c!after=\namedvimsyntaxparameter\currentvimtyping\c!after,
+     \c!before=\vimtypingparameter\c!before,
+     \c!after=\vimtypingparameter\c!after,
+     \s!parent=\??vimtyping??,
     ]%
   \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
   }
 
 \startsetups[vimsetup]
   \edef\currentvimtyping{\currentexternalfilter}
-  \edef\currentvimalternative{\namedvimsyntaxparameter\currentvimtyping\c!alternative}
+  \edef\currentvimalternative{\vimtypingparameter\c!alternative}
   \let\SYN\vimsyntax
   \def\NL{\strut} % TODO: Add line numbering
   \def\tab##1%
-    {\dorecurse{\namedvimsyntaxparameter\currentvimtyping\c!tab}
+    {\dorecurse{\vimtypingparameter\c!tab}
     {\space}}
   \setcatcodetable\vimcatcodes
 \stopsetups
@@ -68,11 +67,11 @@
        -e % run in ex mode
        -C % set compatible
        -n % no swap file
-       -c "set tabstop=\namedvimsyntaxparameter\currentvimtyping\c!tab" %
+       -c "set tabstop=\vimtypingparameter\c!tab" %
        -c "syntax on" %
-       -c "set syntax=\namedvimsyntaxparameter\currentvimtyping\c!syntax" %
-       -c "let contextstartline=\namedvimsyntaxparameter\currentvimtyping\c!start" %
-       -c "let  contextstopline=\namedvimsyntaxparameter\currentvimtyping\c!stop" %
+       -c "set syntax=\vimtypingparameter\c!syntax" %
+       -c "let contextstartline=\vimtypingparameter\c!start" %
+       -c "let  contextstopline=\vimtypingparameter\c!stop" %
        -c "source 2context.vim" % TODO: kpse:
        -c "wqa"}
 
@@ -102,19 +101,19 @@
 \def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
   {\def\dodosetupvimsyntax##1%
     { \doifsomething{#2}
-      {\definecolor[\??vimsyntax??:\currentvimalternative:##1:color] [#2]%
-       \getparameters[\??vimsyntax??::\currentvimalternative::##1]
-                     [\c!color={\??vimsyntax??:\currentvimalternative:##1:color}]}
-     \getparameters[\??vimsyntax??::\currentvimalternative::##1]
+      {\definecolor[\??vimtyping??:\currentvimalternative:##1:color] [#2]%
+       \getparameters[\??vimtyping??::\currentvimalternative::##1]
+                     [\c!color={\??vimtyping??:\currentvimalternative:##1:color}]}
+     \getparameters[\??vimtyping??::\currentvimalternative::##1]
                    [\c!style=#3,
                     \c!command=#4]}%
      \processcommalist[#1]\dodosetupvimsyntax}
 
 
 \def\vimsyntax[#1]#2% style content
-  {\dostartattributes{\??vimsyntax??::\currentvimalternative::Normal}\c!style\c!color\empty%
-   \dostartattributes{\??vimsyntax??::\currentvimalternative::#1}\c!style\c!color\empty%
-   \getvalue{\??vimsyntax??::\currentvimalternative::#1\c!command}{#2}%
+  {\dostartattributes{\??vimtyping??::\currentvimalternative::Normal}\c!style\c!color\empty%
+   \dostartattributes{\??vimtyping??::\currentvimalternative::#1}\c!style\c!color\empty%
+   \getvalue{\??vimtyping??::\currentvimalternative::#1\c!command}{#2}%
    \dostopattributes
    \dostopattributes}
 
@@ -207,6 +206,7 @@
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
+   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
   ]
 
 \protect

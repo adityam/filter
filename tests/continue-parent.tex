@@ -1,0 +1,59 @@
+% This file tests the basic functionality of the module.
+\usemodule[filter]
+
+\setupexternalfilters[continue=yes]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\loggingall
+\startmarkdown
+## Lists ##
+
+Unordered (bulleted) lists use asterisks, pluses, and hyphens (`*`,
+`+`, and `-`) as list markers. These three markers are
+interchangeable. As an example, this:
+
+
+    *   Candy.
+    *   Gum.
+    *   Booze.
+
+gives:
+
+*   Candy.
+*   Gum.
+*   Booze.
+* This is a list
+* that has **markdown** syntax
+* does it _work_
+\stopmarkdown
+
+\page
+
+\startmarkdown
+## Lists ##
+
+Unordered (bulleted) lists use asterisks, pluses, and hyphens (`*`,
+`+`, and `-`) as list markers. These three markers are
+interchangeable. As an example, this:
+
+
+    *   Candy.
+    *   Gum.
+    *   Booze.
+
+gives:
+
+*   Candy.
+*   Gum.
+*   Booze.
+* This is a list
+* that has **markdown** syntax
+* does it _work_
+\stopmarkdown
+\stoptext
+\endinput
+

@@ -1,0 +1,28 @@
+\usemodule[vim]
+
+\defineframedtext[filterframe][width=broad,corner=round]
+
+\setupexternalfilters[before=\startfilterframe,after=\stopfilterframe]
+
+\definevimtyping[C][syntax=c]
+
+\defineexternalfilter[markdown][filter=pandoc -w context -o
+\externalfilteroutputfile]
+
+\starttext
+
+\startC
+#include <stdio.h>
+
+void main ()
+{
+  printf("Hello World\n") ;
+}
+
+\stopC
+
+\startmarkdown
+*Testing* _markdown_
+\stopmarkdown
+
+\stoptext
