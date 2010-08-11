@@ -45,16 +45,18 @@
    %\setvalue{#1}##1{\save ##1 to file}
    }
 
-\def\dostartexternalfilter[#1][#2]% filter file
+\def\dostartexternalfilter[#1][#2]% filter options
   {% Initializations
    \egroup %\bgroup in \start#1
+   \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
+   \getparameters[\??externalfilter??#1][\c!name=,#2]%
    % Set the name of temp file
-   \doifelsenothing{#2}
-    {\doifelse{\externalfilterparameter\c!continue}\v!yes
-        {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
-        {\edef\externalfiltertmpfile{\??externalfilter??-#1}}}
-    {\edef\externalfiltertmpfile{#2}}%
+   \doifelse{\externalfilterparameter\c!continue}\v!yes
+       {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
+       {\edef\externalfiltertmpfile{\??externalfilter??-#1}}
+   \doifsomething{\externalfilterparameter\c!name}
+       {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
    \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
@@ -70,6 +72,7 @@
    \doifmode{*mkiv}{\savebuffer[\externalfiltertmpfile]}%
    % Run external command
    \doexecuteexternalfilter
+   \endgroup 
    % Finalization
    \doif{\externalfilterparameter\c!continue}\v!yes
         {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
