@@ -121,7 +121,6 @@
     {\edef\externalfilteroutputfile{\ctxlua{thirddata.externalfilter.httpget
       (\!!bs\externalfilterparameter\c!filter\!!es  ,
        \!!bs\externalfiltertmpfile\!!es             ,
-       % \externalfilterparameter\c!extras            , % should be a table
        \!!bs\externalfilterparameter\c!separator\!!es)}}}
     {{\tttf TODO: httpget does not work in MkII}}}
 
@@ -159,7 +158,6 @@
    \c!filter=,
    \c!alternative=\v!default,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
-   % \c!extras={ thirddata.externalfilter.urireplace },
    \c!separator=,
  ]
    
