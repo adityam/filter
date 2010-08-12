@@ -1,0 +1,36 @@
+\usemodule[filter]
+
+\enabletrackers[thirddata.externalfilter]
+\enabletrackers[resolvers.schemes]
+
+\defineexternalfilter
+  [UMLclass]
+  [filter={http://yuml.me/diagram/scruffy/class/},
+   separator={,},
+   alternative=httpget,
+   readcommand=\ExternalPng]
+
+\def\ExternalPng#1{\externalfigure[#1][method=png]}
+
+\starttext
+\placefigure
+	[here]
+	{This is a simple UML diagram}
+	{\startUMLclass
+	  [User]
+	\stopUMLclass}
+
+\placefigure
+	[here]
+	{This is a fancy UML diagram}
+	{\startUMLclass
+	  [Customer]+1->*[Order]
+	  [Order]++1-items >*[Line Item]
+	  [Order]-0..1>[Payment Method]
+	\stopUMLclass}
+
+\stoptext
+
+
+
+                 
