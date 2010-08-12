@@ -2,12 +2,20 @@
 
 \unprotect
 
+\startmode[\s!mkiv]
+  \ctxloadluafile{t-filter}
+\stopmode
+
+
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
   \setinterfaceconstant {filtercommand}    {filtercommand}
   \setinterfaceconstant {output}           {output} 
   \setinterfaceconstant {read}             {read} 
   \setinterfaceconstant {readcommand}      {readcommand} 
+
+  \setinterfacevariable {httpget}          {httpget}
+  \setinterfacevariable {httppost}         {httppost}
 \stopinterface
 
 \def\??externalfilter??{externalfilter}
@@ -45,13 +53,21 @@
    %\setvalue{#1}##1{\save ##1 to file}
    }
 
+
+\chardef\externalfilter!!alternative\zerocount    %0 = os, 1 = httpget, 2 = httppost
+
 \def\dostartexternalfilter[#1][#2]% filter options
   {% Initializations
    \egroup %\bgroup in \start#1
    \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
    \getparameters[\??externalfilter??#1][\c!name=,#2]%
-   % Set the name of temp file
+   \processaction[\externalfilterparameter\c!alternative]
+                 [\v!httpget  => \chardef\externalfilter!!alternative\plusone ,
+                  \v!httppost => \chardef\externalfilter!!alternative\plustwp ,
+                  \v!default  => \chardef\externalfilter!!alternative\zerocount ,
+                  \v!unknwon  => \chardef\externalfilter!!alternative\zerocount ]%
+   % Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
        {\edef\externalfiltertmpfile{\??externalfilter??-#1}}
@@ -68,14 +84,27 @@
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
 \def\doprocessexternalfilter%
-  {% By defualt, buffers are in memory in MkIV
-   \doifmode{*mkiv}{\savebuffer[\externalfiltertmpfile]}%
-   % Run external command
-   \doexecuteexternalfilter
+  {\ifcase\externalfilter!!alternative % os 
+     % By defualt, buffers are in memory in MkIV
+     \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
+     % Run external command
+     \doexecuteexternalfilter
+   \or % httpget
+     \doexecutehttpgetfilter
+   \or % httppost
+     \doexecutehttpostfilter
+   \fi
+   % Process output
+   \doif{\externalfilterparameter\c!read}\v!yes
+      {\doiffileelse{\externalfilteroutputfile}
+          {\doreadprocessedfile}
+          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}%
    \endgroup 
    % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
+   \ifnum\externalfilter!!alternative=\zerocount
+     \doif{\externalfilterparameter\c!continue}\v!yes
+          {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
+   \fi
    }
 
 \def\doexecuteexternalfilter
@@ -85,13 +114,20 @@
       {mtxrun --ifchanged=\externalfilterinputfile\space 
           bin:\externalfilterparameter\c!filtercommand}}}
    {\executesystemcommand
-      {\externalfilterparameter\c!filtercommand}}%
-   % Process output
-   \doif{\externalfilterparameter\c!read}\v!yes
-      {\doiffileelse{\externalfilteroutputfile}
-          {\doreadprocessedfile}
-          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}%
-  }
+      {\externalfilterparameter\c!filtercommand}}}
+
+\def\doexecutehttpgetfilter
+  {\doifmodeelse{\s!mkiv}
+    {\edef\externalfilteroutputfile{\ctxlua{thirddata.externalfilter.httpget
+      (\!!bs\externalfilterparameter\c!filter\!!es  ,
+       \!!bs\externalfiltertmpfile\!!es             ,
+       % \externalfilterparameter\c!extras            , % should be a table
+       \!!bs\externalfilterparameter\c!separator\!!es)}}}
+    {{\tttf TODO: httpget does not work in MkII}}}
+
+\def\doexecutehttppostfilter
+    {{\tttf TODO: httppost is not yet implemented}}
+  
 
 \def\doreadprocessedfile%
   {\bgroup
@@ -121,7 +157,10 @@
    \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
+   \c!alternative=\v!default,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
+   % \c!extras={ thirddata.externalfilter.urireplace },
+   \c!separator=,
  ]
    
 % For tracing
