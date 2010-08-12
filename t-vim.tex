@@ -35,7 +35,7 @@
   {\dodoubleargument\dodefinevimtyping}
 
 \def\dodefinevimtyping[#1][#2]% 
-  {\setupvimtyping[#1][\s!parent=\??vimtyping??,#2]%
+  {\getparameters[\??vimtyping??#1][\s!parent=\??vimtyping??,#2]%
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1][\s!parent=\??vimtyping??]%
   \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
