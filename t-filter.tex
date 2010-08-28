@@ -94,11 +94,7 @@
    \or % httppost
      \doexecutehttpostfilter
    \fi
-   % Process output
-   \doif{\externalfilterparameter\c!read}\v!yes
-      {\doiffileelse{\externalfilteroutputfile}
-          {\doreadprocessedfile}
-          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}%
+   \doreadprocessedfile
    \endgroup 
    % Finalization
    \ifnum\externalfilter!!method=\zerocount
@@ -128,7 +124,13 @@
     {{\tttf TODO: httppost is not yet implemented}}
   
 
-\def\doreadprocessedfile%
+\def\doreadprocessedfile
+  {\doif{\externalfilterparameter\c!read}\v!yes
+      {\doiffileelse{\externalfilteroutputfile}
+          {\dodoreadprocessedfile}
+          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}}
+
+\def\dodoreadprocessedfile
   {\bgroup
    \externalfilterparameter\c!before
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
@@ -143,7 +145,8 @@
    %BEWARE. \edef doesn not work
    \def\externalfilterbasefile   {\splitoffname}
    \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
-   \doexecuteexternalfilter}
+   \doexecuteexternalfilter
+   \doreadprocessedfile}
    
 
 \setupexternalfilters

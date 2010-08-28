@@ -2,7 +2,7 @@
 
 \defineexternalfilter
   [textile]
-  [filtercommand={redcloth \externalfilterinputfile | pandoc -r html -w context -o \externalfilteroutputfile}]
+  [filtercommand={redcloth \externalfilterinputfile \letterbar\  pandoc -r html -w context -o \externalfilteroutputfile}]
 
 \setupinteraction[state=start]
 
