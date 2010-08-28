@@ -2,22 +2,30 @@
 
 \unprotect
 
+\startmode[\s!mkiv]
+  \ctxloadluafile{t-filter}
+\stopmode
+
+
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
   \setinterfaceconstant {filtercommand}    {filtercommand}
   \setinterfaceconstant {output}           {output} 
   \setinterfaceconstant {read}             {read} 
   \setinterfaceconstant {readcommand}      {readcommand} 
+
+  \setinterfacevariable {httpget}          {httpget}
+  \setinterfacevariable {httppost}         {httppost}
 \stopinterface
 
 \def\??externalfilter??{externalfilter}
 
 \def\currentexternalfilter{}
 
-\def\externalfilterparameter   #1{\csname\docheckparentparameter{\??externalfilter??\currentexternalfilter}#1\endcsname}
+\def\externalfilterparameter   #1{\csname\docheckparentparameter{\??externalfilter??\currentexternalfilter}{#1}\endcsname}
 
-\def\docheckparentparameter  #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\redocheckparentparameter\csname#1\s!parent\endcsname#2\fi}
-\def\redocheckparentparameter#1#2{\ifx#1\relax\s!empty\else\docheckparentparameter#1#2\fi}
+\def\docheckparentparameter  #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\redocheckparentparameter\csname#1\s!parent\endcsname{#2}\fi}
+\def\redocheckparentparameter#1#2{\ifx#1\relax\s!empty\else\docheckparentparameter{#1}{#2}\fi}
 
 \def\setupexternalfilters
   {\dodoubleargument\dosetupexternalfilters}
@@ -35,7 +43,7 @@
 
 \def\dodefineexternalfilter[#1][#2]%
   {\edef\currentexternalfilter{#1}%
-  \setupexternalfilters[#1][\s!parent=\??externalfilter??,#2]%
+  \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
    \doif{\externalfilterparameter\c!continue}\v!yes
       {\expandafter\newcounter\csname\??externalfilter??-#1-counter\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
@@ -45,16 +53,26 @@
    %\setvalue{#1}##1{\save ##1 to file}
    }
 
-\def\dostartexternalfilter[#1][#2]% filter file
+
+\chardef\externalfilter!!alternative\zerocount    %0 = os, 1 = httpget, 2 = httppost
+
+\def\dostartexternalfilter[#1][#2]% filter options
   {% Initializations
    \egroup %\bgroup in \start#1
+   \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
-   % Set the name of temp file
-   \doifelsenothing{#2}
-    {\doifelse{\externalfilterparameter\c!continue}\v!yes
-        {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
-        {\edef\externalfiltertmpfile{\??externalfilter??-#1}}}
-    {\edef\externalfiltertmpfile{#2}}%
+   \getparameters[\??externalfilter??#1][\c!name=,#2]%
+   \processaction[\externalfilterparameter\c!alternative]
+                 [\v!httpget  => \chardef\externalfilter!!alternative\plusone ,
+                  \v!httppost => \chardef\externalfilter!!alternative\plustwp ,
+                  \v!default  => \chardef\externalfilter!!alternative\zerocount ,
+                  \v!unknwon  => \chardef\externalfilter!!alternative\zerocount ]%
+   % Set the name of temp file for os filter
+   \doifelse{\externalfilterparameter\c!continue}\v!yes
+       {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
+       {\edef\externalfiltertmpfile{\??externalfilter??-#1}}
+   \doifsomething{\externalfilterparameter\c!name}
+       {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
    \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
@@ -66,13 +84,27 @@
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
 \def\doprocessexternalfilter%
-  {% By defualt, buffers are in memory in MkIV
-   \doifmode{*mkiv}{\savebuffer[\externalfiltertmpfile]}%
-   % Run external command
-   \doexecuteexternalfilter
+  {\ifcase\externalfilter!!alternative % os 
+     % By defualt, buffers are in memory in MkIV
+     \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
+     % Run external command
+     \doexecuteexternalfilter
+   \or % httpget
+     \doexecutehttpgetfilter
+   \or % httppost
+     \doexecutehttpostfilter
+   \fi
+   % Process output
+   \doif{\externalfilterparameter\c!read}\v!yes
+      {\doiffileelse{\externalfilteroutputfile}
+          {\doreadprocessedfile}
+          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}%
+   \endgroup 
    % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
+   \ifnum\externalfilter!!alternative=\zerocount
+     \doif{\externalfilterparameter\c!continue}\v!yes
+          {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
+   \fi
    }
 
 \def\doexecuteexternalfilter
@@ -82,13 +114,19 @@
       {mtxrun --ifchanged=\externalfilterinputfile\space 
           bin:\externalfilterparameter\c!filtercommand}}}
    {\executesystemcommand
-      {\externalfilterparameter\c!filtercommand}}%
-   % Process output
-   \doif{\externalfilterparameter\c!read}\v!yes
-      {\doiffileelse{\externalfilteroutputfile}
-          {\doreadprocessedfile}
-          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}%
-  }
+      {\externalfilterparameter\c!filtercommand}}}
+
+\def\doexecutehttpgetfilter
+  {\doifmodeelse{\s!mkiv}
+    {\edef\externalfilteroutputfile{\ctxlua{thirddata.externalfilter.httpget
+      (\!!bs\externalfilterparameter\c!filter\!!es  ,
+       \!!bs\externalfiltertmpfile\!!es             ,
+       \!!bs\externalfilterparameter\c!separator\!!es)}}}
+    {{\tttf TODO: httpget does not work in MkII}}}
+
+\def\doexecutehttppostfilter
+    {{\tttf TODO: httppost is not yet implemented}}
+  
 
 \def\doreadprocessedfile%
   {\bgroup
@@ -118,7 +156,9 @@
    \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
+   \c!alternative=\v!default,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
+   \c!separator=,
  ]
    
 % For tracing

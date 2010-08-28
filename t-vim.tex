@@ -13,7 +13,7 @@
 
 \def\??vimtyping??{vimtyping}
 
-\def\vimtypingparameter #1{\csname\docheckparentparameter{\??vimtyping??\currentvimtyping}#1\endcsname}
+\def\vimtypingparameter #1{\csname\docheckparentparameter{\??vimtyping??\currentvimtyping}{#1}\endcsname}
 
 \def\setupvimtyping
   {\dodoubleargument\dosetupvimtyping}
@@ -35,7 +35,7 @@
   {\dodoubleargument\dodefinevimtyping}
 
 \def\dodefinevimtyping[#1][#2]% 
-  {\setupvimtyping[#1][\s!parent=\??vimtyping??,#2]%
+  {\getparameters[\??vimtyping??#1][\s!parent=\??vimtyping??,#2]%
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1][\s!parent=\??vimtyping??]%
   \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
