@@ -66,7 +66,7 @@
                  [\v!httpget  => \chardef\externalfilter!!method\plusone ,
                   \v!httppost => \chardef\externalfilter!!method\plustwp ,
                   \v!default  => \chardef\externalfilter!!method\zerocount ,
-                  \v!unknwon  => \chardef\externalfilter!!method\zerocount ]%
+                  \v!unknown  => \chardef\externalfilter!!method\zerocount ]%
    % Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
