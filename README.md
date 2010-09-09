@@ -95,7 +95,7 @@ Using this filter from within ConTeXt is pretty simple:
 
     \defineexternalfilter
         [markdown]
-        [filtercommand={pandoc -t context -o \externalfilteroutputfile\space \externafilterinputfile}]
+        [filtercommand={pandoc -t context -o \externalfilteroutputfile\space \externalfilterinputfile}]
 
 Yes, its that easy! The only thing to note is that TeX macros gobble spaces, so
 we have to manually insert a space after `\externalfilteroutputfile`.
@@ -143,4 +143,26 @@ definition:
          continue=yes]
 
 
+Names of temporary files
+------------------------
 
+By default, `\externalfilterinputfile` is set to `\jobname-<filter>.tmp`, where
+`<filter>` is the first argument of `\defineexternalfilter`. When `continue=yes`
+is set, `\externalfilterinputfile` equals `\jobname-<filter>-<n>.tmp`, where
+`<n>` is the number of filter environment that have appeared so far. In this
+case,  a `\jobname-<filter>-<n>.tmp.md5` file, which stores the `md5` sum of the
+input file` is also created.
+
+A macro `\externalfilterbasefile` stores the name of the input file without the
+extension. By default, the value of `\externalfilteroutputfile` is
+`\externalfilterbasefile.tex`. Having a `.tex` extension is not always
+desirable. For example, if the filter generates a PNG file, a `.png` extension
+is more descriptive. The name of the output file is changed using the `output`
+key. For example
+
+    \defineexternalfilter
+        [...]
+        [filtercommand={...},
+         output={\externalfilterbasefile.png}]
+
+changes the output extension to `.png`.
