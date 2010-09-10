@@ -226,13 +226,13 @@ The macro `\setupexternalfilters` sets the default options for all the filters
 created using `\defineexternalfilter`. This is resonsible for the default values
 of all options. The current defaults are
 
-        \setupexternalfilters
-          [before=,
-            after=,
-         continue=no,
-             read=yes,
-      readcommand=\ReadFile,
-           output=\externalfilterbasefile.tex,
-          ]
+    \setupexternalfilters
+      [before=,
+       after=,
+       continue=no,
+       read=yes,
+       readcommand=\ReadFile,
+       output=\externalfilterbasefile.tex,
+      ]
 
 
