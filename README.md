@@ -215,7 +215,7 @@ Before and After
 ---------------
 
 Let most commands in ConTeXt, `\defineexternalfilter` also accepts the `before`
-and `after` optons. These are executed before and after the output file is read
+and `after` options. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
 
@@ -223,7 +223,7 @@ Options to a specific environment
 ---------------------------------
 
 Each `\start<filter>` macro also accepts options. However, unlike other ConTeXt
-environment, these options cannot be on a serate line; they must be on the same
+environment, these options cannot be on a separate line; they must be on the same
 line as `\start<filter>`. For example, suppose I define an environment to run
 R-code
 
@@ -233,7 +233,7 @@ R-code
        output=\externalfilterbasefile.out,
        continue=yes]
 
-I can hide the output of a particular R-evironment by
+I can hide the output of a particular R-environment by
 
     \startR[read=no]
     ...
@@ -244,7 +244,7 @@ A setup to control them all
 ---------------------------
 
 The macro `\setupexternalfilters` sets the default options for all the filters
-created using `\defineexternalfilter`. This is resonsible for the default values
+created using `\defineexternalfilter`. This is responsible for the default values
 of all options. The current defaults are
 
     \setupexternalfilters
@@ -255,5 +255,46 @@ of all options. The current defaults are
        readcommand=\ReadFile,
        output=\externalfilterbasefile.tex,
       ]
+
+
+Passing options to filters
+--------------------------
+
+Sometimes it is useful to pass options to a filter. For example, `pandoc`
+converts many different formats to ConTeXt (actually, to many different output
+formats, but that is irrelevant here). Instead of defining a separate
+environment for each input format, can I define a universal pandoc environment
+and specify the input format on a case by case basis. For example,
+
+    \startpandoc
+    ...
+    \stoppandoc
+
+for the default Markdown input,
+
+    \startpandoc[format=rst]
+    ...
+    \stoppandoc
+
+for reStructured Text input, and
+
+    \startpandoc[format=latex]
+    ...
+    \stoppandoc
+
+for LaTeX input. In `pandoc`, the input format is specified as
+
+    pandoc -f format -t context -o outputfile inputfile
+
+So, we need a mechanism to access the value of the `format` option to
+`\startpandoc`. This value is accessed using `\externalfilterparameter{format}`.
+Thus, the pandoc environment may be defined as
+
+    \defineexternalfilter
+      [pandoc]
+      [filtercommand={pandoc -f \externalfilterparameter{format} -t context 
+                       -o \externalfilteroutputfile\space \externalfilterinputfile},
+       format=markdown]
+
 
 
