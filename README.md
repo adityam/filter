@@ -142,6 +142,31 @@ definition:
         [filtercommand={...},
          continue=yes]
 
+Reading the input
+----------------
+
+By default, after the filter is executed, `\externalfilteroutputfile` is read
+using `\ReadFile`. To change this behavior, use the `readcommand` option. For
+example:
+
+    \defineexternalfilter
+      [...]
+      [....
+       readcommand=\typefile,
+       ...]
+
+types the output file verbatim. The value of read command must be a macro that
+takes the name of the output file as a (brace-delimited) argument and does
+something sensible with it. 
+
+Sometimes, it is desirable to ignore the output, which is done by
+
+    \defineexternalfilter
+      [...]
+      [....
+       read=no,
+       ...]
+
 
 Names of temporary files
 ------------------------
