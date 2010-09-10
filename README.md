@@ -211,3 +211,12 @@ where `\readPNGfile` is defined as
 
     \def\readPNGfile#1{\externalfigure[#1]}
 
+Before and After
+---------------
+
+Let most commands in ConTeXt, `\defineexternalfilter` also accepts the `before`
+and `after` optons. These are executed before and after the output file is read
+using `readcommand`. Typically, these options are used to set the spacing around
+the environment or enclose the output in a frame, etc.
+
+
