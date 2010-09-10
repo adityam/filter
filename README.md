@@ -219,6 +219,27 @@ and `after` optons. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
 
+Options to a specific environment
+---------------------------------
+
+Each `\start<filter>` macro also accepts options. However, unlike other ConTeXt
+environment, these options cannot be on a serate line; they must be on the same
+line as `\start<filter>`. For example, suppose I define an environment to run
+R-code
+
+    \defineexternalfilter
+      [R]
+      [filtercommand={R CMD BATCH -q  \externalfilterinputfile\space \externalfilteroutputfile},
+       output=\externalfilterbasefile.out,
+       continue=yes]
+
+I can hide the output of a particular R-evironment by
+
+    \startR[read=no]
+    ...
+    \stopR
+
+
 A setup to control them all
 ---------------------------
 
