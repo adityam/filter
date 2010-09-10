@@ -219,4 +219,20 @@ and `after` optons. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
 
+A setup to control them all
+---------------------------
+
+The macro `\setupexternalfilters` sets the default options for all the filters
+created using `\defineexternalfilter`. This is resonsible for the default values
+of all options. The current defaults are
+
+    \setupexternalfilters
+      [before=,
+        after=,
+     continue=no,
+         read=yes,
+  readcommand=\ReadFile,
+       output=\externalfilterbasefile.tex,
+      ]
+
 
