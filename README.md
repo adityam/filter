@@ -139,8 +139,9 @@ definition:
 
     \defineexternalfilter
         [...]
-        [filtercommand={...},
-         continue=yes]
+        [...
+         continue=yes,
+         ...]
 
 Reading the input
 ----------------
