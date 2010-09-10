@@ -120,19 +120,19 @@ Dealing with slow filters
 -------------------------
 
 The above definition of a markdown filter creates two additional files: an
-\quotation{input} file and an \quotation{output} file, *irrespective of the
+"input" file and an "output" file, *irrespective of the
 number of times the environment is called*. For each markdown environment,
-ConTeXt overwrites the input file and pandoc overwrites the output file. This is
-the default behavior as I do not want to clutter the current directory with
+ConTeXt overwrites the input file and pandoc overwrites the output file. This
+behavior is the default as I do not want to clutter the current directory with
 temporary files. The trade off is that for each document run, the filter is
 invoked as many times as the number of markdown environments. Since getting
 cross-referencing right normally takes two or three runs, effectively the filter
-is run two or three times more than required. Usually, the filter is fairly
-fast these extra runs are not noticeable. But some filters can be slow. For
-example, just started and exiting the R program takes 0.3 seconds. In such
-cases, the additional runs start adding up. A better trade off is to store the
-contents of each environment in a separate file and invoke the filter only if
-the file *changes in between successive runes*.
+is run two or three times more than required. A filter like `pandoc` is fairly
+fast, so these extra runs are not noticeable. But some filters, like the
+R-programming language for which simply startup and exit takes about 0.3
+seconds, are slow. In such cases, the additional runs start adding up. A better
+trade off is to store the contents of each environment in a separate file and
+invoke the filter only if a file *changes in between successive runes*.
 
 The second behavior is achieved by adding `continue=yes` option to the
 definition:
@@ -149,7 +149,7 @@ Names of temporary files
 By default, `\externalfilterinputfile` is set to `\jobname-<filter>.tmp`, where
 `<filter>` is the first argument of `\defineexternalfilter`. When `continue=yes`
 is set, `\externalfilterinputfile` equals `\jobname-<filter>-<n>.tmp`, where
-`<n>` is the number of filter environment that have appeared so far. In this
+`<n>` is the number of filter environments that have appeared so far. In this
 case,  a `\jobname-<filter>-<n>.tmp.md5` file, which stores the `md5` sum of the
 input file` is also created.
 
@@ -165,4 +165,23 @@ key. For example
         [filtercommand={...},
          output={\externalfilterbasefile.png}]
 
-changes the output extension to `.png`.
+changes the output extension to `.png`. We also need to either set
+
+    \defineexternalfilter
+      [...]
+      [....
+       read=no,
+       ...]
+
+or set 
+
+    \defineexternalfilter
+      [...]
+      [....
+       readcommand=\readPNGfile,
+       ...]
+
+where `\readPNGfile` is defined as
+
+    \def\readPNGfile#1{\externalfigure[#1]}
+
