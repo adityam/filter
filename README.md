@@ -265,6 +265,7 @@ of all options. The current defaults are
     \setupexternalfilters
       [before=,
        after=,
+       setups=,
        continue=no,
        read=yes,
        readcommand=\ReadFile,
