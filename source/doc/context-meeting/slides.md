@@ -1,4 +1,4 @@
-% The filter module
+% Beg, Borrow, and Steal <br /> Running external filters in ConTeXt
 % Aditya Mahajan (presented by Luigi Scarso)
 
 ## Acknowledgments
