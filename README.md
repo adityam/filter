@@ -211,13 +211,28 @@ where `\readPNGfile` is defined as
 
     \def\readPNGfile#1{\externalfigure[#1]}
 
-Before and After
+
+Standard options
 ---------------
 
-Let most commands in ConTeXt, `\defineexternalfilter` also accepts the `before`
+Like most commands in ConTeXt, `\defineexternalfilter` also accepts the `before`
 and `after` options. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
+
+`\defineexternalfilter` also accepts a `setup` option to specify a list of 
+setups (defined using `\startsetup`). These setups may be used to define
+commands that are needed inside the environment.
+
+The order in which these options are executed is:
+
+    \def\dodoreadprocessedfile
+      {\bgroup
+       \externalfilterparameter\c!before
+       \processcommacommand[\externalfilterparameter\c!setups]\directsetup
+       \externalfilterparameter\c!readcommand\externalfilteroutputfile
+       \externalfilterparameter\c!after
+       \egroup}
 
 Options to a specific environment
 ---------------------------------
