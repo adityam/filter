@@ -1,0 +1,27 @@
+\usemodule[filter]
+
+\defineexternalfilter
+  [LATEX]
+  [filtercommand={pandoc -f latex -t context 
+                  -o \externalfilteroutputfile\space
+                  \externalfilterinputfile}]
+
+\starttext
+
+\startLATEX
+  Simple \LaTeX\ commands like \textbf{bold} and \textit{italic} work, as does
+  \emph{emphasize}. Even equations work!
+
+  \begin{equation}
+    E = mc^2
+  \end{equation}
+  though we end up loosing the numbering. Figures is a different story
+
+  \begin{figure}
+    \centering
+    Test
+    \caption{A figure}
+  \end{figure}
+\stopLATEX
+
+\stoptext
