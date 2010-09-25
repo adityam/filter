@@ -1,11 +1,17 @@
+%D \module
+%D   [     file=t-filter,
+%D      version=2010.09.25,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=External Filters,
+%D       author=Aditya Mahajan,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan,
+%D        email=adityam <at> umich <dot> edu,
+%D      license=Simplified BSD License]
+
 \startmodule    [filter]
 
 \unprotect
-
-\startmode[\s!mkiv]
-  \ctxloadluafile{t-filter}
-\stopmode
-
 
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
@@ -13,9 +19,6 @@
   \setinterfaceconstant {output}           {output} 
   \setinterfaceconstant {read}             {read} 
   \setinterfaceconstant {readcommand}      {readcommand} 
-
-  \setinterfacevariable {httpget}          {httpget}
-  \setinterfacevariable {httppost}         {httppost}
 \stopinterface
 
 \def\??externalfilter??{externalfilter}
@@ -54,19 +57,12 @@
    }
 
 
-\chardef\externalfilter!!method\zerocount    %0 = os, 1 = httpget, 2 = httppost
-
 \def\dostartexternalfilter[#1][#2]% filter options
   {% Initializations
    \egroup %\bgroup in \start#1
    \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
    \getparameters[\??externalfilter??#1][\c!name=,#2]%
-   \processaction[\externalfilterparameter\c!method]
-                 [\v!httpget  => \chardef\externalfilter!!method\plusone ,
-                  \v!httppost => \chardef\externalfilter!!method\plustwp ,
-                  \v!default  => \chardef\externalfilter!!method\zerocount ,
-                  \v!unknown  => \chardef\externalfilter!!method\zerocount ]%
    % Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
@@ -84,23 +80,15 @@
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
 \def\doprocessexternalfilter%
-  {\ifcase\externalfilter!!method % os 
-     % By defualt, buffers are in memory in MkIV
-     \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
-     % Run external command
-     \doexecuteexternalfilter
-   \or % httpget
-     \doexecutehttpgetfilter
-   \or % httppost
-     \doexecutehttpostfilter
-   \fi
+  {% By defualt, buffers are in memory in MkIV
+   \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
+   % Run external command
+   \doexecuteexternalfilter
    \doreadprocessedfile
    \endgroup 
    % Finalization
-   \ifnum\externalfilter!!method=\zerocount
-     \doif{\externalfilterparameter\c!continue}\v!yes
-          {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
-   \fi
+   \doif{\externalfilterparameter\c!continue}\v!yes
+        {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
    }
 
 \def\doexecuteexternalfilter
@@ -111,18 +99,6 @@
           bin:\externalfilterparameter\c!filtercommand}}}
    {\executesystemcommand
       {\externalfilterparameter\c!filtercommand}}}
-
-\def\doexecutehttpgetfilter
-  {\doifmodeelse{\s!mkiv}
-    {\edef\externalfilteroutputfile{\ctxlua{thirddata.externalfilter.httpget
-      (\!!bs\externalfilterparameter\c!filter\!!es  ,
-       \!!bs\externalfiltertmpfile\!!es             ,
-       \!!bs\externalfilterparameter\c!separator\!!es)}}}
-    {{\tttf TODO: httpget does not work in MkII}}}
-
-\def\doexecutehttppostfilter
-    {{\tttf TODO: httppost is not yet implemented}}
-  
 
 \def\doreadprocessedfile
   {\doif{\externalfilterparameter\c!read}\v!yes
@@ -159,9 +135,7 @@
    \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
-   \c!method=\v!default,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
-   \c!separator=,
  ]
    
 % For tracing
