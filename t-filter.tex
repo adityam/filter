@@ -2,12 +2,14 @@
 %D   [     file=t-filter,
 %D      version=2010.09.25,
 %D        title=\CONTEXT\ User Module,
-%D     subtitle=External Filters,
+%D     subtitle=Filter,
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
 %D        email=adityam <at> umich <dot> edu,
 %D      license=Simplified BSD License]
+
+\writestatus{loading}{ConTeXt User Module / Filter}
 
 \startmodule    [filter]
 
@@ -22,13 +24,27 @@
 \stopinterface
 
 \def\??externalfilter??{externalfilter}
-
 \def\currentexternalfilter{}
+\def\externalfiltercountername{\??externalfilter??-\currentexternalfilter-counter}
 
-\def\externalfilterparameter   #1{\csname\docheckparentparameter{\??externalfilter??\currentexternalfilter}{#1}\endcsname}
+\def\externalfilterparameter#1%
+  {\csname
+     \docheckparentparameter{\??externalfilter??\currentexternalfilter}{#1}%
+   \endcsname}
 
-\def\docheckparentparameter  #1#2{\ifcsname#1#2\endcsname#1#2\else\expandafter\redocheckparentparameter\csname#1\s!parent\endcsname{#2}\fi}
-\def\redocheckparentparameter#1#2{\ifx#1\relax\s!empty\else\docheckparentparameter{#1}{#2}\fi}
+\def\docheckparentparameter#1#2%
+  {\ifcsname#1#2\endcsname
+      #1#2%
+    \else
+      \expandafter\redocheckparentparameter\csname#1\s!parent\endcsname{#2}%
+    \fi}
+
+\def\redocheckparentparameter#1#2%
+  {\ifx#1\relax
+      \s!empty
+   \else
+      \docheckparentparameter{#1}{#2}%
+   \fi}
 
 \def\setupexternalfilters
   {\dodoubleargument\dosetupexternalfilters}
@@ -48,7 +64,7 @@
   {\edef\currentexternalfilter{#1}%
   \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
    \doif{\externalfilterparameter\c!continue}\v!yes
-      {\expandafter\newcounter\csname\??externalfilter??-#1-counter\endcsname}%
+      {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter}%
    \setvalue{process#1file}{\dodoubleargument\doprocessexternalfile[#1]}%
@@ -65,7 +81,7 @@
    \getparameters[\??externalfilter??#1][\c!name=,#2]%
    % Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\edef\externalfiltertmpfile{\??externalfilter??-#1-\getvalue{\??externalfilter??-#1-counter}}}
+       {\edef\externalfiltertmpfile{\??externalfilter??-#1-\csname\externalfiltercountername\endcsname}}
        {\edef\externalfiltertmpfile{\??externalfilter??-#1}}
    \doifsomething{\externalfilterparameter\c!name}
        {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
@@ -88,7 +104,7 @@
    \endgroup 
    % Finalization
    \doif{\externalfilterparameter\c!continue}\v!yes
-        {\expandafter\increment\csname\??externalfilter??-\currentexternalfilter-counter\endcsname}%
+        {\expandafter\increment\csname\externalfiltercountername\endcsname}%
    }
 
 \def\doexecuteexternalfilter
