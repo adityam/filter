@@ -123,12 +123,12 @@
           {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}}
 
 \def\dodoreadprocessedfile
-  {\bgroup
+  {\begingroup
    \externalfilterparameter\c!before
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilteroutputfile
    \externalfilterparameter\c!after
-   \egroup}
+   \endgroup}
 
 \def\doprocessexternalfile[#1][#2]%
   {\edef\currentexternalfilter    {#1}%
