@@ -1,4 +1,5 @@
 \usemodule[filter]
+\usemodule[visual]
 
 \defineexternalfilter
   [LATEX]
@@ -15,11 +16,13 @@
   \begin{equation}
     E = mc^2
   \end{equation}
-  though we end up loosing the numbering. Figures is a different story
+  though we end up loosing the numbering. 
+  
+  Graphics also work: \includegraphics{dummy} but floats is a different story
 
   \begin{figure}
     \centering
-    Test
+    \includegraphics{dummy}
     \caption{A figure}
   \end{figure}
 \stopLATEX
