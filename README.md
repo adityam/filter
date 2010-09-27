@@ -31,20 +31,21 @@ the blanks with the appropriate values. And so, the filter module was born.
 Installation
 ------------
 
-Writing installation instructions is always boring. Hopefully, by the time this
-article is published, the filter module will be available from ConTeXt garden.
-If so, and if you are using ConTeXt minimals, you already have the module. To
-verify, check if
+Writing installation instructions is always boring. If you are using ConTeXt
+minimals, you can install the module using
+
+  first-setup.sh --extras="t-filter"
+
+Depending on your TeX distribution, you may already have the module.
+To verify, check if
 
     kpsewhich t-filter.tex
 
 returns a meaningful path. If not, you have to manually install the module.
 
-Create a directory `tex/context/third/filter` in your `$TEXMFHOME` or
-`$TEXMFLOCAL` directory. Copy `t-filter.tex` and `t-filter.lua` from 
-this git repository
-[http://github.com/adityam/filter](http://github.com/adityam/filter) to the
-directory that you just created. Run
+Download the latest version of the module from
+[http://github.com/adityam/filter/downloads](http://github.com/adityam/filter/downloads)
+and unzip it either `$TEXMFHOME` or `$TEXMFLOCAL`. Run
 
     mktexlsr
 
