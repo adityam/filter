@@ -67,7 +67,7 @@
       {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter}%
-   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfile[#1]}%
+   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfiler[#1]}%
    %TODO: Inline.
    %\setvalue{#1}##1{\save ##1 to file}
    }
@@ -130,7 +130,7 @@
    \externalfilterparameter\c!after
    \endgroup}
 
-\def\doprocessexternalfile[#1][#2]%
+\def\doprocessexternalfiler[#1][#2]%
   {\edef\currentexternalfilter    {#1}%
    \edef\externalfilterinputfile  {#2}%
    \splitfiletype {#2}%
