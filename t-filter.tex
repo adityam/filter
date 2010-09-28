@@ -27,6 +27,8 @@
 \def\currentexternalfilter{}
 \def\externalfiltercountername{\??externalfilter??-\currentexternalfilter-counter}
 
+\newwrite\externalfilterwrite
+
 \def\externalfilterparameter#1%
   {\csname
      \docheckparentparameter{\??externalfilter??\currentexternalfilter}{#1}%
@@ -68,8 +70,7 @@
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter}%
    \setvalue{process#1file}{\dodoubleargument\doprocessexternalfiler[#1]}%
-   %TODO: Inline.
-   %\setvalue{#1}##1{\save ##1 to file}
+   \setvalue{inline#1}{\doinlineexternalfilter[#1]}
    }
 
 
@@ -124,7 +125,8 @@
   {\doif{\externalfilterparameter\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
           {\dodoreadprocessedfile}
-          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}}
+          %TODO: Proper error message
+          {{\tttf File \externalfilteroutputfile\ not found! Check your definition}}}}
 
 \def\dodoreadprocessedfile
   {\begingroup
@@ -144,6 +146,40 @@
    \doexecuteexternalfilter
    \doreadprocessedfile}
    
+\def\doinlineexternalfilter[#1]%
+  {\begingroup % to keep assignments local
+   \edef\currentexternalfilter {#1}%
+   \getparameters[\??externalfilter??#1][\c!name=,\c!continue=\v!no]%
+   \setexternalfilterfilenames
+   \pushcatcodetable
+   \futurelet\next\dodoinlineexternalfilter}
+
+\def\dodoinlineexternalfilter
+  {\ifx\next\bgroup
+     \expandafter\dodoinlineexternalfilterA
+   \else
+     \expandafter\dodoinlineexternalfilterB
+   \fi}
+
+\def\dodoinlineexternalfilterA
+  {\setcatcodetable \typcatcodesa
+   \redoinlineexternalfilter}
+
+\def\dodoinlineexternalfilterB#1%
+  {\setcatcodetable \vrbcatcodes
+   \def\dododoinlineexternalfilterB##1#1{\redoinlineexternalfilter{##1}}%
+   \dododoinlineexternalfilterB}
+
+\def\redoinlineexternalfilter#1%
+  {\immediate\openout \externalfilterwrite\externalfilterinputfile
+   \immediate\write   \externalfilterwrite{\detokenize{#1}}%
+   \immediate\closeout\externalfilterwrite
+   \popcatcodetable
+   \doexecuteexternalfilter
+   \doreadprocessedfile
+   \endgroup}
+
+
 
 \setupexternalfilters
   [
