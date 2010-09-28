@@ -27,6 +27,8 @@
 \def\currentexternalfilter{}
 \def\externalfiltercountername{\??externalfilter??-\currentexternalfilter-counter}
 
+\newwrite\externalfilterwrite
+
 \def\externalfilterparameter#1%
   {\csname
      \docheckparentparameter{\??externalfilter??\currentexternalfilter}{#1}%
@@ -67,9 +69,8 @@
       {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter}%
-   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfile[#1]}%
-   %TODO: Inline.
-   %\setvalue{#1}##1{\save ##1 to file}
+   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfiler[#1]}%
+   \setvalue{inline#1}{\doinlineexternalfilter[#1]}
    }
 
 
@@ -79,10 +80,15 @@
    \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
    \getparameters[\??externalfilter??#1][\c!name=,#2]%
-   % Set the name of temp file for os filter
+   \setexternalfilterfilenames
+   % Capture the contents of the buffer
+   \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
+
+\def\setexternalfilterfilenames%
+  {% Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\edef\externalfiltertmpfile{\??externalfilter??-#1-\csname\externalfiltercountername\endcsname}}
-       {\edef\externalfiltertmpfile{\??externalfilter??-#1}}
+       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
+       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
        {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
    % The following  macros are useful for filter= and filtercommand= options
@@ -92,8 +98,7 @@
    \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
    % The name of the file to which the output is written
    \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
-   % Capture the contents of the buffer
-   \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
+  }
 
 \def\doprocessexternalfilter%
   {% By defualt, buffers are in memory in MkIV
@@ -120,7 +125,8 @@
   {\doif{\externalfilterparameter\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
           {\dodoreadprocessedfile}
-          {{\tttf TODO: File \externalfilteroutputfile\ not found! Check your definition}}}}
+          %TODO: Proper error message
+          {{\tttf File \externalfilteroutputfile\ not found! Check your definition}}}}
 
 \def\dodoreadprocessedfile
   {\begingroup
@@ -130,7 +136,7 @@
    \externalfilterparameter\c!after
    \endgroup}
 
-\def\doprocessexternalfile[#1][#2]%
+\def\doprocessexternalfiler[#1][#2]%
   {\edef\currentexternalfilter    {#1}%
    \edef\externalfilterinputfile  {#2}%
    \splitfiletype {#2}%
@@ -140,6 +146,40 @@
    \doexecuteexternalfilter
    \doreadprocessedfile}
    
+\def\doinlineexternalfilter[#1]%
+  {\begingroup % to keep assignments local
+   \edef\currentexternalfilter {#1}%
+   \getparameters[\??externalfilter??#1][\c!name=,\c!continue=\v!no]%
+   \setexternalfilterfilenames
+   \pushcatcodetable
+   \futurelet\next\dodoinlineexternalfilter}
+
+\def\dodoinlineexternalfilter
+  {\ifx\next\bgroup
+     \expandafter\dodoinlineexternalfilterA
+   \else
+     \expandafter\dodoinlineexternalfilterB
+   \fi}
+
+\def\dodoinlineexternalfilterA
+  {\setcatcodetable \typcatcodesa
+   \redoinlineexternalfilter}
+
+\def\dodoinlineexternalfilterB#1%
+  {\setcatcodetable \vrbcatcodes
+   \def\dododoinlineexternalfilterB##1#1{\redoinlineexternalfilter{##1}}%
+   \dododoinlineexternalfilterB}
+
+\def\redoinlineexternalfilter#1%
+  {\immediate\openout \externalfilterwrite\externalfilterinputfile
+   \immediate\write   \externalfilterwrite{\detokenize{#1}}%
+   \immediate\closeout\externalfilterwrite
+   \popcatcodetable
+   \doexecuteexternalfilter
+   \doreadprocessedfile
+   \endgroup}
+
+
 
 \setupexternalfilters
   [
