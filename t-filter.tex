@@ -84,7 +84,7 @@
    % Capture the contents of the buffer
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
-\def\setexternalfilterfilenames%
+\def\setexternalfilterfilenames
   {% Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
@@ -100,7 +100,7 @@
    \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
   }
 
-\def\doprocessexternalfilter%
+\def\doprocessexternalfilter
   {% By defualt, buffers are in memory in MkIV
    \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
    % Run external command
@@ -141,7 +141,7 @@
    \edef\externalfilterinputfile  {#2}%
    \splitfiletype {#2}%
    %BEWARE. \edef doesn not work
-   \def\externalfilterbasefile   {\splitoffname}
+   \def\externalfilterbasefile   {\splitoffname}%
    \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
    \doexecuteexternalfilter
    \doreadprocessedfile}
