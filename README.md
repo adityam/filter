@@ -314,4 +314,41 @@ Thus, the pandoc environment may be defined as
        format=markdown]
 
 
+Processing Files
+----------------
+
+A big advantage of a lightweight markup language like markdown is that it is
+easy to convert it into other markups--html, rtf, epub, etc. For that reason, I
+key in markdown in a separate file rather in a start-stop environment of a TeX
+file. To use such markdown files in ConTeXt, I can just use
+
+    \processmarkdownfile{filename.md}
+
+The general macro is `\process<filter>file{...}`, which takes the name of a file
+as an argument and uses that file as the input file for the filter. The rest of
+the processing is the same as with `\start<filter>` ... `\stop<filter>`
+environment. 
+
+The `\process<filter>file` macro also takes an optional argument for setup
+options:
+
+    \process<filter>file[...]{...}
+
+The options in the `[...]` are the same as those for `\defineexternalfilter`.
+
+
+Limitations
+------------
+
+- The option `continue=yes` does not work correctly with filters that have a
+  pipe `|` in their definition. This is because internally `continue=yes` calls
+
+      mtxrun --ifchanged=filename --direct filtercommand
+
+  and this produces
+  
+      MTXrun |
+      MTXrun | executing: filtercommand
+      MTXrun |
+      MTXrun |
 
