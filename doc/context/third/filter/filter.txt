@@ -101,21 +101,30 @@ Using this filter from within ConTeXt is pretty simple:
 Yes, its that easy! The only thing to note is that TeX macros gobble spaces, so
 we have to manually insert a space after `\externalfilteroutputfile`.
 
-This defines an environment
+This defines three things:
 
-    \startmarkdown
-      ...
-    \stopmarkdown
+1. An environment
 
-and a macro
+        \startmarkdown
+          ...
+        \stopmarkdown
 
-    \processmarkdownfile[...]
+   The contents of the environment are processed by `pandoc` and the output is
+   included back in ConTeXt.
 
-The contents of the environment are processed by `pandoc` and the output is
-included back in ConTeXt.
+2. A macro
 
-The argument to the macro is a filename, which is processed by `pandoc` and the
-output is included back in ConTeXt.
+        \inlinemarkdown{...}
+
+   The argument of the macro is processed by `pandoc` and the output is included
+   back in ConTeXt.
+
+3. A macro
+
+        \processmarkdownfile{...}
+
+   The argument to the macro is a filename, which is processed by `pandoc` and
+   the output is included back in ConTeXt.
 
 Dealing with slow filters
 -------------------------
@@ -314,4 +323,60 @@ Thus, the pandoc environment may be defined as
        format=markdown]
 
 
+Macro variant
+-------------
 
+For some cases, a macro `\inline<filter>{...}` is more natural to use rather
+than the environment `\start<filter>` ... `\stop<filter>`. The `\inline...`
+variant is meant for simple cases, so it does not accept any options in square
+brackets.
+
+
+
+Processing Existing Files
+-------------------------
+
+A big advantage of a lightweight markup language like markdown is that it is
+easy to convert it into other markups--html, rtf, epub, etc. For that reason, I
+key in markdown in a separate file rather in a start-stop environment of a TeX
+file. To use such markdown files in ConTeXt, I can just use
+
+    \processmarkdownfile{filename.md}
+
+The general macro is `\process<filter>file{...}`, which takes the name of a file
+as an argument and uses that file as the input file for the filter. The rest of
+the processing is the same as with `\start<filter>` ... `\stop<filter>`
+environment. 
+
+The `\process<filter>file` macro also takes an optional argument for setup
+options:
+
+    \process<filter>file[...]{...}
+
+The options in the `[...]` are the same as those for `\defineexternalfilter`.
+
+Limitations
+------------
+
+- The option `continue=yes` does not work correctly with filters that have a
+  pipe `|` in their definition. This is because internally `continue=yes` calls
+
+      mtxrun --ifchanged=filename --direct filtercommand
+
+  and this produces
+  
+      MTXrun |
+      MTXrun | executing: filtercommand
+      MTXrun |
+      MTXrun |
+
+
+Version History
+--------------
+
+- **2010.09.26**: 
+    - First release
+- **2010.10.09**: 
+    - Added `\inline<filter>{...}` macro 
+    - Changed the syntax of `\process<filter>file`. The filename is now
+      specified in curly brackets rather than square brackets.

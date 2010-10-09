@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2010.09.26,
+%D      version=2010.10.09
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -84,7 +84,7 @@
    % Capture the contents of the buffer
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
-\def\setexternalfilterfilenames%
+\def\setexternalfilterfilenames
   {% Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
@@ -100,7 +100,7 @@
    \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
   }
 
-\def\doprocessexternalfilter%
+\def\doprocessexternalfilter
   {% By defualt, buffers are in memory in MkIV
    \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
    % Run external command
@@ -117,7 +117,7 @@
    {\doifmode{*first}
      {\executesystemcommand
       {mtxrun --ifchanged=\externalfilterinputfile\space 
-          bin:\externalfilterparameter\c!filtercommand}}}
+          --direct \externalfilterparameter\c!filtercommand}}}
    {\executesystemcommand
       {\externalfilterparameter\c!filtercommand}}}
 
@@ -136,15 +136,19 @@
    \externalfilterparameter\c!after
    \endgroup}
 
-\def\doprocessexternalfiler[#1][#2]%
-  {\edef\currentexternalfilter    {#1}%
-   \edef\externalfilterinputfile  {#2}%
-   \splitfiletype {#2}%
+\def\doprocessexternalfiler[#1][#2]#3%
+  {\begingroup
+   \edef\currentexternalfilter    {#1}%
+   \getparameters[\??externalfilter??#1][\c!name=,#2]% TODO: Add continue=yes
+   % Currently filters with a pipe (|) fail with continue=yes
+   \edef\externalfilterinputfile  {#3}%
+   \splitfiletype {#3}%
    %BEWARE. \edef doesn not work
-   \def\externalfilterbasefile   {\splitoffname}
+   \def\externalfilterbasefile   {\splitoffname}%
    \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
    \doexecuteexternalfilter
-   \doreadprocessedfile}
+   \doreadprocessedfile
+   \endgroup}
    
 \def\doinlineexternalfilter[#1]%
   {\begingroup % to keep assignments local
