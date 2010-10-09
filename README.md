@@ -101,21 +101,30 @@ Using this filter from within ConTeXt is pretty simple:
 Yes, its that easy! The only thing to note is that TeX macros gobble spaces, so
 we have to manually insert a space after `\externalfilteroutputfile`.
 
-This defines an environment
+This defines three things:
 
-    \startmarkdown
-      ...
-    \stopmarkdown
+1. An environment
 
-and a macro
+      \startmarkdown
+        ...
+      \stopmarkdown
 
-    \processmarkdownfile[...]
+   The contents of the environment are processed by `pandoc` and the output is
+   included back in ConTeXt.
 
-The contents of the environment are processed by `pandoc` and the output is
-included back in ConTeXt.
+2. A macro
 
-The argument to the macro is a filename, which is processed by `pandoc` and the
-output is included back in ConTeXt.
+      \inlinemarkdown{...}
+
+   The argument of the macro is processed by `pandoc` and the output is included
+   back in ConTeXt.
+
+3. A macro
+
+      \processmarkdownfile{...}
+
+   The argument to the macro is a filename, which is processed by `pandoc` and
+   the output is included back in ConTeXt.
 
 Dealing with slow filters
 -------------------------
@@ -314,8 +323,8 @@ Thus, the pandoc environment may be defined as
        format=markdown]
 
 
-Processing Files
-----------------
+Processing Existing Files
+-------------------------
 
 A big advantage of a lightweight markup language like markdown is that it is
 easy to convert it into other markups--html, rtf, epub, etc. For that reason, I
@@ -335,7 +344,6 @@ options:
     \process<filter>file[...]{...}
 
 The options in the `[...]` are the same as those for `\defineexternalfilter`.
-
 
 Limitations
 ------------
