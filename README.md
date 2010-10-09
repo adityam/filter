@@ -105,23 +105,23 @@ This defines three things:
 
 1. An environment
 
-      \startmarkdown
-        ...
-      \stopmarkdown
+        \startmarkdown
+          ...
+        \stopmarkdown
 
    The contents of the environment are processed by `pandoc` and the output is
    included back in ConTeXt.
 
 2. A macro
 
-      \inlinemarkdown{...}
+        \inlinemarkdown{...}
 
    The argument of the macro is processed by `pandoc` and the output is included
    back in ConTeXt.
 
 3. A macro
 
-      \processmarkdownfile{...}
+        \processmarkdownfile{...}
 
    The argument to the macro is a filename, which is processed by `pandoc` and
    the output is included back in ConTeXt.
