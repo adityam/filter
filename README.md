@@ -323,6 +323,16 @@ Thus, the pandoc environment may be defined as
        format=markdown]
 
 
+Macro variant
+-------------
+
+For some cases, a macro `\inline<filter>{...}` is more natural to use rather
+than the environment `\start<filter>` ... `\stop<filter>`. The `\inline...`
+variant is meant for simple cases, so it does not accept any options in square
+brackets.
+
+
+
 Processing Existing Files
 -------------------------
 
