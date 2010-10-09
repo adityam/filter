@@ -370,3 +370,13 @@ Limitations
       MTXrun |
       MTXrun |
 
+
+Version History
+--------------
+
+- **2010.09.26**: 
+    - First release
+- **2010.10.09**: 
+    - Added `\inline<filter>{...}` macro 
+    - Changed the syntax of `\process<filter>file`. The filename is now
+      specified in curly brackets rather than square brackets.
