@@ -18,3 +18,6 @@ mpgraph.mp
 
 # Output files
 *.pdf
+
+# Upload files
+t-filter*.zip

@@ -15,6 +15,15 @@
 
 \unprotect
 
+%D \section {Initialization}
+%D
+%D \subsubject {Interface}
+%D
+%D The first step is to set the interface variables. This allows me to use 
+%D \type{\c!filter} etc. in the module definition, and thereby reduces the risk
+%D of a typo. Currently, only English names are provided. If someone wants, I
+%D can also add other multi-linugal names.
+
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
   \setinterfaceconstant {filtercommand}    {filtercommand}
@@ -23,11 +32,27 @@
   \setinterfaceconstant {readcommand}      {readcommand} 
 \stopinterface
 
+\def\m!externalfilter{t-filter}
+
+%D \subsubject {Messages}
+
+\setinterfacemessage{externalfilter}{title}   {\m!externalfilter}
+\setinterfacemessage{externalfilter}{notfound}{file -- cannot be found}
+\setinterfacemessage{externalfilter}{missing} {output file missing}
+
+%D \subsubject {Name space}
+%D
+%D I use the name space \type{externalfilter} for all variables. A lot of this
+%D code comes from Wolfgang Schuster and is also implemented in
+%D \filename{mult-aux.mkiv}. I could just call \type{\installnamespace} macro from
+%D \filename{mult-aux.mkiv}. But, that macro is not defined in \MKII; so I
+%D repeat simplified versions of the definitions here.
+
 \def\??externalfilter??{externalfilter}
 \def\currentexternalfilter{}
 \def\externalfiltercountername{\??externalfilter??-\currentexternalfilter-counter}
 
-\newwrite\externalfilterwrite
+%D \subsubject {Read value of parameters}
 
 \def\externalfilterparameter#1%
   {\csname
@@ -48,6 +73,29 @@
       \docheckparentparameter{#1}{#2}%
    \fi}
 
+%D \section {Tracing Macros}
+
+\newif\iftraceexternalfilters
+
+\let\traceexternalfilters\traceexternalfilterstrue
+
+\starttexdefinition doshowfilterstate
+  \iftraceexternalfilters
+    \writestatus\m!externalfilter{current filter : \currentexternalfilter}
+    \writestatus\m!externalfilter{base file : \externalfilterbasefile}
+    \writestatus\m!externalfilter{input file : \externalfilterinputfile}
+    \writestatus\m!externalfilter{output file : \externalfilteroutputfile}
+  \fi
+\stoptexdefinition
+
+\starttexdefinition doshowfiltercommand
+    \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
+\stoptexdefinition
+
+%D \section {The main user macros}
+%D
+%D \subsubject {Setup values of parameters}
+
 \def\setupexternalfilters
   {\dodoubleargument\dosetupexternalfilters}
   
@@ -59,6 +107,8 @@
    \fi}
 
 
+%D \subsubject {Define a new filter}
+
 \def\defineexternalfilter
   {\dodoubleargument\dodefineexternalfilter}
 
@@ -69,14 +119,13 @@
       {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
    \setvalue{\e!stop#1}{\doprocessexternalfilter}%
-   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfiler[#1]}%
+   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
    \setvalue{inline#1}{\doinlineexternalfilter[#1]}
    }
 
-
 \def\dostartexternalfilter[#1][#2]% filter options
   {% Initializations
-   \egroup %\bgroup in \start#1
+   \egroup %\bgroup in \start#1 
    \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
    \getparameters[\??externalfilter??#1][\c!name=,#2]%
@@ -84,59 +133,7 @@
    % Capture the contents of the buffer
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
 
-\def\setexternalfilterfilenames
-  {% Set the name of temp file for os filter
-   \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
-       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter}}
-   \doifsomething{\externalfilterparameter\c!name}
-       {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
-   % The following  macros are useful for filter= and filtercommand= options
-   % The basename of the external file 
-   \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
-   % The name of the buffer to which data is written
-   \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
-   % The name of the file to which the output is written
-   \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
-  }
-
-\def\doprocessexternalfilter
-  {% By defualt, buffers are in memory in MkIV
-   \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
-   % Run external command
-   \doexecuteexternalfilter
-   \doreadprocessedfile
-   \endgroup 
-   % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\expandafter\increment\csname\externalfiltercountername\endcsname}%
-   }
-
-\def\doexecuteexternalfilter
-  {\doifelse{\externalfilterparameter\c!continue}\v!yes
-   {\doifmode{*first}
-     {\executesystemcommand
-      {mtxrun --ifchanged=\externalfilterinputfile\space 
-          --direct \externalfilterparameter\c!filtercommand}}}
-   {\executesystemcommand
-      {\externalfilterparameter\c!filtercommand}}}
-
-\def\doreadprocessedfile
-  {\doif{\externalfilterparameter\c!read}\v!yes
-      {\doiffileelse{\externalfilteroutputfile}
-          {\dodoreadprocessedfile}
-          %TODO: Proper error message
-          {{\tttf File \externalfilteroutputfile\ not found! Check your definition}}}}
-
-\def\dodoreadprocessedfile
-  {\begingroup
-   \externalfilterparameter\c!before
-   \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-   \externalfilterparameter\c!readcommand\externalfilteroutputfile
-   \externalfilterparameter\c!after
-   \endgroup}
-
-\def\doprocessexternalfiler[#1][#2]#3%
+\def\doprocessexternalfilterfile[#1][#2]#3%
   {\begingroup
    \edef\currentexternalfilter    {#1}%
    \getparameters[\??externalfilter??#1][\c!name=,#2]% TODO: Add continue=yes
@@ -146,6 +143,7 @@
    %BEWARE. \edef doesn not work
    \def\externalfilterbasefile   {\splitoffname}%
    \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
+   \doshowfilterstate
    \doexecuteexternalfilter
    \doreadprocessedfile
    \endgroup}
@@ -157,6 +155,11 @@
    \setexternalfilterfilenames
    \pushcatcodetable
    \futurelet\next\dodoinlineexternalfilter}
+
+%D \subsubject {Write argument to file verbatim}
+%D
+%D Surprisingly, there is nothing in the core to define a function that write its
+%D argument to a file verbatim. I basically copied the \type{\type} macro.
 
 \def\dodoinlineexternalfilter
   {\ifx\next\bgroup
@@ -174,6 +177,8 @@
    \def\dododoinlineexternalfilterB##1#1{\redoinlineexternalfilter{##1}}%
    \dododoinlineexternalfilterB}
 
+\newwrite\externalfilterwrite
+
 \def\redoinlineexternalfilter#1%
   {\immediate\openout \externalfilterwrite\externalfilterinputfile
    \immediate\write   \externalfilterwrite{\detokenize{#1}}%
@@ -184,6 +189,82 @@
    \endgroup}
 
 
+
+%D \section {Helper Functions}
+%D
+%D \subsubject {Set file names}
+%D
+%D \type{\externalfilterbasefile} is the name of the temporary file without
+%D extesion. Its actual value depends on the state of \type{continue} key as
+%D well as the value of \type{name} key.
+
+\def\setexternalfilterfilenames
+  {% Set the name of temp file for os filter
+   \doifelse{\externalfilterparameter\c!continue}\v!yes
+       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
+       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter}}
+   \doifsomething{\externalfilterparameter\c!name}
+       {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
+   % The following  macros are useful for filter= and filtercommand= options
+   % The basename of the external file 
+   \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
+   % The name of the buffer to which data is written
+   \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
+   % The name of the file to which the output is written
+   \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
+   \doshowfilterstate
+  }
+
+
+%D \subsubject {Process Filter}
+%D
+%D Execute filter, read the output and do book-keeping if needed.
+
+\def\doprocessexternalfilter
+  {% By defualt, buffers are in memory in MkIV
+   \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
+   % Run external command
+   \doexecuteexternalfilter
+   \doreadprocessedfile
+   \endgroup 
+   % Finalization
+   \doif{\externalfilterparameter\c!continue}\v!yes
+        {\expandafter\increment\csname\externalfiltercountername\endcsname}%
+   }
+
+%D \subsubject {Execute Filter}   
+
+\def\doexecuteexternalfilter
+  {\doshowfiltercommand
+   \doifelse{\externalfilterparameter\c!continue}\v!yes
+     {\doifmode{*first}
+       {\executesystemcommand
+        {mtxrun --ifchanged=\externalfilterinputfile\space 
+            --direct \externalfilterparameter\c!filtercommand}}}
+     {\executesystemcommand
+        {\externalfilterparameter\c!filtercommand}}}
+
+%D \subsubject {Read output}
+
+\def\doreadprocessedfile
+  {\doif{\externalfilterparameter\c!read}\v!yes
+      {\doiffileelse{\externalfilteroutputfile}
+          {\dodoreadprocessedfile}
+          {\showmessage\??externalfilter??{notfound}\externalfilteroutputfile 
+           \blank
+           {\tttf [[\getmessage\??externalfilter??{missing}]]}%
+           \blank
+          }}}
+
+\def\dodoreadprocessedfile
+  {\begingroup
+   \externalfilterparameter\c!before
+   \processcommacommand[\externalfilterparameter\c!setups]\directsetup
+   \externalfilterparameter\c!readcommand\externalfilteroutputfile
+   \externalfilterparameter\c!after
+   \endgroup}
+
+%D \section {Default Values}
 
 \setupexternalfilters
   [
@@ -197,15 +278,6 @@
    \c!filter=,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
  ]
-   
-% For tracing
-\def\showexternalfilterstate
-  {\starttable[|l|l|]
-  \NC currentexternalfilter     \NC \currentexternalfilter      \NC \AR
-  \NC externalfilterinputfile   \NC \externalfilterinputfile    \NC \AR
-  \NC externalfilteroutputfile  \NC \externalfilteroutputfile   \NC \AR
-  \NC externalfilterbasefile    \NC \externalfilterbasefile     \NC \AR
-  \stoptable}
    
 \protect
 \stopmodule

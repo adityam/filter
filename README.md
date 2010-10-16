@@ -371,6 +371,45 @@ Limitations
       MTXrun |
 
 
+Messages and Tracing
+-------------------
+
+The filter module outputs some diagnostic information on the console output to
+indicate what is happening. Loading of the module is indicated by:
+
+    loading         : ConTeXt User Module / Filter
+
+Whenever a filter is executed, the expanded name of the command is displayed.
+For example, for the markdown filter we get:
+
+    t-filter        : command : pandoc -w context -o markdown-externalfilter-markdown.tex markdown-externalfilter-markdown.tmp
+
+If, for some reason, the output file is not generated, or not found, a message
+similar to
+
+    t-filter        : file markdown-externalfilter-markdown.tex cannot be found
+
+is displayed on the console. At the same time, the string 
+
+    [[output file missing]]
+
+is displayed in the PDF output. To debug what went wrong, add
+
+    \traceexternalfilters
+
+in your tex file. This shows the name of all input and output files on the
+console:
+
+    t-filter        : current filter : markdown
+    t-filter        : base file : markdown-externalfilter-markdown
+    t-filter        : input file : markdown-externalfilter-markdown.tmp
+    t-filter        : output file : markdown-externalfilter-markdown.tex
+
+This data, along with the name of the filter command, is useful for debugging
+what went wrong.
+
+
+
 Version History
 --------------
 
@@ -380,3 +419,8 @@ Version History
     - Added `\inline<filter>{...}` macro 
     - Changed the syntax of `\process<filter>file`. The filename is now
       specified in curly brackets rather than square brackets.
+- **2010.10.16**:
+    - Added `\traceexternalfilters` for tracing
+    - Added a message that shows filter command on console
+    - A message is shown on console when output file is not found.
+    
