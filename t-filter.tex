@@ -32,6 +32,14 @@
   \setinterfaceconstant {readcommand}      {readcommand} 
 \stopinterface
 
+\def\m!externalfilter{t-filter}
+
+%D \subsubject {Messages}
+
+\setinterfacemessage{externalfilter}{title}   {\m!externalfilter}
+\setinterfacemessage{externalfilter}{notfound}{file -- cannot be found}
+\setinterfacemessage{externalfilter}{missing} {output file missing}
+
 %D \subsubject {Name space}
 %D
 %D I use the name space \type{externalfilter} for all variables. A lot of this
@@ -65,6 +73,24 @@
       \docheckparentparameter{#1}{#2}%
    \fi}
 
+%D \section {Tracing Macros}
+
+\newif\iftraceexternalfilters
+
+\let\traceexternalfilters\traceexternalfilterstrue
+
+\starttexdefinition doshowfilterstate
+  \iftraceexternalfilters
+    \writestatus\m!externalfilter{current filter : \currentexternalfilter}
+    \writestatus\m!externalfilter{base file : \externalfilterbasefile}
+    \writestatus\m!externalfilter{input file : \externalfilterinputfile}
+    \writestatus\m!externalfilter{output file : \externalfilteroutputfile}
+  \fi
+\stoptexdefinition
+
+\starttexdefinition doshowfiltercommand
+    \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
+\stoptexdefinition
 
 %D \section {The main user macros}
 %D
@@ -117,6 +143,7 @@
    %BEWARE. \edef doesn not work
    \def\externalfilterbasefile   {\splitoffname}%
    \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
+   \doshowfilterstate
    \doexecuteexternalfilter
    \doreadprocessedfile
    \endgroup}
@@ -185,6 +212,7 @@
    \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
    % The name of the file to which the output is written
    \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
+   \doshowfilterstate
   }
 
 
@@ -207,13 +235,14 @@
 %D \subsubject {Execute Filter}   
 
 \def\doexecuteexternalfilter
-  {\doifelse{\externalfilterparameter\c!continue}\v!yes
-   {\doifmode{*first}
+  {\doshowfiltercommand
+   \doifelse{\externalfilterparameter\c!continue}\v!yes
+     {\doifmode{*first}
+       {\executesystemcommand
+        {mtxrun --ifchanged=\externalfilterinputfile\space 
+            --direct \externalfilterparameter\c!filtercommand}}}
      {\executesystemcommand
-      {mtxrun --ifchanged=\externalfilterinputfile\space 
-          --direct \externalfilterparameter\c!filtercommand}}}
-   {\executesystemcommand
-      {\externalfilterparameter\c!filtercommand}}}
+        {\externalfilterparameter\c!filtercommand}}}
 
 %D \subsubject {Read output}
 
@@ -221,8 +250,11 @@
   {\doif{\externalfilterparameter\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
           {\dodoreadprocessedfile}
-          %TODO: Proper error message
-          {{\tttf File \externalfilteroutputfile\ not found! Check your definition}}}}
+          {\showmessage\??externalfilter??{notfound}\externalfilteroutputfile 
+           \blank
+           {\tttf [[\getmessage\??externalfilter??{missing}]]}%
+           \blank
+          }}}
 
 \def\dodoreadprocessedfile
   {\begingroup
@@ -246,16 +278,6 @@
    \c!filter=,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
  ]
-   
-%D \section {Useful debugging function}
-
-\def\showexternalfilterstate
-  {\starttable[|l|l|]
-  \NC currentexternalfilter     \NC \currentexternalfilter      \NC \AR
-  \NC externalfilterinputfile   \NC \externalfilterinputfile    \NC \AR
-  \NC externalfilteroutputfile  \NC \externalfilteroutputfile   \NC \AR
-  \NC externalfilterbasefile    \NC \externalfilterbasefile     \NC \AR
-  \stoptable}
    
 \protect
 \stopmodule
