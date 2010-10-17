@@ -36,9 +36,10 @@
 
 %D \subsubject {Messages}
 
-\setinterfacemessage{externalfilter}{title}   {\m!externalfilter}
-\setinterfacemessage{externalfilter}{notfound}{file -- cannot be found}
-\setinterfacemessage{externalfilter}{missing} {output file missing}
+\setinterfacemessage{externalfilter}{title}     {\m!externalfilter}
+\setinterfacemessage{externalfilter}{notfound}  {file -- cannot be found}
+\setinterfacemessage{externalfilter}{missing}   {output file missing}
+\setinterfacemessage{externalfilter}{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
 
 %D \subsubject {Name space}
 %D
@@ -138,11 +139,14 @@
    \edef\currentexternalfilter    {#1}%
    \getparameters[\??externalfilter??#1][\c!name=,#2]% TODO: Add continue=yes
    % Currently filters with a pipe (|) fail with continue=yes
+   \setexternalfilterdirectory
    \edef\externalfilterinputfile  {#3}%
    \splitfiletype {#3}%
    %BEWARE. \edef doesn not work
    \def\externalfilterbasefile   {\splitoffname}%
-   \def\externalfilteroutputfile{\externalfilterparameter\c!output}%
+   % The output is always in the directory specified by 
+   % \c!directory; even if the input is from some other directory
+   \def\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}%
    \doshowfilterstate
    \doexecuteexternalfilter
    \doreadprocessedfile
@@ -192,6 +196,27 @@
 
 %D \section {Helper Functions}
 %D
+%D \subsubject {Set the name of output directory}
+
+\def\setexternalfilterdirectory
+  {\edef\getexternalfilterdirectory{\externalfilterparameter\c!directory}%
+   \doifsomething{\getexternalfilterdirectory}\dosetexternalfilterdirectory}
+   
+\def\dosetexternalfilterdirectory
+  {\expandafter\docheckdirectorystart\getexternalfilterdirectory\@nil
+   \expandafter\docheckdirectorystop\getexternalfilterdirectory/\@nil}
+
+\def\docheckdirectorystart#1#2\@nil
+  {\doif{#1}{/}
+      {\writeline
+       \showmessage\??externalfilter??{forbidden}\getexternalfilterdirectory
+       \batchmode
+       \normalend}}
+   
+\def\docheckdirectorystop#1#2/#3\@nil
+  {\edef\getexternalfilterdirectory{#1#2/}}
+
+
 %D \subsubject {Set file names}
 %D
 %D \type{\externalfilterbasefile} is the name of the temporary file without
@@ -199,7 +224,8 @@
 %D well as the value of \type{name} key.
 
 \def\setexternalfilterfilenames
-  {% Set the name of temp file for os filter
+  {\setexternalfilterdirectory
+   % Set the name of temp file for os filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
        {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter}}
@@ -208,10 +234,19 @@
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
    \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
-   % The name of the buffer to which data is written
-   \edef\externalfilterinputfile {\externalfilterbasefile.tmp}%
+   % In MkII, the buffer output is written to \TEXbufferfile{buffername} where
+   % the macro \TEXbufferfile is defined as
+   %
+   %        \def\TEXbufferfile   #1{\bufferprefix#1.\f!temporaryextension}
+   %
+   % We redefine bufferprefix to include the directory name.
+   \doifmode{\s!mkii}
+      {\edef\bufferprefix{\getexternalfilterdirectory\jobname-}}
+   % In MkIV, we do not need to do such jugglary, because we can specify the
+   % name of the file where the buffer has to be saved.
+   \edef\externalfilterinputfile {\getexternalfilterdirectory\externalfilterbasefile.\f!temporaryextension}%
    % The name of the file to which the output is written
-   \edef\externalfilteroutputfile{\externalfilterparameter\c!output}%
+   \edef\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}%
    \doshowfilterstate
   }
 
@@ -222,7 +257,7 @@
 
 \def\doprocessexternalfilter
   {% By defualt, buffers are in memory in MkIV
-   \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile]}%
+   \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile][\externalfilterinputfile]}%
    % Run external command
    \doexecuteexternalfilter
    \doreadprocessedfile
@@ -274,6 +309,7 @@
    \c!continue=\v!no,
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
+   \c!directory=filter-tmp,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
