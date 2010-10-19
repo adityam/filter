@@ -89,6 +89,11 @@
   \fi
 \stoptexdefinition
 
+\def\doshowfilterstatus#1%
+  {\iftraceexternalfilters
+    \writestatus\m!externalfilter{#1}%
+  \fi}
+
 \starttexdefinition doshowfiltercommand
     \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
 \stoptexdefinition
@@ -114,8 +119,9 @@
   {\dodoubleargument\dodefineexternalfilter}
 
 \def\dodefineexternalfilter[#1][#2]%
-  {\edef\currentexternalfilter{#1}%
-  \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
+  {\doshowfilterstatus{defining filter : #1}%
+   \edef\currentexternalfilter{#1}%
+   \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
    \doif{\externalfilterparameter\c!continue}\v!yes
       {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
