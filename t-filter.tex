@@ -133,8 +133,8 @@
 \def\dostartexternalfilter[#1][#2]% filter options
   {% Initializations
    \egroup %\bgroup in \start#1 
-   \begingroup % to keep assignments local
    \edef\currentexternalfilter   {#1}%
+   \begingroup % to keep assignments local
    \getparameters[\??externalfilter??#1][\c!name=,#2]%
    \setexternalfilterfilenames
    % Capture the contents of the buffer
