@@ -3,11 +3,13 @@
 
 \defineexternalfilter 
   [markdownA]
-  [filter={pandoc -w context -o \externalfilteroutputfile }]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   directory=temp/] % Trailing /
 
 \defineexternalfilter 
   [markdownB]
-  [filter={pandoc -w context -o \externalfilteroutputfile }]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   directory=temp] % No trailing /
 
 
 \traceexternalfilters
