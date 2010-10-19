@@ -225,7 +225,7 @@
 
 \def\setexternalfilterfilenames
   {\setexternalfilterdirectory
-   % Set the name of temp file for os filter
+   % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
        {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter}}
@@ -243,9 +243,10 @@
    \doifmode{\s!mkii}
       {\edef\bufferprefix{\getexternalfilterdirectory\jobname-}}
    % In MkIV, we do not need to do such jugglary, because we can specify the
-   % name of the file where the buffer has to be saved.
+   % name of the file where the buffer has to be saved. This file is
+   % \externalfilterinputfile (because it is the input to the filter).
    \edef\externalfilterinputfile {\getexternalfilterdirectory\externalfilterbasefile.\f!temporaryextension}%
-   % The name of the file to which the output is written
+   % The name of the file to which the filter output is written
    \edef\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}%
    \doshowfilterstate
   }
