@@ -11,12 +11,12 @@
       A module to run external programs on the contents of start-stop evironment
     </TPM:Description>
     <TPM:Author>Aditya Mahajan</TPM:Author>
-    <TPM:Size>23810</TPM:Size>
+    <TPM:Size>26606</TPM:Size>
     <TPM:Build/>
-    <TPM:RunFiles size="9189">
+    <TPM:RunFiles size="10992">
       tex/context/third/filter/t-filter.tex
     </TPM:RunFiles>
-    <TPM:DocFiles size="14621">
+    <TPM:DocFiles size="15614">
       doc/context/third/filter/filter.txt
       tpm/t-filter.tpm
     </TPM:DocFiles>
