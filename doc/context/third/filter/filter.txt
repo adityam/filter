@@ -34,7 +34,7 @@ Installation
 Writing installation instructions is always boring. If you are using ConTeXt
 minimals, you can install the module using
 
-  first-setup.sh --extras="t-filter"
+    first-setup.sh --extras="t-filter"
 
 Depending on your TeX distribution, you may already have the module.
 To verify, check if
@@ -187,7 +187,7 @@ By default, `\externalfilterinputfile` is set to `\jobname-<filter>.tmp`, where
 is set, `\externalfilterinputfile` equals `\jobname-<filter>-<n>.tmp`, where
 `<n>` is the number of filter environments that have appeared so far. In this
 case,  a `\jobname-<filter>-<n>.tmp.md5` file, which stores the `md5` sum of the
-input file` is also created.
+input file is also created.
 
 A macro `\externalfilterbasefile` stores the name of the input file without the
 extension. By default, the value of `\externalfilteroutputfile` is
@@ -221,6 +221,37 @@ where `\readPNGfile` is defined as
 
     \def\readPNGfile#1{\externalfigure[#1]}
 
+Output Directory
+----------------
+
+This module creates a lot of temporary files that clutter the current directory.
+If you prefer the temporary files to be created in another directory, specify
+the `directory` option, e.g.,
+
+    \defineexternalfilter
+      [...]
+      [...
+       directory=output/,
+      ...]
+
+This will create all the temporary files in `output` directory. The name of the
+directory may be specified with or without a trailing slash. Thus,
+`directory=output` and `directory=output/` are both valid. 
+
+The directory path **must be relative to the current directory**. Absolute paths
+do not work. If you try to use a absolute path like
+
+    \defineexternalfilter
+      [...]
+      [...
+       directory=/tmp/,
+      ...]
+
+you will get an error message
+
+    t-filter        : Fatal Error: Cannot use absolute path /tmp/ as directory
+
+and compilation will stop.
 
 Standard options
 ---------------
@@ -423,4 +454,7 @@ Version History
     - Added `\traceexternalfilters` for tracing
     - Added a message that shows filter command on console
     - A message is shown on console when output file is not found.
+- **2010.10.30**:
+    - Added `directory=...` option to `\defineexternalfilter` and
+      `\setupexternalfilters`.
     
