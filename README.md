@@ -457,4 +457,5 @@ Version History
 - **2010.10.30**:
     - Added `directory=...` option to `\defineexternalfilter` and
       `\setupexternalfilters`.
-    
+- **2010.12.04**:
+    - Improved checking of leading and trailing `/` in `directory` option.
