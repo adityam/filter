@@ -22,7 +22,7 @@
 %D The first step is to set the interface variables. This allows me to use 
 %D \type{\c!filter} etc. in the module definition, and thereby reduces the risk
 %D of a typo. Currently, only English names are provided. If someone wants, I
-%D can also add other multi-linugal names.
+%D can also add other multi-lingual names.
 
 \startinterface all
   \setinterfaceconstant {filter}           {filter}
@@ -40,6 +40,7 @@
 \setinterfacemessage{externalfilter}{notfound}  {file -- cannot be found}
 \setinterfacemessage{externalfilter}{missing}   {output file missing}
 \setinterfacemessage{externalfilter}{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
+\setinterfacemessage{externalfilter}{slash}     {Appending / to directory -- }
 
 %D \subsubject {Name space}
 %D
@@ -159,8 +160,8 @@
    \endgroup}
    
 \def\doinlineexternalfilter[#1]%
-  {\begingroup % to keep assignments local
-   \edef\currentexternalfilter {#1}%
+  {\edef\currentexternalfilter {#1}%
+   \begingroup % to keep assignments local
    \getparameters[\??externalfilter??#1][\c!name=,\c!continue=\v!no]%
    \setexternalfilterfilenames
    \pushcatcodetable
@@ -202,6 +203,19 @@
 
 %D \section {Helper Functions}
 %D
+%D \subsubject {First and last character of a string}
+
+\def\getfirstcharacter#1%
+  {\dogetfirstcharacter#1\relax}
+
+\def\dogetfirstcharacter#1#2\relax{#1}
+
+\def\getlastcharacter#1%
+  {\@EA\dogetlastcharacter#1\relax}
+
+\def\dogetlastcharacter#1#2%
+  {\ifx#2\relax#1\else\@EA\dogetlastcharacter\@EA#2\fi}
+
 %D \subsubject {Set the name of output directory}
 
 \def\setexternalfilterdirectory
@@ -209,18 +223,16 @@
    \doifsomething{\getexternalfilterdirectory}\dosetexternalfilterdirectory}
    
 \def\dosetexternalfilterdirectory
-  {\expandafter\docheckdirectorystart\getexternalfilterdirectory\@nil
-   \expandafter\docheckdirectorystop\getexternalfilterdirectory/\@nil}
-
-\def\docheckdirectorystart#1#2\@nil
-  {\doif{#1}{/}
+  {\doif{\getfirstcharacter\getexternalfilterdirectory}{/}
       {\writeline
        \showmessage\??externalfilter??{forbidden}\getexternalfilterdirectory
        \batchmode
-       \normalend}}
-   
-\def\docheckdirectorystop#1#2/#3\@nil
-  {\edef\getexternalfilterdirectory{#1#2/}}
+       \errmessage{}
+       \normalend}
+   \doifnot{\getlastcharacter\getexternalfilterdirectory}{/}
+      {\showmessage\??externalfilter??{slash}\getexternalfilterdirectory
+       \edef\getexternalfilterdirectory{\getexternalfilterdirectory/}}}
+  
 
 
 %D \subsubject {Set file names}

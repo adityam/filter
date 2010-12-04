@@ -12,6 +12,7 @@ blog
 *.log
 *.tui
 *.tuc
+*.top
 *.tmp
 mpgraph.mp
 *-mpgraph.mp
