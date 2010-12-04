@@ -1,0 +1,14 @@
+\usemodule[filter]
+
+\starttext
+\getfirstcharacter{character}
+\getfirstcharacter{ćharacter}
+
+\undefined
+
+\loggingall
+\def\getexternalfilterdirectory{character/}
+\doifelse{\getlastcharacter\getexternalfilterdirectory}{/}{YES}{NO}
+\def\getexternalfilterdirectory{character}
+\doifelse{\getlastcharacter\getexternalfilterdirectory}{/}{YES}{NO}
+\stoptext
