@@ -16,7 +16,7 @@ local any          = lpeg.Cs(1)
 local spaceparser  = space^0 * lpeg.C(any^0)
 
 function externalfilter.httpget(filter, name, separator)
-  local content    = buffers.content(name)
+  local content    = buffers.getcontent(name)
   local lines      = lpeg.match(splitter, content)
   for i=1,#lines do
 	lines[i] = lpeg.match(spaceparser, lines[i])
@@ -29,8 +29,10 @@ function externalfilter.httpget(filter, name, separator)
   if trace_externalfilter then
 	report_externalfilter("downloading url %s", url)
   end
+  
+  local specification = resolvers.splitmethod(url) 
 
-  local file       = resolvers.finders['http'](url) or ""
+  local file       = resolvers.finders['http'](specification) or ""
 
   if trace_externalfilter then
 	if file and file ~= "" then
