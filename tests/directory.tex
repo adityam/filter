@@ -11,6 +11,11 @@
   [filter={pandoc -w context -o \externalfilteroutputfile },
    directory=temp] % No trailing /
 
+\defineexternalfilter 
+  [markdownC]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   directory=../output] % parent directory
+
 
 \traceexternalfilters
 
@@ -41,6 +46,10 @@ gives:
 \startmarkdownB
   And  now for something completely different. Does **Bold** work?
 \stopmarkdownB
+
+\startmarkdownC
+  And  now for something completely different. Does *italic* work?
+\stopmarkdownC
 
 \stoptext
 \endinput
