@@ -12,6 +12,14 @@ def make_tds(name, files, doc)
   FileUtils.cp doc, (doc_dir + "/#{name}.txt")
 end
 
+def make_zip name
+  # Ideally, one could have used
+  # sh "zip #{name} #{name}" 
+  # but that creates a top level directory #{name}.
+  # So, we take the following round about alternative.
+  sh "cd #{name} && zip -r ../#{name} ./ && cd ../"
+end
+
 FILTER_TEX = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.tex]
 FILTER_DOC = "README.md"
 
@@ -29,13 +37,13 @@ end
 desc "Make TDS for filter module"
 task :filter => :clean_filter do
   make_tds :filter, FILTER_TEX, FILTER_DOC
-  sh "zip -r filter.zip filter"
+  make_zip :filter
 end
 
 desc "Make TDS for vim module"
 task :vim => :clean_vim do
   make_tds :vim, VIM_TEX, VIM_DOC
-  sh "zip -r vim.zip vim"
+  make_zip :vim
 end
 
 CLEAN.include('*.zip')
