@@ -457,4 +457,6 @@ Version History
 - **2010.10.30**:
     - Added `directory=...` option to `\defineexternalfilter` and
       `\setupexternalfilters`.
-    
+- **2010.12.04**:
+    - Bugfix in `directory` code. The option `directory=../something` was
+      handled incorrectly.
