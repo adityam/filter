@@ -360,7 +360,17 @@ Macro variant
 For some cases, a macro `\inline<filter>{...}` is more natural to use rather
 than the environment `\start<filter>` ... `\stop<filter>`. The `\inline...`
 variant is meant for simple cases, so it does not accept any options in square
-brackets.
+brackets. This macro is similar to `\type` macro, and its argument can be
+written in two ways: either as a group `{...}` or delimited by arbitrary tokens.
+Thus, all the following are valid:
+
+    \defineexternalfilter[markdown][...]
+
+    \inlinemarkdown{both braces{}}
+
+    \inlinemarkdown+an opening brace {+
+
+    \inlinemarkdown!a closing brace }!
 
 
 
