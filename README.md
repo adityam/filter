@@ -261,7 +261,7 @@ and `after` options. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
 
-`\defineexternalfilter` also accepts a `setup` option to specify a list of 
+`\defineexternalfilter` also accepts a `setups` option to specify a list of 
 setups (defined using `\startsetup`). These setups may be used to define
 commands that are needed inside the environment.
 
