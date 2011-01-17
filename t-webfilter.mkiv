@@ -42,11 +42,15 @@
 \defineexternalfigure[webfilter][maxwidth=\textwidth,maxheight=\textheight]
 
 \appendtoks 
-  \ctxlua{thirddata.webfilter.definewebfilter("\currentwebfilter")}
+  \setevalue{\e!start\currentwebfilter}{\dostartwebfilter[\currentwebfilter]}
+  \setvalue{\e!stop\currentwebfilter}{\doprocesswebfilter}%
 \to \everydefinewebfilter
 
 
-\def\dostartwebfilter[#1][#2]%
+\unexpanded\def\dostartwebfilter#1[#2]% #1 is for space
+  {\bgroup\obeylines\dodoubleargument\dodostartwebfilter[#2]}
+
+\def\dodostartwebfilter[#1][#2]%
   {% Initializations
    \egroup % \bgroup in \start#1 -- see lua file
    \edef\currentwebfilter{#1}%

@@ -11,27 +11,12 @@ local trace_webfilter = false
 trackers.register("thirddata.webfilter", function(v) trace_webfilter = v end)
 local report_webfilter = logs.new("thirddata.webfilter") 
 
-local elements  = interfaces.complete.elements
-local interface = storage.shared.currentinterface
-
-local e_start = elements.start[interface]
-local e_stop  = elements.stop [interface]
-
 local match = string.match
 local gsub  = string.gsub
 
 local tinsert = table.insert
 local tconcat = table.concat
 
-function webfilter.definewebfilter(name)
-  local start_command ="\\bgroup\\obeylines\\dodoubleargument\\dostartwebfilter[" .. name .. "]" 
-  local stop_command  ="\\doprocesswebfilter"
-  if trace_webfilter then
-    report_webfilter("defining web filter", name)
-  end
-  context.setvalue(e_start .. name, start_command)
-  context.setvalue(e_stop  .. name, stop_command)
-end
 
 function webfilter.processwebfilter(name, transform, prefix, suffix, figuresetup)
   local content = webfilter.transform[transform](name)
