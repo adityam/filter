@@ -50,15 +50,16 @@
 %D \filename{mult-aux.mkiv}. But, that macro is not defined in \MKII; so I
 %D repeat simplified versions of the definitions here.
 
-\def\??externalfilter??{externalfilter}
+\def\????externalfilter{@@@@externalfilter}
+\def\!!externalfilter  {externalfilter}
 \def\currentexternalfilter{}
-\def\externalfiltercountername{\??externalfilter??-\currentexternalfilter-counter}
+\def\externalfiltercountername{\????externalfilter-\currentexternalfilter-counter}
 
 %D \subsubject {Read value of parameters}
 
 \def\externalfilterparameter#1%
   {\csname
-     \docheckparentparameter{\??externalfilter??\currentexternalfilter}{#1}%
+     \docheckparentparameter{\????externalfilter\currentexternalfilter}{#1}%
    \endcsname}
 
 \def\docheckparentparameter#1#2%
@@ -108,9 +109,9 @@
   
 \def\dosetupexternalfilters[#1][#2]%
   {\ifsecondargument
-     \getparameters[\??externalfilter??#1][#2]%
+     \getparameters[\????externalfilter#1][#2]%
    \else
-     \getparameters[\??externalfilter??][#1]%
+     \getparameters[\????externalfilter][#1]%
    \fi}
 
 
@@ -122,7 +123,7 @@
 \def\dodefineexternalfilter[#1][#2]%
   {\doshowfilterstatus{defining filter : #1}%
    \edef\currentexternalfilter{#1}%
-   \getparameters[\??externalfilter??#1][\s!parent=\??externalfilter??,#2]%
+   \getparameters[\????externalfilter#1][\s!parent=\????externalfilter,#2]%
    \doif{\externalfilterparameter\c!continue}\v!yes
       {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
@@ -136,7 +137,7 @@
    \egroup %\bgroup in \start#1 
    \edef\currentexternalfilter   {#1}%
    \begingroup % to keep assignments local
-   \getparameters[\??externalfilter??#1][\c!name=,#2]%
+   \getparameters[\????externalfilter#1][\c!name=,#2]%
    \setexternalfilterfilenames
    % Capture the contents of the buffer
    \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
@@ -144,7 +145,7 @@
 \def\doprocessexternalfilterfile[#1][#2]#3%
   {\begingroup
    \edef\currentexternalfilter    {#1}%
-   \getparameters[\??externalfilter??#1][\c!name=,#2]% TODO: Add continue=yes
+   \getparameters[\????externalfilter#1][\c!name=,#2]% TODO: Add continue=yes
    % Currently filters with a pipe (|) fail with continue=yes
    \setexternalfilterdirectory
    \edef\externalfilterinputfile  {#3}%
@@ -162,7 +163,7 @@
 \def\doinlineexternalfilter[#1]%
   {\edef\currentexternalfilter {#1}%
    \begingroup % to keep assignments local
-   \getparameters[\??externalfilter??#1][\c!name=,\c!continue=\v!no]%
+   \getparameters[\????externalfilter#1][\c!name=,\c!continue=\v!no]%
    \setexternalfilterfilenames
    \pushcatcodetable
    \futurelet\next\dodoinlineexternalfilter}
@@ -225,12 +226,12 @@
 \def\dosetexternalfilterdirectory
   {\doif{\getfirstcharacter\getexternalfilterdirectory}{/}
       {\writeline
-       \showmessage\??externalfilter??{forbidden}\getexternalfilterdirectory
+       \showmessage\!!externalfilter{forbidden}\getexternalfilterdirectory
        \batchmode
        \errmessage{}
        \normalend}
    \doifnot{\getlastcharacter\getexternalfilterdirectory}{/}
-      {\showmessage\??externalfilter??{slash}\getexternalfilterdirectory
+      {\showmessage\!!externalfilter{slash}\getexternalfilterdirectory
        \edef\getexternalfilterdirectory{\getexternalfilterdirectory/}}}
   
 
@@ -245,8 +246,8 @@
   {\setexternalfilterdirectory
    % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
-       {\edef\externalfiltertmpfile{\??externalfilter??-\currentexternalfilter}}
+       {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
+       {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
        {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
    % The following  macros are useful for filter= and filtercommand= options
@@ -304,9 +305,9 @@
   {\doif{\externalfilterparameter\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
           {\dodoreadprocessedfile}
-          {\showmessage\??externalfilter??{notfound}\externalfilteroutputfile 
+          {\showmessage\!!externalfilter{notfound}\externalfilteroutputfile 
            \blank
-           {\tttf [[\getmessage\??externalfilter??{missing}]]}%
+           {\tttf [[\getmessage\!!externalfilter{missing}]]}%
            \blank
           }}}
 
