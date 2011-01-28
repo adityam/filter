@@ -249,7 +249,7 @@
        {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
        {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
-       {\edef\externalfiltertmpfile{\externalfilterparameter\c!name}}
+       {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter-\externalfilterparameter\c!name}}
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
    \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
