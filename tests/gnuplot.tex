@@ -1,26 +1,42 @@
 \usemodule[filter]
 
-\def\gnuplotcommand
+\traceexternalfilters
+
+\unprotect
+\def\gnuplotcommandno
   {gnuplot 
-     -e "set term pdf"
-     -e "set output '\externalfilteroutputfile'"
-      \jobname-gnuplotinclusions.tmp}
+     -e "set term pdf
+             size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
+          set output '\externalfilteroutputfile'"
+      \jobname-gnuplotinclusions.tmp \externalfilterinutfile}
+
+\def\gnuplotcommandyes
+  {--noquotes gnuplot 
+     '-e "set term pdf
+             size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
+          set output \letterbackslash"\externalfilteroutputfile\letterbackslash""
+      \jobname-gnuplotinclusions.tmp \externalfilterinputfile'}
 
 \def\startgnuplotinclusions
   {\dostartbuffer[gnuplotinclusions][startgnuplotinclusions][stopgnuplotinclusions]}
 
 \def\stopgnuplotinclusions
-  {\doifmode{mkiv}{\savebuffer[gnuplotinclusions][\jobname-gnuplotinclusions.tmp]}}
+  {\doifmode\s!mkiv{\savebuffer[gnuplotinclusions][\jobname-gnuplotinclusions.tmp]}}
 
 \defineexternalfilter
   [gnuplot]
-  [output=\externalfilterbasefile.pdf,
-   filter=\gnuplotcommand,
-   readcommand=\gnuplotreadcommand
+  [\c!output=\externalfilterbasefile.pdf,
+   \c!filtercommand=\getvalue{gnuplotcommand\externalfilterparameter\c!continue},
+   \c!readcommand=\gnuplotreadcommand,
+   \c!width=5in,
+   \c!height=3in,
+   \c!continue=\v!yes,
   ]
 
 \def\gnuplotreadcommand#1%
-  {\externalfigure[#1]} %TODO: Add height width
+  {\externalfigure[#1]} 
+
+\protect
 
 \starttext
 \startgnuplotinclusions
@@ -29,6 +45,10 @@
 
 \startgnuplot
   plot sin(x)
+\stopgnuplot
+
+\startgnuplot[width=3in]
+  plot cos(x)
 \stopgnuplot
 \stoptext
 
