@@ -1,0 +1,35 @@
+\usemodule[filter]
+
+\def\gnuplotcommand
+  {gnuplot 
+     -e "set term pdf"
+     -e "set output '\externalfilteroutputfile'"
+      \jobname-gnuplotinclusions.tmp}
+
+\def\startgnuplotinclusions
+  {\dostartbuffer[gnuplotinclusions][startgnuplotinclusions][stopgnuplotinclusions]}
+
+\def\stopgnuplotinclusions
+  {\doifmode{mkiv}{\savebuffer[gnuplotinclusions][\jobname-gnuplotinclusions.tmp]}}
+
+\defineexternalfilter
+  [gnuplot]
+  [output=\externalfilterbasefile.pdf,
+   filter=\gnuplotcommand,
+   readcommand=\gnuplotreadcommand
+  ]
+
+\def\gnuplotreadcommand#1%
+  {\externalfigure[#1]} %TODO: Add height width
+
+\starttext
+\startgnuplotinclusions
+  set title "Made with ConTeXt"
+\stopgnuplotinclusions
+
+\startgnuplot
+  plot sin(x)
+\stopgnuplot
+\stoptext
+
+   
