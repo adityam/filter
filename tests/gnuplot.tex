@@ -27,14 +27,14 @@
   [gnuplot]
   [\c!output=\externalfilterbasefile.pdf,
    \c!filtercommand=\getvalue{gnuplotcommand\externalfilterparameter\c!continue},
-   \c!readcommand=\gnuplotreadcommand,
    \c!width=5in,
    \c!height=3in,
    \c!continue=\v!yes,
+   \c!read=\v!no,
   ]
 
-\def\gnuplotreadcommand#1%
-  {\externalfigure[#1]} 
+\def\usegnuplotgraphic#1[#2]%
+  {\externalfigure[\jobname-#2]} 
 
 \protect
 
@@ -43,13 +43,27 @@
   set title "Made with ConTeXt"
 \stopgnuplotinclusions
 
-\startgnuplot
+\startgnuplot[name=sin]
   plot sin(x)
 \stopgnuplot
 
-\startgnuplot[width=3in]
+\startgnuplot[width=3in,name=cos]
   plot cos(x)
 \stopgnuplot
+
+\startgnuplot[name=both]
+  plot sin(x)
+  plot cos(x)
+\stopgnuplot
+
+sin: \usegnuplotgraphic[sin]
+
+cos: \usegnuplotgraphic[sin]
+
+both 1: \usegnuplotgraphic[both]
+
+both 2: \usegnuplotgraphic[both][page=2]
+
 \stoptext
 
    
