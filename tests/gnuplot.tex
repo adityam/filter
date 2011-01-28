@@ -3,18 +3,11 @@
 \traceexternalfilters
 
 \unprotect
-\def\gnuplotcommandno
-  {gnuplot 
-     -e "set term pdf
-             size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
-          set output '\externalfilteroutputfile'"
-      \jobname-gnuplotinclusions.tmp \externalfilterinutfile}
-
-\def\gnuplotcommandyes
+\def\gnuplotcommand
   {--noquotes gnuplot 
      '-e "set term pdf
              size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
-          set output \letterbackslash"\externalfilteroutputfile\letterbackslash""
+          set output \string\"\externalfilteroutputfile\string\""
       \jobname-gnuplotinclusions.tmp \externalfilterinputfile'}
 
 \def\startgnuplotinclusions
@@ -26,7 +19,7 @@
 \defineexternalfilter
   [gnuplot]
   [\c!output=\externalfilterbasefile.pdf,
-   \c!filtercommand=\getvalue{gnuplotcommand\externalfilterparameter\c!continue},
+   \c!filtercommand=\gnuplotcommand,
    \c!width=5in,
    \c!height=3in,
    \c!continue=\v!yes,
