@@ -284,7 +284,7 @@
    \endgroup 
    % Finalization
    \doif{\externalfilterparameter\c!continue}\v!yes
-        {\expandafter\increment\csname\externalfiltercountername\endcsname}%
+        {\doglobal\expandafter\increment\csname\externalfiltercountername\endcsname}%
    }
 
 %D \subsubject {Execute Filter}   
