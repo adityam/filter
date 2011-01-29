@@ -49,6 +49,8 @@
   \def\tab##1%
     {\dorecurse{\vimtypingparameter\c!tab}
     {\space}}
+  \doifinset{\vimtypingparameter\c!option}{\v!packed}
+    {\setupwhitespace[none]}
   \setcatcodetable\vimcatcodes
 \stopsetups
 
@@ -203,6 +205,7 @@
    \c!readcommand=\ReadFile,
    \c!output=\externalfilterbasefile.vimout,
    \c!setups=vimsetup,
+   \c!option=\v!packed, % Could be a list
   ]
 
 \protect

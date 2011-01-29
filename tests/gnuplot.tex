@@ -1,0 +1,62 @@
+\usemodule[filter]
+
+\traceexternalfilters
+
+\unprotect
+\def\gnuplotcommand
+  {--noquotes gnuplot 
+     '-e "set term pdf
+             size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
+          set output \string\"\externalfilteroutputfile\string\""
+      \jobname-gnuplotinclusions.tmp \externalfilterinputfile'}
+
+\def\startgnuplotinclusions
+  {\dostartbuffer[gnuplotinclusions][startgnuplotinclusions][stopgnuplotinclusions]}
+
+\def\stopgnuplotinclusions
+  {\doifmode\s!mkiv{\savebuffer[gnuplotinclusions][\jobname-gnuplotinclusions.tmp]}}
+
+\defineexternalfilter
+  [gnuplot]
+  [\c!output=\externalfilterbasefile.pdf,
+   \c!filtercommand=\gnuplotcommand,
+   \c!width=5in,
+   \c!height=3in,
+   \c!continue=\v!yes,
+   \c!read=\v!no,
+  ]
+
+\def\usegnuplotgraphic#1[#2]%
+  {\externalfigure[\jobname-\!!externalfilter-gnuplot-#2]} 
+
+\protect
+
+\starttext
+\startgnuplotinclusions
+  set title "Made with ConTeXt"
+\stopgnuplotinclusions
+
+\startgnuplot[name=sin]
+  plot sin(x)
+\stopgnuplot
+
+\startgnuplot[width=3in,name=cos]
+  plot cos(x)
+\stopgnuplot
+
+\startgnuplot[name=both]
+  plot sin(x)
+  plot cos(x)
+\stopgnuplot
+
+sin: \usegnuplotgraphic[sin]
+
+cos: \usegnuplotgraphic[sin]
+
+both 1: \usegnuplotgraphic[both]
+
+both 2: \usegnuplotgraphic[both][page=2]
+
+\stoptext
+
+   
