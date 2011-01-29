@@ -1,3 +1,16 @@
+%D \module
+%D   [     file=t-vim,
+%D      version=2011.01.29,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=Vim syntax highlighting,
+%D       author=Aditya Mahajan,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan,
+%D        email=adityam <at> umich <dot> edu,
+%D      license=Simplified BSD License]
+
+\writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
+
 \startmodule[vim]
 
 \unprotect
@@ -37,7 +50,7 @@
 \def\dodefinevimtyping[#1][#2]% 
   {\getparameters[\??vimtyping??#1][\s!parent=\??vimtyping??,#2]%
    \edef\currentvimtyping{#1}%
-   \defineexternalfilter[#1][\s!parent=\??vimtyping??]%
+   \defineexternalfilter[#1][\s!parent=\??vimtyping??#1]%
   \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
   }
 
@@ -64,7 +77,7 @@
        -c "set syntax=\vimtypingparameter\c!syntax" %
        -c "let contextstartline=\vimtypingparameter\c!start" %
        -c "let  contextstopline=\vimtypingparameter\c!stop" %
-       -c "source 2context.vim" % TODO: kpse:
+       -c "source kpse:2context.vim" 
        -c "wqa"}
 
 \newcatcodetable \vimcatcodes
