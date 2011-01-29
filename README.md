@@ -470,3 +470,6 @@ Version History
 - **2010.12.04**:
     - Bugfix in `directory` code. The option `directory=../something` was
       handled incorrectly.
+- **2011.01.28**
+    - Bugfix. The filter counter was not incremented inside a group. Made the
+      increment global.
