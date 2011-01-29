@@ -261,7 +261,7 @@ and `after` options. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
 
-`\defineexternalfilter` also accepts a `setup` option to specify a list of 
+`\defineexternalfilter` also accepts a `setups` option to specify a list of 
 setups (defined using `\startsetup`). These setups may be used to define
 commands that are needed inside the environment.
 
@@ -360,7 +360,17 @@ Macro variant
 For some cases, a macro `\inline<filter>{...}` is more natural to use rather
 than the environment `\start<filter>` ... `\stop<filter>`. The `\inline...`
 variant is meant for simple cases, so it does not accept any options in square
-brackets.
+brackets. This macro is similar to `\type` macro, and its argument can be
+written in two ways: either as a group `{...}` or delimited by arbitrary tokens.
+Thus, all the following are valid:
+
+    \defineexternalfilter[markdown][...]
+
+    \inlinemarkdown{both braces{}}
+
+    \inlinemarkdown+an opening brace {+
+
+    \inlinemarkdown!a closing brace }!
 
 
 
@@ -457,4 +467,9 @@ Version History
 - **2010.10.30**:
     - Added `directory=...` option to `\defineexternalfilter` and
       `\setupexternalfilters`.
-    
+- **2010.12.04**:
+    - Bugfix in `directory` code. The option `directory=../something` was
+      handled incorrectly.
+- **2011.01.28**
+    - Bugfix. The filter counter was not incremented inside a group. Made the
+      increment global.
