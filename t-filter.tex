@@ -312,12 +312,12 @@
           }}}
 
 \def\dodoreadprocessedfile
-  {\begingroup
-   \externalfilterparameter\c!before
+  {\externalfilterparameter\c!before
+   \begingroup
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilteroutputfile
-   \externalfilterparameter\c!after
-   \endgroup}
+   \endgroup
+   \externalfilterparameter\c!after}
 
 %D \section {Default Values}
 
