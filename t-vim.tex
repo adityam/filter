@@ -82,12 +82,12 @@
 
 \newcatcodetable \vimcatcodes
 \startcatcodetable \vimcatcodes 
-  \catcode`\\   = \escapecatcode
-  \catcode`\{   = \begingroupcatcode  
-  \catcode`\}   = \endgroupcatcode
-  \catcode`\^^M = \activecatcode
-  \catcode`\^^L = \activecatcode
-  \catcode`\    = \activecatcode
+  \catcode\backslashasciicode  = \escapecatcode
+  \catcode\leftbraceasciicode  = \begingroupcatcode  
+  \catcode\rightbraceasciicode = \endgroupcatcode
+  \catcode\endoflineasciicode  = \activecatcode
+  \catcode\formfeedasciicode   = \activecatcode
+  \catcode\spaceasciicode      = \activecatcode
 \stopcatcodetable 
 
 \def\startvimalternative
