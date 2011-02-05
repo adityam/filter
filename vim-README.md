@@ -38,8 +38,42 @@ don't know how to quit vim, type `:qa!`.)  Vim supports syntax
 highlighting for more than 500 programming languages; the `t-vim` module enables
 you to use any of them with just one `\definevimtyping`.
 
-How it all works
-----------------
+The command 
+
+    \definevimtyping [RUBY]  [syntax=ruby]
+
+defines three things:
+
+1. An environment
+
+        \startRUBY
+          ...
+        \stopRUBY
+
+    The contents of this environment are processed by a vim script
+    (`2context.vim`) and the result is read back in ConTeXt.
+
+2. A macro
+
+        \inlineRUBY{...}
+
+    The contents of this environment are processed by a vim script
+    (`2context.vim`) and the result is read back in ConTeXt.
+
+3. A macro
+
+        \typeRUBYfile{...}
+
+    The argument of this macro must a file name. That file is processed by
+    `2context.vim` and the result is read back in ConTeXt.
+
+In all the three cases, the `t-filter` module takes care of writing to external
+file, processing by `2context.vim`, and reading the contents back to ConTeXt.
+The `t-vim` module simply defines the macros that are used by `2context.vim`.
+
+
+Specifying start and stop line
+------------------------------
 
 Changing the color scheme
 -------------------------
