@@ -128,7 +128,9 @@
 \def\doinlineexternalfilter[#1]%
   {\edef\currentexternalfilter {#1}%
    \begingroup % to keep assignments local
-   \getparameters[\????externalfilter#1][\c!name=]% continue=no?
+   \getparameters[\????externalfilter#1][\c!name=]% TODO: add continue=no?
+   % Beware, currently filters that output pdf files fail with continue=no in
+   % MkIV.
    \setexternalfilterfilenames
    \pushcatcodetable
    \futurelet\next\dodoinlineexternalfilter}
@@ -264,7 +266,7 @@
    %        \def\TEXbufferfile   #1{\bufferprefix#1.\f!temporaryextension}
    %
    % We redefine bufferprefix to include the directory name.
-   \doifmode{*mkii}
+   \doifmode{\s!mkii}
       {\edef\bufferprefix{\getexternalfilterdirectory\jobname-}}
    % In MkIV, we do not need to do such jugglary, because we can specify the
    % name of the file where the buffer has to be saved. This file is

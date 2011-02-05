@@ -6,6 +6,7 @@
    output=\externalfilterbasefile.pdf,
    label=yes,
    checksum=no,
+   continue=yes,
    filtercommand=\barcodefiltercommand,
    readcommand=\barcodereadcommand]
 
@@ -16,14 +17,16 @@
   {barcode -i \externalfilterinputfile\space -o \externalfilterbasefile.eps\space
    -E % EPS output
    -e \externalfilterparameter{encoding}
-   \doif{\externalfilterparameter{checksum}}\v!no{-c}
-   \doif{\externalfilterparameter{label}}\v!no{-n} 
+   %\doif{\externalfilterparameter{checksum}}\v!no{-c}
+   %\doif{\externalfilterparameter{label}}\v!no{-n} 
    &&
    epstopdf \externalfilterbasefile.eps --outfile=\externalfilteroutputfile
    }
 
+\traceexternalfilters
+
 \starttext
-\inlinebarcode{Hello World}
+\inlinebarcode!Hello World!
 
 \placefigure{A Bar code}{\inlinebarcode{barcode}}
 \stoptext

@@ -1,23 +1,59 @@
 The vim module
 ==============
 
-ConTeXt has excellent code highlighting capabilities for some languages: TeX,
-metapost, XML, amongst others. In MkII, syntax highlighting was done by parsing
-the source code in TeX---a task not for the faint of heart. In MkIV, the
-situation is much better: syntax highlighting is done by parsing the source code
-in Lua using LPEG. Nonetheless, writing a grammar to parse the source code of
-languages is a tricky task. This module takes the onus of defining such a
-grammar away from the user and uses Vim editor to create syntax highlighting. A
-helper script, `2context.vim` does the actual work.
+This module highlights code snippets using vim as a syntax
+highlighter. Such a task may appear pointless at first glance. After all,
+ConTeXt provides excellent syntax highlighting features for TeX, Metapost, XML,
+and a few other langauges. And in MkIV, you can specify the grammer to parse a
+language, and get syntax highlighting for a new language. But writing such
+grammers is difficult. More importantly, why reinvent the wheel? Most
+editors, and many other syntax highlighting programs, already syntax highlight
+many programming languages. Why not just leverage these external programs to
+generate syntax highlighting? This module does exactly that.
 
-The idea of the module was germinated  by Mojca Miklavec. She said (crica Sep
-2005):
+Installation
+------------
+
+TODO:
+
+Usage
+-----
+
+Suppose you want to syntax highlight Ruby. In particular, you want
+
+    \startRUBY
+      # Wow, my first ruby program
+      print("Hello World")
+    \stopRUBY
+
+to be printed with Ruby syntax highlighting. To get that, define
+
+    \definevimtyping [RUBY]  [syntax=ruby]
+
+Yes, its that easy. To get syntax highlighting for a particular language, all
+you need to know what is its `filetype` in vim. If you don't know that, start
+vim and type `:help syntax.txt` and go through the list of supported languages to
+find the name of the language that you are interested in. (Oh, and in case you
+don't know how to quit vim, type `:qa!`.)  Vim supports syntax
+highlighting for more than 500 programming languages; the `t-vim` module enables
+you to use any of them with just one `\definevimtyping`.
+
+How it all works
+----------------
+
+Changing the color scheme
+-------------------------
+
+A bit of a history
+------------------
+
+Mojca Miklavec germinated the idea of using vim to get syntax highlighting.
+Below is her message to the ConTeXt mailing list (circa Sep 2005):
 
 > I am thinking of piping the code to vim, letting vim process it, and return
 > something like `highlight[Conditional]{if} \highlight[Delimiter]{(}
 > \highlight[Identifier]{!}`.
-
-
+>
 > One could modify the `2html.vim` file. Vim can already transform the highlighted
 > code to HTML, so ConTeXt should not be so difficult. Vim already has over 400
 > syntax file definitions, probably equivalent to some hundred thousand lines of
@@ -33,28 +69,6 @@ About two years later (circa June 2008), Mojca and I (Aditya Mahajan) pickup up
 on this idea and released `t-vim`. Over the next few years, nothing much changed
 in the module, except a few minor bug fixes. 
 
-Around June 2010, I decided to completely rewrite the module from scratch. It
-now uses the `t-filter` module behind the scenes for all the book-keeping of
-creating and maintaining external files.
-
-Installation
-------------
-
-You also need to install `t-filter` module.
-
-Basic Usage
------------
-
-The main macro of this module is `\definevimtyping`. Suppose you want to do
-syntax highlighting of ruby code in ConTeXt. For that you may use:
-
-    \definevimtyping [RUBY]  [syntax=ruby]
-
-This defines an environment
-
-    \startRUBY
-      ...
-    \stopRUBY
-
-The contents of this environment are written to an external file, which is then
-parsed using vim, and the output is read back by ConTeXt.
+Around June 2010, I decided to completely rewrite the module from scratch. The
+new version of `t-vim` relies on `t-filter` for all the bookkeeping. As a
+result, the module is smaller and more robust.
