@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.01.29,
+%D      version=2011.02.05
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -24,18 +24,18 @@
   \setinterfaceconstant {syntax}      {syntax} 
 \stopinterface
 
-\def\??vimtyping??{vimtyping}
+\def\????vimtyping{@@@@vimtyping}
 
-\def\vimtypingparameter #1{\csname\docheckparentparameter{\??vimtyping??\currentvimtyping}{#1}\endcsname}
+\installparameterhandler \????vimtyping {vimtyping}
 
 \def\setupvimtyping
   {\dodoubleargument\dosetupvimtyping}
 
 \def\dosetupvimtyping[#1][#2]%
   {\ifsecondargument
-     \getparameters[\??vimtyping??#1][#2]%
+     \getparameters[\????vimtyping#1][#2]%
    \else
-      \getparameters[\??vimtyping??][#1]%
+      \getparameters[\????vimtyping][#1]%
    \fi}
 
 \def\dotypevimfile[#1][#2][#3]% id options file
@@ -48,10 +48,10 @@
   {\dodoubleargument\dodefinevimtyping}
 
 \def\dodefinevimtyping[#1][#2]% 
-  {\getparameters[\??vimtyping??#1][\s!parent=\??vimtyping??,#2]%
+  {\getparameters[\????vimtyping#1][\s!parent=\????vimtyping,#2]%
    \edef\currentvimtyping{#1}%
-   \defineexternalfilter[#1][\s!parent=\??vimtyping??#1]%
-  \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
+   \defineexternalfilter[#1][\s!parent=\????vimtyping#1]%
+  \setvalue{type#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
   }
 
 \startsetups[vimsetup]
@@ -63,8 +63,8 @@
     {\dorecurse{\vimtypingparameter\c!tab}
     {\space}}
   \doifinset{\vimtypingparameter\c!option}{\v!packed}
-    {\setupwhitespace[none]}
-  \setcatcodetable\vimcatcodes
+    {\setupwhitespace[\v!none,\v!flexible]}
+  \setcatcodetable\externalfilterwritecatcodes
 \stopsetups
 
 \def\vimfiltercommand
@@ -79,16 +79,6 @@
        -c "let  contextstopline=\vimtypingparameter\c!stop" %
        -c "source kpse:2context.vim" 
        -c "wqa"}
-
-\newcatcodetable \vimcatcodes
-\startcatcodetable \vimcatcodes 
-  \catcode`\\   = \escapecatcode
-  \catcode`\{   = \begingroupcatcode  
-  \catcode`\}   = \endgroupcatcode
-  \catcode`\^^M = \activecatcode
-  \catcode`\^^L = \activecatcode
-  \catcode`\    = \activecatcode
-\stopcatcodetable 
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
@@ -106,19 +96,19 @@
 \def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
   {\def\dodosetupvimsyntax##1%
     { \doifsomething{#2}
-      {\definecolor[\??vimtyping??:\currentvimalternative:##1:color] [#2]%
-       \getparameters[\??vimtyping??::\currentvimalternative::##1]
-                     [\c!color={\??vimtyping??:\currentvimalternative:##1:color}]}
-     \getparameters[\??vimtyping??::\currentvimalternative::##1]
+      {\definecolor[\????vimtyping:\currentvimalternative:##1:color] [#2]%
+       \getparameters[\????vimtyping::\currentvimalternative::##1]
+                     [\c!color={\????vimtyping:\currentvimalternative:##1:color}]}
+     \getparameters[\????vimtyping::\currentvimalternative::##1]
                    [\c!style=#3,
                     \c!command=#4]}%
      \processcommalist[#1]\dodosetupvimsyntax}
 
 
 \def\vimsyntax[#1]#2% style content
-  {\dostartattributes{\??vimtyping??::\currentvimalternative::Normal}\c!style\c!color\empty%
-   \dostartattributes{\??vimtyping??::\currentvimalternative::#1}\c!style\c!color\empty%
-   \getvalue{\??vimtyping??::\currentvimalternative::#1\c!command}{#2}%
+  {\dostartattributes{\????vimtyping::\currentvimalternative::Normal}\c!style\c!color\empty%
+   \dostartattributes{\????vimtyping::\currentvimalternative::#1}\c!style\c!color\empty%
+   \getvalue{\????vimtyping::\currentvimalternative::#1\c!command}{#2}%
    \dostopattributes
    \dostopattributes}
 
@@ -192,7 +182,7 @@
 
   \setvimsyntax 
     [Comment, SpecialComment]
-    [][][\slanted]
+    [][][\italic]
 
   \setvimsyntax
     [Debug,Ignore]
