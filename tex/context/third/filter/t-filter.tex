@@ -110,12 +110,12 @@
 \def\doprocessexternalfilterfile[#1][#2]#3%
   {\begingroup
    \edef\currentexternalfilter    {#1}%
-   \getparameters[\????externalfilter#1][\c!name=,#2]% TODO: Add continue=yes
-   % Currently filters with a pipe (|) fail with continue=yes
+   \getparameters[\????externalfilter#1][\c!name=,\c!continue=\v!yes,#2]% 
+   %NOTE: Currently filters with a pipe (|) fail with continue=yes
    \setexternalfilterdirectory
    \edef\externalfilterinputfile  {#3}%
-   \splitfiletype {#3}%
-   %BEWARE. \edef doesn not work
+   \splitfilename {#3}%
+   %NOTE: \edef doesn not work
    \def\externalfilterbasefile   {\splitoffname}%
    % The output is always in the directory specified by 
    % \c!directory; even if the input is from some other directory
@@ -128,9 +128,7 @@
 \def\doinlineexternalfilter[#1]%
   {\edef\currentexternalfilter {#1}%
    \begingroup % to keep assignments local
-   \getparameters[\????externalfilter#1][\c!name=]% TODO: add continue=no?
-   % Beware, currently filters that output pdf files fail with continue=no in
-   % MkIV.
+   \getparameters[\????externalfilter#1][\c!name=]% 
    \setexternalfilterfilenames
    \pushcatcodetable
    \futurelet\next\dodoinlineexternalfilter}

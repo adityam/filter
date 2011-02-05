@@ -268,12 +268,12 @@ commands that are needed inside the environment.
 The order in which these options are executed is:
 
     \def\dodoreadprocessedfile
-      {\bgroup
-       \externalfilterparameter\c!before
+      {\externalfilterparameter\c!before
+       \begingroup
        \processcommacommand[\externalfilterparameter\c!setups]\directsetup
        \externalfilterparameter\c!readcommand\externalfilteroutputfile
-       \externalfilterparameter\c!after
-       \egroup}
+       \endgroup
+       \externalfilterparameter\c!after}
 
 Options to a specific environment
 ---------------------------------
