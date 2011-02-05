@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.02.05
+%D      version=2011.02.05,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -27,22 +27,7 @@
 \def\????vimtyping{@@@@vimtyping}
 
 \installparameterhandler \????vimtyping {vimtyping}
-
-\def\setupvimtyping
-  {\dodoubleargument\dosetupvimtyping}
-
-\def\dosetupvimtyping[#1][#2]%
-  {\ifsecondargument
-     \getparameters[\????vimtyping#1][#2]%
-   \else
-      \getparameters[\????vimtyping][#1]%
-   \fi}
-
-\def\dotypevimfile[#1][#2][#3]% id options file
-  {\bgroup
-   \setupvimtyping[#1][#2]%
-   \getvalue{process#1file}[#3]%
-   \egroup}
+\installsetuphandler     \????vimtyping {vimtyping}
 
 \def\definevimtyping
   {\dodoubleargument\dodefinevimtyping}
@@ -70,15 +55,18 @@
 \def\vimfiltercommand
   {vim -u NONE % don't read global config file
        -e % run in ex mode
+       -s % silent
        -C % set compatible
        -n % no swap file
        -c "set tabstop=\vimtypingparameter\c!tab" %
        -c "syntax on" %
        -c "set syntax=\vimtypingparameter\c!syntax" %
-       -c "let contextstartline=\vimtypingparameter\c!start" %
-       -c "let  contextstopline=\vimtypingparameter\c!stop" %
-       -c "source kpse:2context.vim" 
-       -c "wqa"}
+       -c "let contextstartline=\externalfilterparameter\c!start" %
+       -c "let  contextstopline=\externalfilterparameter\c!stop" %
+       -c "source 2context.vim" %
+       -c "qa" %
+       \externalfilteroutputfile\space
+       \externalfilterinputfile}
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
@@ -201,8 +189,7 @@
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
-   \c!filter=\vimfiltercommand,
-   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
+   \c!filtercommand=\vimfiltercommand,
    \c!continue=yes,
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
