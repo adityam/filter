@@ -51,7 +51,7 @@
   {\getparameters[\??vimtyping??#1][\s!parent=\??vimtyping??,#2]%
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1][\s!parent=\??vimtyping??#1]%
-  \setvalue{type#1file}{\dotripleargument\dotypevimfile[#1]}
+  \setvalue{type#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
   }
 
 \startsetups[vimsetup]

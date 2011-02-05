@@ -43,38 +43,16 @@
 \setinterfacemessage{externalfilter}{slash}     {Appending / to directory -- }
 
 %D \subsubject {Name space}
-%D
-%D I use the name space \type{externalfilter} for all variables. A lot of this
-%D code comes from Wolfgang Schuster and is also implemented in
-%D \filename{mult-aux.mkiv}. I could just call \type{\installnamespace} macro from
-%D \filename{mult-aux.mkiv}. But, that macro is not defined in \MKII; so I
-%D repeat simplified versions of the definitions here.
 
 \def\????externalfilter{@@@@externalfilter}
-\def\!!externalfilter  {externalfilter}
+\def\!!!!externalfilter{externalfilter}
 \def\currentexternalfilter{}
 \def\externalfiltercountername{\????externalfilter-\currentexternalfilter-counter}
 
-%D \subsubject {Read value of parameters}
+\ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
-\def\externalfilterparameter#1%
-  {\csname
-     \docheckparentparameter{\????externalfilter\currentexternalfilter}{#1}%
-   \endcsname}
-
-\def\docheckparentparameter#1#2%
-  {\ifcsname#1#2\endcsname
-      #1#2%
-    \else
-      \expandafter\redocheckparentparameter\csname#1\s!parent\endcsname{#2}%
-    \fi}
-
-\def\redocheckparentparameter#1#2%
-  {\ifx#1\relax
-      \s!empty
-   \else
-      \docheckparentparameter{#1}{#2}%
-   \fi}
+\installparameterhandler \????externalfilter \!!!!externalfilter
+\installsetuphandler     \????externalfilter {externalfilters} %Note the plural
 
 %D \section {Tracing Macros}
 
@@ -101,19 +79,6 @@
 \stoptexdefinition
 
 %D \section {The main user macros}
-%D
-%D \subsubject {Setup values of parameters}
-
-\def\setupexternalfilters
-  {\dodoubleargument\dosetupexternalfilters}
-  
-\def\dosetupexternalfilters[#1][#2]%
-  {\ifsecondargument
-     \getparameters[\????externalfilter#1][#2]%
-   \else
-     \getparameters[\????externalfilter][#1]%
-   \fi}
-
 
 %D \subsubject {Define a new filter}
 
@@ -163,10 +128,47 @@
 \def\doinlineexternalfilter[#1]%
   {\edef\currentexternalfilter {#1}%
    \begingroup % to keep assignments local
-   \getparameters[\????externalfilter#1][\c!name=,\c!continue=\v!no]%
+   \getparameters[\????externalfilter#1][\c!name=]% continue=no?
    \setexternalfilterfilenames
    \pushcatcodetable
    \futurelet\next\dodoinlineexternalfilter}
+
+%D \subsubject {Catcode tables}
+%D 
+%D Just to be sure, I define all catcode tables that are needed within the
+%D module. Some of these are repetition of what is defined in ConTeXt, but the
+%D internal names keep on changing which is a  maintenance nightmare.
+
+\newcatcodetable \externalfilterreadcatcodes
+\newcatcodetable \externalfilterwritecatcodes
+\newcatcodetable \externalfilterverbcatcodes
+
+\startcatcodetable \externalfilterreadcatcodes % same as typcatcodesa
+    \catcode\tabasciicode       \othercatcode
+    \catcode\endoflineasciicode \othercatcode
+    \catcode\formfeedasciicode  \othercatcode
+    \catcode\spaceasciicode     \othercatcode
+    \catcode\endoffileasciicode \othercatcode
+    \catcode\leftbraceasciicode \begingroupcatcode
+    \catcode\rightbraceasciicode\endgroupcatcode
+\stopcatcodetable
+
+\startcatcodetable \externalfilterwritecatcodes
+  \catcode\backslashasciicode  = \escapecatcode
+  \catcode\leftbraceasciicode  = \begingroupcatcode  
+  \catcode\rightbraceasciicode = \endgroupcatcode
+  \catcode\endoflineasciicode  = \activecatcode
+  \catcode\formfeedasciicode   = \activecatcode
+  \catcode\spaceasciicode      = \activecatcode
+\stopcatcodetable 
+
+\startcatcodetable \externalfilterverbcatcodes % same as vrbcatcodes
+    \catcode\tabasciicode      \othercatcode
+    \catcode\endoflineasciicode\othercatcode
+    \catcode\formfeedasciicode \othercatcode
+    \catcode\spaceasciicode    \othercatcode
+    \catcode\endoffileasciicode\othercatcode
+\stopcatcodetable
 
 %D \subsubject {Write argument to file verbatim}
 %D
@@ -181,11 +183,11 @@
    \fi}
 
 \def\dodoinlineexternalfilterA
-  {\setcatcodetable \typcatcodesa
+  {\setcatcodetable \externalfilterreadcatcodes
    \redoinlineexternalfilter}
 
 \def\dodoinlineexternalfilterB#1%
-  {\setcatcodetable \vrbcatcodes
+  {\setcatcodetable \externalfilterverbcatcodes
    \def\dododoinlineexternalfilterB##1#1{\redoinlineexternalfilter{##1}}%
    \dododoinlineexternalfilterB}
 
@@ -198,6 +200,9 @@
    \popcatcodetable
    \doexecuteexternalfilter
    \doreadprocessedfile
+   % Finalization
+   \doif{\externalfilterparameter\c!continue}\v!yes
+        {\doglobal\expandafter\increment\csname\externalfiltercountername\endcsname}%
    \endgroup}
 
 
@@ -226,12 +231,12 @@
 \def\dosetexternalfilterdirectory
   {\doif{\getfirstcharacter\getexternalfilterdirectory}{/}
       {\writeline
-       \showmessage\!!externalfilter{forbidden}\getexternalfilterdirectory
+       \showmessage\!!!!externalfilter{forbidden}\getexternalfilterdirectory
        \batchmode
        \errmessage{}
        \normalend}
    \doifnot{\getlastcharacter\getexternalfilterdirectory}{/}
-      {\showmessage\!!externalfilter{slash}\getexternalfilterdirectory
+      {\showmessage\!!!!externalfilter{slash}\getexternalfilterdirectory
        \edef\getexternalfilterdirectory{\getexternalfilterdirectory/}}}
   
 
@@ -246,10 +251,10 @@
   {\setexternalfilterdirectory
    % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
-       {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter}}
+       {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
+       {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
-       {\edef\externalfiltertmpfile{\!!externalfilter-\currentexternalfilter-\externalfilterparameter\c!name}}
+       {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter-\externalfilterparameter\c!name}}
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
    \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
@@ -259,7 +264,7 @@
    %        \def\TEXbufferfile   #1{\bufferprefix#1.\f!temporaryextension}
    %
    % We redefine bufferprefix to include the directory name.
-   \doifmode{\s!mkii}
+   \doifmode{*mkii}
       {\edef\bufferprefix{\getexternalfilterdirectory\jobname-}}
    % In MkIV, we do not need to do such jugglary, because we can specify the
    % name of the file where the buffer has to be saved. This file is
@@ -305,9 +310,9 @@
   {\doif{\externalfilterparameter\c!read}\v!yes
       {\doiffileelse{\externalfilteroutputfile}
           {\dodoreadprocessedfile}
-          {\showmessage\!!externalfilter{notfound}\externalfilteroutputfile 
+          {\showmessage\!!!!externalfilter{notfound}\externalfilteroutputfile 
            \blank
-           {\tttf [[\getmessage\!!externalfilter{missing}]]}%
+           {\tttf [[\getmessage\!!!!externalfilter{missing}]]}%
            \blank
           }}}
 
