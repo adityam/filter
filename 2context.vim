@@ -33,6 +33,8 @@ if exists("contextstopline")
   let s:end = contextstopline
   if !(s:end >= s:lnum && s:end <= line("$"))
     let s:end = line("$")
+  elseif s:end < 0
+    let s:end = line("$") - s:end
   endif
 else
   let s:end = line("$")

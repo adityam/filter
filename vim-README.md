@@ -72,8 +72,18 @@ file, processing by `2context.vim`, and reading the contents back to ConTeXt.
 The `t-vim` module simply defines the macros that are used by `2context.vim`.
 
 
-Specifying start and stop line
-------------------------------
+Start and stop lines
+--------------------
+
+The `\start<typing>` ... `\stop<typing>` environment and the `\type<typing>file`
+macro take an optional argument that is used to set options.
+
+For example, if we only want to typeset lines 15 through 25 of a ruby file
+`rails_install.rb`, we can use:
+
+    \typeRUBYfile[start=15,stop=25]{rails_install.rb}
+
+To exclude 10 lines from the end, set `stop=-10`.
 
 Changing the color scheme
 -------------------------

@@ -61,8 +61,8 @@
        -c "set tabstop=\vimtypingparameter\c!tab" %
        -c "syntax on" %
        -c "set syntax=\vimtypingparameter\c!syntax" %
-       -c "let contextstartline=\vimtypingparameter\c!start" %
-       -c "let  contextstopline=\vimtypingparameter\c!stop" %
+       -c "let contextstartline=\externalfilterparameter\c!start" %
+       -c "let  contextstopline=\externalfilterparameter\c!stop" %
        -c "source 2context.vim" %
        -c "qa" %
        \externalfilteroutputfile\space
