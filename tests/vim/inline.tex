@@ -1,0 +1,14 @@
+\setupcolors[state=start]
+\usemodule[vim]
+
+\definevimtyping  [RUBY]    [syntax=ruby]
+
+\traceexternalfilters
+
+\starttext
+
+\inlineRUBY+print "Hello #{name}"+
+
+\inlineRUBY{[1..10].do{|x| puts x}}
+
+\stoptext

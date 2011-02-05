@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.02.05
+%D      version=2011.02.05,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -27,22 +27,7 @@
 \def\????vimtyping{@@@@vimtyping}
 
 \installparameterhandler \????vimtyping {vimtyping}
-
-\def\setupvimtyping
-  {\dodoubleargument\dosetupvimtyping}
-
-\def\dosetupvimtyping[#1][#2]%
-  {\ifsecondargument
-     \getparameters[\????vimtyping#1][#2]%
-   \else
-      \getparameters[\????vimtyping][#1]%
-   \fi}
-
-\def\dotypevimfile[#1][#2][#3]% id options file
-  {\bgroup
-   \setupvimtyping[#1][#2]%
-   \getvalue{process#1file}[#3]%
-   \egroup}
+\installsetuphandler     \????vimtyping {vimtyping}
 
 \def\definevimtyping
   {\dodoubleargument\dodefinevimtyping}
