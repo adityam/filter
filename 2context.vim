@@ -1,15 +1,12 @@
-" Author    : Aditya Mahajan
-" version   : 0.2
+" Author    : Aditya Mahajan <adityam [at] umich [dot] edu> 
+" version   : 2011.02.05
+" license   : Simplified BSD License
 
-" This script converts the syntax highlighting of a file to ConTeXt. This file
-" is based on 2html.vim. 
+" This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
+" It assumes that two buffers are open. The first buffer is the output buffer,
+" and the second buffer is the input buffer.
 
-" Create a new buffer with  .vimout extension
-if expand("%") == ""
-  new texput.vimout
-else
-  new %:r.vimout
-endif
+" We move back and forth between the buffers, 
 
 " Make sure that the buffer is modifiable
 set modifiable
@@ -17,8 +14,8 @@ set modifiable
 " ... and empty
 %d 
 
-" Go to previous buffer
-wincmd p
+" Go to the last buffer
+sblast 
 
 " Loop over all lines in the original text.
 " Use contextstartline and contextstopline if they are set.
@@ -114,3 +111,5 @@ endwhile
 wincmd p
 " We have a spurious line in the end. So we remove it.
 $delete
+" Write the file
+write

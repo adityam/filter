@@ -55,6 +55,7 @@
 \def\vimfiltercommand
   {vim -u NONE % don't read global config file
        -e % run in ex mode
+       -s % silent
        -C % set compatible
        -n % no swap file
        -c "set tabstop=\vimtypingparameter\c!tab" %
@@ -62,8 +63,10 @@
        -c "set syntax=\vimtypingparameter\c!syntax" %
        -c "let contextstartline=\vimtypingparameter\c!start" %
        -c "let  contextstopline=\vimtypingparameter\c!stop" %
-       -c "source kpse:2context.vim" 
-       -c "wqa"}
+       -c "source 2context.vim" %
+       -c "qa" %
+       \externalfilteroutputfile\space
+       \externalfilterinputfile}
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
@@ -186,8 +189,7 @@
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
-   \c!filter=\vimfiltercommand,
-   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
+   \c!filtercommand=\vimfiltercommand,
    \c!continue=yes,
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
