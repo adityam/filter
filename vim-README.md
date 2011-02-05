@@ -85,8 +85,47 @@ For example, if we only want to typeset lines 15 through 25 of a ruby file
 
 To exclude 10 lines from the end, set `stop=-10`.
 
+Avoid clutter
+-------------
+
+Running an external file through vim is slow. So, `t-vim` reprocesses a snippet
+or a file only if its contents have changed. To check if the contents have
+changed, it writes each snippet to a different file and stores the md5 sum of
+that snippet. As a result, the working directory gets cluttered with lot of
+temporary files. To avoid the clutter, these temporary files can be written to a
+different directory, e.g.,
+
+    \definevimtyping[...]
+                    [directory=output/]
+
+ensures that all the temporary files are written to the `output` directory. See
+the section on _Output Directory_ in the documentation of `t-filter` module for
+more details.
+
+Before and after
+---------------
+
+Like most ConTeXt environments, `\definevimtyping` also accepts the `before` and
+`after` options. These can be used, for example, to enclose the output in a
+frame, etc.
+
 Changing the color scheme
 -------------------------
+
+This module provides two colorschemes
+
+- `pscolor` based on `ps_color` colorscheme for vim by Shi Zhu Pan.
+- `blackandwhite` based on `print_bw` colorscheme for vim by Mike Williams.
+
+A particular color scheme may be chosen using the options:
+
+    \definevimtyping
+      [...]
+      [...
+       alternative=pscolor,
+       ...]
+
+The default color scheme is `pscolor`.
 
 A bit of a history
 ------------------
@@ -116,3 +155,10 @@ in the module, except a few minor bug fixes.
 Around June 2010, I decided to completely rewrite the module from scratch. The
 new version of `t-vim` relies on `t-filter` for all the bookkeeping. As a
 result, the module is smaller and more robust.
+
+TODO
+----
+
+- Line numbering
+- continue line numbering from previous environment
+- modify tabs and spaces
