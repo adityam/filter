@@ -40,15 +40,15 @@
   }
 
 \startsetups[vimsetup]
-  \edef\currentvimtyping{\currentexternalfilter}
-  \edef\currentvimalternative{\vimtypingparameter\c!alternative}
+  \edef\currentvimtyping{\currentexternalfilter}%
+  \edef\currentvimalternative{\externalfilterparameter\c!alternative}%
   \let\SYN\vimsyntax
-  \def\NL{\strut} % TODO: Add line numbering
+  \def\NL{\strut}% TODO: Add line numbering
   \def\tab##1%
-    {\dorecurse{\vimtypingparameter\c!tab}
-    {\space}}
-  \doifinset{\vimtypingparameter\c!option}{\v!packed}
-    {\setupwhitespace[\v!none,\v!flexible]}
+    {\dorecurse{\externalfilterparameter\c!tab}
+    {\space}}%
+  \doifinset{\externalfilterparameter\c!option}{\v!packed}
+    {\setupwhitespace[\v!none,\v!flexible]}%
   \setcatcodetable\externalfilterwritecatcodes
 \stopsetups
 
@@ -58,15 +58,15 @@
        -s % silent
        -C % set compatible
        -n % no swap file
-       -c "set tabstop=\vimtypingparameter\c!tab" %
+       -c "set tabstop=\externalfilterparameter\c!tab" %
        -c "syntax on" %
-       -c "set syntax=\vimtypingparameter\c!syntax" %
+       -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let  contextstopline=\externalfilterparameter\c!stop" %
-       -c "source 2context.vim" %
+       -c "source kpse:2context.vim" %
        -c "qa" %
-       \externalfilteroutputfile\space
-       \externalfilterinputfile}
+       \externalfilterinputfile\space
+       \externalfilteroutputfile}
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
@@ -196,6 +196,7 @@
    \c!output=\externalfilterbasefile.vimout,
    \c!setups=vimsetup,
    \c!option=\v!packed, % Could be a list
+   \s!parent=\????externalfilter,
   ]
 
 \protect

@@ -3,10 +3,13 @@
 " license   : Simplified BSD License
 
 " This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
-" It assumes that two buffers are open. The first buffer is the output buffer,
-" and the second buffer is the input buffer.
+" It assumes that two buffers are open. The first buffer is the input buffer,
+" and the second buffer is the output buffer.
 
 " We move back and forth between the buffers, 
+
+" Split and go to the last buffer
+sblast 
 
 " Make sure that the buffer is modifiable
 set modifiable
@@ -14,10 +17,10 @@ set modifiable
 " ... and empty
 %d 
 
-" Go to the last buffer
-sblast 
-
 " Loop over all lines in the original text.
+
+wincmd p
+
 " Use contextstartline and contextstopline if they are set.
 
 if exists("contextstartline")
