@@ -256,29 +256,24 @@ and compilation will stop.
 Standard options
 ---------------
 
-Like most commands in ConTeXt, `\defineexternalfilter` also accepts the `before`
-and `after` options. These are executed before and after the output file is read
-using `readcommand`. Typically, these options are used to set the spacing around
-the environment or enclose the output in a frame, etc.
+`\defineexternalfilter` accepts the following standard options:
 
-`style` and `color` options set the style and color of the processed
-content. Currently, these options only work with MkIV.
+- `before` and `after`: to set the spacing of the environment or enclose the
+  output in a frame, etc. 
+- `style` and `color` (these currently only work in MkIV): to set the color and
+  style of the output.
+- `indentnext`: Should the next line be indented?
+- `setups`: specify a list of setups (defined using `\startsetups`). These
+  setups may be used to define commands that are needed inside the environment.
 
-`\defineexternalfilter` also accepts a `setups` option to specify a list of 
-setups (defined using `\startsetup`). These setups may be used to define
-commands that are needed inside the environment.
+The order in which these options are executed are:
 
-The order in which these options are executed is:
-
-    \def\dodoreadprocessedfile
-      {\externalfilterparameter\c!before
-       \begingroup
-       \doifmode\s!mkiv
-          {\dosetexternalfilterattributes\c!style\c!color}
-       \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-       \externalfilterparameter\c!readcommand\externalfilteroutputfile
-       \endgroup
-       \externalfilterparameter\c!after}
+1. `before`
+2. `style` and `color`
+3. `setups`
+4. `readcommand`
+5. `after`
+6. check `indentnext`
 
 Options to a specific environment
 ---------------------------------

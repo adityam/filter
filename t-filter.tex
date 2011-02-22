@@ -251,8 +251,8 @@
 %D extension. Its actual value depends on the state of \type{continue} key as
 %D well as the value of \type{name} key.
 
-\def\setexternalfilterfilenames
-  {\setexternalfilterdirectory
+\starttexdefinition setexternalfilterfilenames
+   \setexternalfilterdirectory
    % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
@@ -273,11 +273,11 @@
    % In MkIV, we do not need to do such jugglary, because we can specify the
    % name of the file where the buffer has to be saved. This file is
    % \externalfilterinputfile (because it is the input to the filter).
-   \edef\externalfilterinputfile {\getexternalfilterdirectory\externalfilterbasefile.\f!temporaryextension}%
+   \edef\externalfilterinputfile {\getexternalfilterdirectory\externalfilterbasefile.\f!temporaryextension}
    % The name of the file to which the filter output is written
-   \edef\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}%
+   \edef\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}
    \doshowfilterstate
-  }
+\stoptexdefinition
 
 
 %D \subsubject {Process Filter}
@@ -294,6 +294,8 @@
    % Finalization
    \doif{\externalfilterparameter\c!continue}\v!yes
         {\doglobal\expandafter\increment\csname\externalfiltercountername\endcsname}%
+   \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}%
+   \dorechecknextindentation
    }
 
 %D \subsubject {Execute Filter}   
@@ -324,7 +326,7 @@
   {\externalfilterparameter\c!before
    \begingroup
    \doifmode\s!mkiv
-      {\dosetexternalfilterattributes\c!style\c!color}
+      {\dosetexternalfilterattributes\c!style\c!color}%
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilteroutputfile
    \endgroup
@@ -338,6 +340,7 @@
    \c!after=,
    \c!style=,
    \c!color=,
+   \c!indentnext=\v!auto,
    \c!setups=,
    \c!continue=\v!no,
    \c!read=\v!yes,
