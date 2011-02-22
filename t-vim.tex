@@ -60,10 +60,9 @@
   \edef\currentvimtyping{\currentexternalfilter}%
   \edef\currentvimalternative{\externalfilterparameter\c!alternative}%
   \let\SYN\vimsyntax
-  \def\NL{\strut}% TODO: Add line numbering
-  %\def\tab#1%
-  %  {\dorecurse{\externalfilterparameter\c!tab}
-  %  {\space}}%
+  \def\NL{\strut}% 
+  \def\tab##1%
+    {\dorecurse{##1}{\space}}%
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
     {\setupwhitespace[\v!none,\v!flexible]}%
   \setcatcodetable\externalfilterwritecatcodes
@@ -130,6 +129,16 @@
    \getvalue{\????vimtyping::\currentvimalternative::#1\c!command}{#2}%
    \dostopattributes
    \dostopattributes}
+
+% \startvimalternative[pscolor]
+% 
+%   \definesyntax 
+%     [Normal]
+%     [color=\externalfilterparameter\c!color,
+%      style=\tttf,
+%      command=]
+% 
+% \stopvimalternative
 
 \startvimalternative[pscolor]
   \setvimsyntax [Normal]    [\externalfilterparameter\c!color][\tttf]
