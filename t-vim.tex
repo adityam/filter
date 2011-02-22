@@ -40,7 +40,7 @@
    \setuplinenumbering
      [\currentvimtyping]
      [\c!conversion=\externalfilterparameter\c!numberconversion,
-          %\c!start=\externalfilterparameter{\c!number\c!start},
+          \c!start=\externalfilterparameter{\c!number\c!start},
            \c!step=\externalfilterparameter{\c!number\c!step},
           \c!method=\externalfilterparameter{\c!number\c!method},
         \c!location=\externalfilterparameter{\c!number\c!location},
@@ -92,13 +92,9 @@
 
 \def\vimreadcommand#1%
   {\doifelse{\externalfilterparameter\c!numbering}\v!yes
-      {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
-        {\startlinenumbering
-            [\currentvimtyping]%
-            [\c!continue=\externalfilterparameter{\c!number\c!continue}]}%
-        {\startlinenumbering
-            [\currentvimtyping]%
-            [\c!start=\externalfilterparameter{\c!number\c!start}]}%
+    {\startlinenumbering
+        [\currentvimtyping]%
+        [\c!continue=\externalfilterparameter{\c!number\c!continue}]%
       \ReadFile{#1}%
      \stoplinenumbering}
      {\ReadFile{#1}}}

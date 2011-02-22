@@ -6,6 +6,7 @@
   [syntax=lua,
    numbering=yes,
    numbercolor=blue,
+   numberstep=2,
   ]
 
 \starttext
@@ -102,7 +103,9 @@ function table.alphasort(list,i)
 end
 \stopLUA
 
-\startLUA[numberstart=5,numberstop=10,numbercolor=red]
+\page
+
+\startLUA[numberstart=5,numbercolor=red]
 function io.exists(filename)
     local ok, result, message = pcall(io.open,filename)
     if result then
