@@ -38,11 +38,94 @@ don't know how to quit vim, type `:qa!`.)  Vim supports syntax
 highlighting for more than 500 programming languages; the `t-vim` module enables
 you to use any of them with just one `\definevimtyping`.
 
-How it all works
-----------------
+The command 
+
+    \definevimtyping [RUBY]  [syntax=ruby]
+
+defines three things:
+
+1. An environment
+
+        \startRUBY
+          ...
+        \stopRUBY
+
+    The contents of this environment are processed by a vim script
+    (`2context.vim`) and the result is read back in ConTeXt.
+
+2. A macro
+
+        \inlineRUBY{...}
+
+    The contents of this environment are processed by a vim script
+    (`2context.vim`) and the result is read back in ConTeXt.
+
+3. A macro
+
+        \typeRUBYfile{...}
+
+    The argument of this macro must a file name. That file is processed by
+    `2context.vim` and the result is read back in ConTeXt.
+
+In all the three cases, the `t-filter` module takes care of writing to external
+file, processing by `2context.vim`, and reading the contents back to ConTeXt.
+The `t-vim` module simply defines the macros that are used by `2context.vim`.
+
+
+Start and stop lines
+--------------------
+
+The `\start<typing>` ... `\stop<typing>` environment and the `\type<typing>file`
+macro take an optional argument that is used to set options.
+
+For example, if we only want to typeset lines 15 through 25 of a ruby file
+`rails_install.rb`, we can use:
+
+    \typeRUBYfile[start=15,stop=25]{rails_install.rb}
+
+To exclude 10 lines from the end, set `stop=-10`.
+
+Avoid clutter
+-------------
+
+Running an external file through vim is slow. So, `t-vim` reprocesses a snippet
+or a file only if its contents have changed. To check if the contents have
+changed, it writes each snippet to a different file and stores the md5 sum of
+that snippet. As a result, the working directory gets cluttered with lot of
+temporary files. To avoid the clutter, these temporary files can be written to a
+different directory, e.g.,
+
+    \definevimtyping[...]
+                    [directory=output/]
+
+ensures that all the temporary files are written to the `output` directory. See
+the section on _Output Directory_ in the documentation of `t-filter` module for
+more details.
+
+Before and after
+---------------
+
+Like most ConTeXt environments, `\definevimtyping` also accepts the `before` and
+`after` options. These can be used, for example, to enclose the output in a
+frame, etc.
 
 Changing the color scheme
 -------------------------
+
+This module provides two colorschemes
+
+- `pscolor` based on `ps_color` colorscheme for vim by Shi Zhu Pan.
+- `blackandwhite` based on `print_bw` colorscheme for vim by Mike Williams.
+
+A particular color scheme may be chosen using the options:
+
+    \definevimtyping
+      [...]
+      [...
+       alternative=pscolor,
+       ...]
+
+The default color scheme is `pscolor`.
 
 A bit of a history
 ------------------
@@ -72,3 +155,10 @@ in the module, except a few minor bug fixes.
 Around June 2010, I decided to completely rewrite the module from scratch. The
 new version of `t-vim` relies on `t-filter` for all the bookkeeping. As a
 result, the module is smaller and more robust.
+
+TODO
+----
+
+- Line numbering
+- continue line numbering from previous environment
+- modify tabs and spaces
