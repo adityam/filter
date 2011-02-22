@@ -51,8 +51,12 @@
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
-\installparameterhandler \????externalfilter \!!!!externalfilter
-\installsetuphandler     \????externalfilter {externalfilters} %Note the plural
+\installparameterhandler     \????externalfilter \!!!!externalfilter
+\installparameterhashhandler \????externalfilter \!!!!externalfilter
+\installsetuphandler         \????externalfilter {externalfilters} %Note the plural
+
+\doifmode\s!mkiv
+  {\installattributehandler \????externalfilter \!!!!externalfilter}
 
 %D \section {Tracing Macros}
 
@@ -319,6 +323,8 @@
 \def\dodoreadprocessedfile
   {\externalfilterparameter\c!before
    \begingroup
+   \doifmode\s!mkiv
+      {\dosetexternalfilterattributes\c!style\c!color}
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilteroutputfile
    \endgroup
@@ -330,6 +336,8 @@
   [
    \c!before=,
    \c!after=,
+   \c!style=,
+   \c!color=,
    \c!setups=,
    \c!continue=\v!no,
    \c!read=\v!yes,
