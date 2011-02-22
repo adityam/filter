@@ -21,7 +21,7 @@
 \setupcolor[hex]
 
 \startinterface all
-  \setinterfaceconstant {syntax}      {syntax} 
+  \setinterfaceconstant {syntax}          {syntax} 
 \stopinterface
 
 \def\????vimtyping{@@@@vimtyping}
@@ -36,7 +36,24 @@
   {\getparameters[\????vimtyping#1][\s!parent=\????vimtyping,#2]%
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1][\s!parent=\????vimtyping#1]%
-  \setvalue{type#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
+   \definelinenumbering [#1]
+   \setuplinenumbering
+     [\currentvimtyping]
+     [\c!conversion=\externalfilterparameter\c!numberconversion,
+          %\c!start=\externalfilterparameter{\c!number\c!start},
+           \c!step=\externalfilterparameter{\c!number\c!step},
+          \c!method=\externalfilterparameter{\c!number\c!method},
+        \c!location=\externalfilterparameter{\c!number\c!location},
+           \c!style=\externalfilterparameter\c!numberstyle,
+           \c!color=\externalfilterparameter\c!numbercolor,
+           \c!width=\externalfilterparameter{\c!number\c!width},
+            \c!left=\externalfilterparameter{\c!number\c!left},
+           \c!right=\externalfilterparameter{\c!number\c!right},
+         \c!command=\externalfilterparameter\c!numbercommand,
+        \c!distance=\externalfilterparameter{\c!number\c!distance},
+           \c!align=\externalfilterparameter{\c!number\c!align},
+     ]%
+   \setvalue{type#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
   }
 
 \startsetups[vimsetup]
@@ -44,9 +61,9 @@
   \edef\currentvimalternative{\externalfilterparameter\c!alternative}%
   \let\SYN\vimsyntax
   \def\NL{\strut}% TODO: Add line numbering
-  \def\tab##1%
-    {\dorecurse{\externalfilterparameter\c!tab}
-    {\space}}%
+  %\def\tab#1%
+  %  {\dorecurse{\externalfilterparameter\c!tab}
+  %  {\space}}%
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
     {\setupwhitespace[\v!none,\v!flexible]}%
   \setcatcodetable\externalfilterwritecatcodes
@@ -72,6 +89,19 @@
        -c "qa" %
        \externalfilterinputfile\space
        \externalfilteroutputfile}
+
+\def\vimreadcommand#1%
+  {\doifelse{\externalfilterparameter\c!numbering}\v!yes
+      {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
+        {\startlinenumbering
+            [\currentvimtyping]%
+            [\c!continue=\externalfilterparameter{\c!number\c!continue}]}%
+        {\startlinenumbering
+            [\currentvimtyping]%
+            [\c!start=\externalfilterparameter{\c!number\c!start}]}%
+      \ReadFile{#1}%
+     \stoplinenumbering}
+     {\ReadFile{#1}}}
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
@@ -197,11 +227,27 @@
    \c!filtercommand=\vimfiltercommand,
    \c!continue=yes,
    \c!read=\v!yes,
-   \c!readcommand=\ReadFile,
+   \c!readcommand=\vimreadcommand,
    \c!output=\externalfilterbasefile.vimout,
    \c!setups=vimsetup,
    \c!option=\v!packed, % Could be a list
    \s!parent=\????externalfilter,
+   % Numbering options
+   \c!numbering=\v!no,
+   \c!number\c!start=1,
+   \c!number\c!step=1,
+   \c!number\c!continue=\v!no,
+   \c!numberconversion=\v!numbers,
+   \c!number\c!method=\v!first,
+   \c!number\c!location=\v!left,
+   \c!numberstyle=\tfx,
+   \c!numbercolor=blue,
+   \c!number\c!width=2em,
+   \c!number\c!left=,
+   \c!number\c!right=,
+   \c!number\c!command=,
+   \c!number\c!distance=0.5em,
+   \c!number\c!align=\v!flushright,
   ]
 
 \protect
