@@ -261,6 +261,9 @@ and `after` options. These are executed before and after the output file is read
 using `readcommand`. Typically, these options are used to set the spacing around
 the environment or enclose the output in a frame, etc.
 
+`style` and `color` options set the style and color of the processed
+content. Currently, these options only work with MkIV.
+
 `\defineexternalfilter` also accepts a `setups` option to specify a list of 
 setups (defined using `\startsetup`). These setups may be used to define
 commands that are needed inside the environment.
@@ -270,6 +273,8 @@ The order in which these options are executed is:
     \def\dodoreadprocessedfile
       {\externalfilterparameter\c!before
        \begingroup
+       \doifmode\s!mkiv
+          {\dosetexternalfilterattributes\c!style\c!color}
        \processcommacommand[\externalfilterparameter\c!setups]\directsetup
        \externalfilterparameter\c!readcommand\externalfilteroutputfile
        \endgroup
@@ -473,3 +478,5 @@ Version History
 - **2011.01.28**
     - Bugfix. The filter counter was not incremented inside a group. Made the
       increment global.
+- **2011.02.21**
+    - Added `style` and `color` options.
