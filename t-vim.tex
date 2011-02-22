@@ -52,6 +52,11 @@
   \setcatcodetable\externalfilterwritecatcodes
 \stopsetups
 
+
+\doifmodeelse{vimtest}
+  {\def\vimconversionfile{2context.vim}}
+  {\def\vimconversionfile{kpse:2context.vim}}
+
 \def\vimfiltercommand
   {vim -u NONE % don't read global config file
        -e % run in ex mode
@@ -63,7 +68,7 @@
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let  contextstopline=\externalfilterparameter\c!stop" %
-       -c "source kpse:2context.vim" %
+       -c "source \vimconversionfile" %
        -c "qa" %
        \externalfilterinputfile\space
        \externalfilteroutputfile}
@@ -101,7 +106,7 @@
    \dostopattributes}
 
 \startvimalternative[pscolor]
-  \setvimsyntax [Normal]    [\maintextcolor][\tttf]
+  \setvimsyntax [Normal]    [\externalfilterparameter\c!color][\tttf]
 
   \setvimsyntax 
     [Constant,Character,Boolean,Float]  
@@ -147,7 +152,7 @@
 %TODO
 %   \setvimsyntax [id] [bg=, fc=, style=, command=] == \localframed[options]
 \startvimalternative[blackandwhite]
-  \setvimsyntax [Normal]    [\maintextcolor][\tttf]
+  \setvimsyntax [Normal]    [\externalfilterparameter\c!color][\tttf]
 
   \setvimsyntax 
     [Constant,Character,Boolean,Float,Number,Identifier,Function]  
