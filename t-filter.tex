@@ -115,8 +115,7 @@
 \def\doprocessexternalfilterfile[#1][#2]#3%
   {\begingroup
    \edef\currentexternalfilter    {#1}%
-   \getparameters[\????externalfilter#1][\c!name=,\c!continue=\v!yes,#2]% 
-   %NOTE: Currently filters with a pipe (|) fail with continue=yes
+   \getparameters[\????externalfilter#1][\c!name=,#2]% 
    \setexternalfilterdirectory
    \edef\externalfilterinputfile  {#3}%
    \splitfilename {#3}%
