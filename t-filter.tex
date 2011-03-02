@@ -203,6 +203,7 @@
    \immediate\closeout\externalfilterwrite
    \popcatcodetable
    \doexecuteexternalfilter
+   \endlinechar\minusone %to prevent line break
    \doreadprocessedfile
    % Finalization
    \doif{\externalfilterparameter\c!continue}\v!yes
