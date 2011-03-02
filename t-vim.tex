@@ -36,23 +36,7 @@
   {\getparameters[\????vimtyping#1][\s!parent=\????vimtyping,#2]%
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1][\s!parent=\????vimtyping#1]%
-   \definelinenumbering [#1]
-   \setuplinenumbering
-     [\currentvimtyping]
-     [\c!conversion=\externalfilterparameter\c!numberconversion,
-          \c!start=\externalfilterparameter{\c!number\c!start},
-           \c!step=\externalfilterparameter{\c!number\c!step},
-          \c!method=\externalfilterparameter{\c!number\c!method},
-        \c!location=\externalfilterparameter{\c!number\c!location},
-           \c!style=\externalfilterparameter\c!numberstyle,
-           \c!color=\externalfilterparameter\c!numbercolor,
-           \c!width=\externalfilterparameter{\c!number\c!width},
-            \c!left=\externalfilterparameter{\c!number\c!left},
-           \c!right=\externalfilterparameter{\c!number\c!right},
-         \c!command=\externalfilterparameter\c!numbercommand,
-        \c!distance=\externalfilterparameter{\c!number\c!distance},
-           \c!align=\externalfilterparameter{\c!number\c!align},
-     ]%
+   \doifmode\s!mkiv{\setups{vimlinenumbering:mkiv}}%
    \setvalue{type#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
   }
 
@@ -63,11 +47,49 @@
   \def\NL{\strut}% 
   \def\tab##1%
     {\dorecurse{##1}{\space}}%
+   \doifmode\s!mkii{\setups{vimlinenumbering:mkii}}%
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
     {\setupwhitespace[\v!none,\v!flexible]}%
   \setcatcodetable\externalfilterwritecatcodes
 \stopsetups
 
+\startsetups vimlinenumbering:mkiv
+ \definelinenumbering [#1]
+ \setuplinenumbering
+   [\currentvimtyping]
+   [\c!conversion=\externalfilterparameter\c!numberconversion,
+        \c!start=\externalfilterparameter{\c!number\c!start},
+         \c!step=\externalfilterparameter{\c!number\c!step},
+        \c!method=\externalfilterparameter{\c!number\c!method},
+      \c!location=\externalfilterparameter{\c!number\c!location},
+         \c!style=\externalfilterparameter\c!numberstyle,
+         \c!color=\externalfilterparameter\c!numbercolor,
+         \c!width=\externalfilterparameter{\c!number\c!width},
+          \c!left=\externalfilterparameter{\c!number\c!left},
+         \c!right=\externalfilterparameter{\c!number\c!right},
+       \c!command=\externalfilterparameter\c!numbercommand,
+      \c!distance=\externalfilterparameter{\c!number\c!distance},
+         \c!align=\externalfilterparameter{\c!number\c!align},
+   ]%
+\stopsetups
+
+\startsetups vimlinenumbering:mkii
+ \setuplinenumbering
+   [\c!conversion=\externalfilterparameter\c!numberconversion,
+        \c!start=\externalfilterparameter{\c!number\c!start},
+         \c!step=\externalfilterparameter{\c!number\c!step},
+        \c!method=\externalfilterparameter{\c!number\c!method},
+      \c!location=\externalfilterparameter{\c!number\c!location},
+         \c!style=\externalfilterparameter\c!numberstyle,
+         \c!color=\externalfilterparameter\c!numbercolor,
+         \c!width=\externalfilterparameter{\c!number\c!width},
+          \c!left=\externalfilterparameter{\c!number\c!left},
+         \c!right=\externalfilterparameter{\c!number\c!right},
+       \c!command=\externalfilterparameter\c!numbercommand,
+      \c!distance=\externalfilterparameter{\c!number\c!distance},
+         \c!align=\externalfilterparameter{\c!number\c!align},
+   ]%
+ \stopsetups
 
 \doifmodeelse{vimtest}
   {\def\vimconversionfile{2context.vim}}
@@ -97,6 +119,20 @@
       \ReadFile{#1}%
      \stoplinenumbering}
      {\ReadFile{#1}}}
+
+% Line numbering behaves differently in MkII
+% FIXME: numbercontinue=yes is not working in MkII
+
+\startmode[\s!mkii]
+  \def\vimreadcommand#1%
+    {\doifelse{\externalfilterparameter\c!numbering}\v!yes
+        {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
+          {\startlinenumbering[\v!continue]}
+          {\startlinenumbering}%
+       \ReadFile{#1}%
+       \stoplinenumbering}
+      {\ReadFile{#1}}}
+\stopmode
 
 \def\startvimalternative
   {\dosingleargument\dostartvimalternative}
