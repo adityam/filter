@@ -73,23 +73,32 @@
    ]%
 \stopsetups
 
+\startmode[\s!mkii]
+\newcount\vimlinenumber
+\stopmode
+
 \startsetups vimlinenumbering:mkii
- \setuplinenumbering
-   [\c!conversion=\externalfilterparameter\c!numberconversion,
-        \c!start=\externalfilterparameter{\c!number\c!start},
-         \c!step=\externalfilterparameter{\c!number\c!step},
-        \c!method=\externalfilterparameter{\c!number\c!method},
-      \c!location=\externalfilterparameter{\c!number\c!location},
-         \c!style=\externalfilterparameter\c!numberstyle,
-         \c!color=\externalfilterparameter\c!numbercolor,
-         \c!width=\externalfilterparameter{\c!number\c!width},
-          \c!left=\externalfilterparameter{\c!number\c!left},
-         \c!right=\externalfilterparameter{\c!number\c!right},
-       \c!command=\externalfilterparameter\c!numbercommand,
-      \c!distance=\externalfilterparameter{\c!number\c!distance},
-         \c!align=\externalfilterparameter{\c!number\c!align},
-   ]%
- \stopsetups
+ \doif{\externalfilterparameter\c!numbering}\v!yes
+    {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
+     % revert it back.
+     \vimlinenumber=\linenumber
+     \setuplinenumbering
+       [\c!conversion=\externalfilterparameter\c!numberconversion,
+            \c!start=\externalfilterparameter{\c!number\c!start},
+             \c!step=\externalfilterparameter{\c!number\c!step},
+            \c!method=\externalfilterparameter{\c!number\c!method},
+          \c!location=\externalfilterparameter{\c!number\c!location},
+             \c!style=\externalfilterparameter\c!numberstyle,
+             \c!color=\externalfilterparameter\c!numbercolor,
+             \c!width=\externalfilterparameter{\c!number\c!width},
+              \c!left=\externalfilterparameter{\c!number\c!left},
+             \c!right=\externalfilterparameter{\c!number\c!right},
+           \c!command=\externalfilterparameter\c!numbercommand,
+          \c!distance=\externalfilterparameter{\c!number\c!distance},
+             \c!align=\externalfilterparameter{\c!number\c!align},
+       ]%
+       \linenumber=\vimlinenumber}
+\stopsetups
 
 \doifmodeelse{vimtest}
   {\def\vimconversionfile{2context.vim}}
