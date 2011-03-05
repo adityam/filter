@@ -37,7 +37,7 @@
    \edef\currentvimtyping{#1}%
    \defineexternalfilter[#1][\s!parent=\????vimtyping#1]%
    \doifmode\s!mkiv{\setups{vimlinenumbering:mkiv}}%
-   \setvalue{type#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
+   \setvalue{type#1file}{\getvalue{process#1file}}%
   }
 
 \startsetups[vimsetup]
@@ -50,7 +50,7 @@
    \doifmode\s!mkii{\setups{vimlinenumbering:mkii}}%
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
     {\setupwhitespace[\v!none,\v!flexible]}%
-  \setcatcodetable\externalfilterwritecatcodes
+  \setcatcodetable\externalfilter__catcodes_write
 \stopsetups
 
 \startsetups vimlinenumbering:mkiv
