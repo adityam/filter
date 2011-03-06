@@ -88,7 +88,7 @@ To exclude 10 lines from the end, set `stop=-10`.
 Changing tab skip
 -----------------
 
-By default, a literal tab (`\u0x09`) character has a width of 8 spaces. For most
+By default, a literal tab (`0x09` or `^I`) character has a width of 8 spaces. For most
 cases, this is too excessive. To reduce the shift of a tab, use the `tab` key.
 For example:
 
@@ -142,6 +142,39 @@ A particular color scheme may be chosen using the options:
 
 The default color scheme is `pscolor`.
 
+Line numbering
+---------------
+
+To eanble line numbering for a particular snippet, use:
+
+    \start<vimtyping>[numbering=yes]
+      ...
+    \stop<vimtyping>
+
+To enable line numbering for all code snippets, use:
+
+    \definevimtyping
+      [...]
+      [...
+       numbering=yes,
+       ...]
+
+If you want a particular snippet not to have line numbering, use
+
+    \start<vimtyping>[numbering=no]
+      ...
+    \stop<vimtyping>
+
+By default, numbering starts from one, all lines are numbered, numbering is
+reset at each snippet, and numbers are displayed on the left. All these defaults
+can be changed. 
+
+TODO:   
+
+- Document linenumbering options
+- continue line numbering from previous environment
+
+
 A bit of a history
 ------------------
 
@@ -174,6 +207,4 @@ result, the module is smaller and more robust.
 TODO
 ----
 
-- Line numbering
-- continue line numbering from previous environment
-- modify tabs and spaces
+- active space
