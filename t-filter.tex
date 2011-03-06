@@ -69,7 +69,7 @@
 
 \let\traceexternalfilters\traceexternalfilterstrue
 
-\starttexdefinition externalfilter__show_filenames
+\starttexdefinition externalfilter@show_filenames
   \iftraceexternalfilters
       \writestatus\m!externalfilter{current filter : \currentexternalfilter}
       \writestatus\m!externalfilter{base file : \externalfilter@base_file}
@@ -256,7 +256,7 @@
 %D extension. Its actual value depends on the state of \type{continue} key as
 %D well as the value of \type{name} key.
 
-\starttexdefinition externalfilter__set_filenames
+\starttexdefinition externalfilter@set_filenames
    \externalfilter@set_directory
    % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
