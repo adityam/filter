@@ -1,6 +1,13 @@
 \setupcolors[state=start]
 \usemodule  [vim]
 
+\startmode[mkii]
+% By default, we get ligatures in teletype fonts in MkII. This avoids the
+% ligatures
+\usetypescript[modern][texnansi]
+\setupbodyfont[modern]
+\stopmode
+
 \definevimtyping  [LUA]  [syntax=lua,alternative=blackandwhite]
 
 \starttext
