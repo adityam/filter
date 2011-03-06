@@ -498,3 +498,7 @@ Version History
     - The external files are called `\jobname-temp-<filter>*` instead of
       `\jobname-externalfilter-<filter>*`. As a result, these files are deleted
       by `context --purge`.
+- **2011.03.06**
+    - Complete rewrite of internal macro names. The internal macros are now
+      named `\modulename::command_name`. This is an experiment to see if this
+      style works better than the traditional naming convention in TeX.
