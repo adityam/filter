@@ -13,6 +13,46 @@
 
 \startmodule    [filter]
 
+% HACK: so that the code works with both MkII and MkIV
+\startcatcodetable \prtcatcodes
+    \catcode\tabasciicode       \spacecatcode
+    \catcode\endoflineasciicode \endoflinecatcode
+    \catcode\formfeedasciicode  \endoflinecatcode
+    \catcode\spaceasciicode     \spacecatcode
+    \catcode\endoffileasciicode \ignorecatcode
+    \catcode\circumflexasciicode\superscriptcatcode
+%   \catcode\underscoreasciicode\subscriptcatcode
+    \catcode\underscoreasciicode\lettercatcode
+    \catcode\ampersandasciicode \alignmentcatcode
+    \catcode\backslashasciicode \escapecatcode
+    \catcode\leftbraceasciicode \begingroupcatcode
+    \catcode\rightbraceasciicode\endgroupcatcode
+    \catcode\dollarasciicode    \mathshiftcatcode
+    \catcode\hashasciicode      \parametercatcode
+    \catcode\commentasciicode   \commentcatcode
+    \catcode`\@                 \lettercatcode
+    \catcode`\!                 \lettercatcode
+    \catcode`\?                 \lettercatcode
+    \catcode\tildeasciicode     \activecatcode
+    \catcode\barasciicode       \activecatcode
+\stopcatcodetable
+
+% IDEA:
+% Instead of using \externalfilter@command we can also define:
+%
+% \startmoduledefinition command #1
+% ...
+% \stopmoduledefinition
+%
+% which will be equivalent to
+%
+% \starttexdefinition externalfilter@command
+% ...
+% \stoptexdefinition
+%
+% and \modulevalue{command} => \getvalue{externalfilter@command}
+
+
 \unprotect
 
 %D \section {Initialization}
@@ -70,20 +110,21 @@
 \let\traceexternalfilters\traceexternalfilterstrue
 
 \starttexdefinition externalfilter@show_filenames
-  \iftraceexternalfilters
-      \writestatus\m!externalfilter{current filter : \currentexternalfilter}
-      \writestatus\m!externalfilter{base file : \externalfilter@base_file}
-      \writestatus\m!externalfilter{input file : \externalfilter@input_file}
-      \writestatus\m!externalfilter{output file : \externalfilter@output_file}
-  \fi
+    \iftraceexternalfilters
+        \writestatus\m!externalfilter{current filter : \currentexternalfilter}
+        \writestatus\m!externalfilter{base file      : \externalfilter@base_file}
+        \writestatus\m!externalfilter{input file     : \externalfilter@input_file}
+        \writestatus\m!externalfilter{output file    : \externalfilter@output_file}
+    \fi
 \stoptexdefinition
 
-\def\externalfilter@show_status#1%
-  {\iftraceexternalfilters
-      \writestatus\m!externalfilter{#1}%
-  \fi}
+\starttexdefinition externalfilter@show_status #1
+    \iftraceexternalfilters
+        \writestatus\m!externalfilter{#1}
+    \fi
+\stoptexdefinition
 
-\starttexdefinition doshowfiltercommand
+\starttexdefinition externalfilter@show_filtercommand
     \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
 \stoptexdefinition
 
@@ -94,52 +135,73 @@
 \def\defineexternalfilter
   {\dodoubleargument\externalfilter@define}
 
-\def\externalfilter@define[#1][#2]%
-  {\externalfilter@show_status{defining filter : #1}%
-   \edef\currentexternalfilter{#1}%
-   \getparameters[\externalfilter@namespace#1][\s!parent=\externalfilter@namespace,#2]%
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
-   \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter@start[#1]}%
-   \setvalue{\e!stop#1}{\externalfilter@process_filter}%
-   \setvalue{process#1file}{\dodoubleargument\externalfilter@process_file[#1]}%
-   \setvalue{inline#1}{\externalfilter@inline[#1]}
-   }
+\starttexdefinition externalfilter@define [#1][#2]
+    \externalfilter@show_status{defining filter : #1}
 
-\def\externalfilter@start[#1][#2]% filter options
-  {% Initializations
-   \egroup %\bgroup in \start#1 
-   \edef\currentexternalfilter   {#1}%
-   \begingroup % to keep assignments local
-   \getparameters[\externalfilter@namespace#1][\c!name=,#2]%
-   \externalfilter@set_filenames
-   % Capture the contents of the buffer
-   \dostartbuffer[\externalfilter@temp_file][\e!start#1][\e!stop#1]}
+    \edef\currentexternalfilter{#1}
+    \getparameters[\externalfilter@namespace#1][\s!parent=\externalfilter@namespace,#2]
 
-\def\externalfilter@process_file[#1][#2]#3%
-  {\begingroup
-   \edef\currentexternalfilter    {#1}%
-   \getparameters[\externalfilter@namespace#1][\c!name=,#2]% 
-   \externalfilter@set_directory
-   \edef\externalfilter@input_file  {#3}%
-   \splitfilename {#3}%
-   %NOTE: \edef doesn not work
-   \def\externalfilter@base_file   {\splitoffname}%
-   % The output is always in the directory specified by 
-   % \c!directory; even if the input is from some other directory
-   \def\externalfilter@output_file{\externalfilter@get_directory\externalfilterparameter\c!output}%
-   \externalfilter@show_filenames
-   \externalfilter@execute_filter
-   \externalfilter@read_processed_file
-   \endgroup}
+    \doif{\externalfilterparameter\c!continue}\v!yes
+         {\expandafter\newcounter\csname\externalfilter@count\endcsname}
+
+    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter@start[#1]}
+    \setvalue {\e!stop#1}{\externalfilter@process_filter}
+
+    \setvalue{process#1file}{\dodoubleargument\externalfilter@process_file[#1]}
+    \setvalue{inline#1}{\externalfilter@inline[#1]}
+\stoptexdefinition
+
+\starttexdefinition externalfilter@start [#1][#2] 
+    % #1 = filter
+    % #2 = options
+    \egroup %\bgroup in \start#1 
+
+    \edef\currentexternalfilter{#1}
+
+    \begingroup % to keep assignments local
+    \getparameters[\externalfilter@namespace#1][\c!name=,#2]
+
+    \externalfilter@set_filenames
+
+    % Capture the contents of the buffer
+    \dostartbuffer[\externalfilter@temp_file][\e!start#1][\e!stop#1]
+\stoptexdefinition
+
+\starttexdefinition externalfilter@process_file [#1][#2]#3
+    \begingroup
+
+    \edef\currentexternalfilter{#1}
+    \getparameters[\externalfilter@namespace#1][\c!name=,#2]
+
+    \externalfilter@set_directory
+    
+    \edef\externalfilter@input_file{#3}
+    \splitfilename{#3}
+    %NOTE: \edef doesn not work because \splitoffname is not expandable
+    \def\externalfilter@base_file   {\splitoffname}
+
+    % The output is always in the directory specified by 
+    % \c!directory; even if the input is from some other directory
+    \def\externalfilter@output_file{\externalfilter@get_directory\externalfilterparameter\c!output}
+
+    \externalfilter@show_filenames
+    \externalfilter@execute_filter
+    \externalfilter@read_processed_file
+
+    \endgroup
+\stoptexdefinition
    
-\def\externalfilter@inline[#1]%
-  {\edef\currentexternalfilter {#1}%
+\starttexdefinition externalfilter@inline [#1]
+   \edef\currentexternalfilter{#1}
+
    \begingroup % to keep assignments local
-   \getparameters[\externalfilter@namespace#1][\c!name=]% 
+   \getparameters[\externalfilter@namespace#1][\c!name=]
+
    \externalfilter@set_filenames
+
    \pushcatcodetable
-   \futurelet\next\externalfilter@inline_aux}
+   \futurelet\next\externalfilter@inline_aux
+\stoptexdefinition
 
 %D \subsubject {Catcode tables}
 %D 
@@ -183,37 +245,44 @@
 %D Surprisingly, there is nothing in the core to define a function that write its
 %D argument to a file verbatim. I basically copied the \type{\type} macro.
 
-\def\externalfilter@inline_aux
-  {\ifx\next\bgroup
+\starttexdefinition externalfilter@inline_aux
+   \ifx\next\bgroup
        \expandafter\externalfilter@inline_group
    \else
        \expandafter\externalfilter@inline_other
-   \fi}
+   \fi
+\stoptexdefinition
 
-\def\externalfilter@inline_group
-  {\setcatcodetable \externalfilter@catcodes_read
-   \externalfilter@process_inline}
+\starttexdefinition externalfilter@inline_group
+    \setcatcodetable \externalfilter@catcodes_read
+    \externalfilter@process_inline
+\stoptexdefinition
 
-\def\externalfilter@inline_other#1%
-  {\setcatcodetable \externalfilter@catcodes_verb
-   \def\next##1#1{\externalfilter@process_inline{##1}}%
-   \next}
+\starttexdefinition externalfilter@inline_other #1
+    \setcatcodetable \externalfilter@catcodes_verb
+
+    \def\next##1#1{\externalfilter@process_inline{##1}}
+    \next
+\stoptexdefinition
 
 \newwrite\externalfilter@write
 
-\def\externalfilter@process_inline#1%
-  {\immediate\openout \externalfilter@write\externalfilter@input_file
-   \immediate\write   \externalfilter@write{\detokenize{#1}}%
-   \immediate\closeout\externalfilter@write
-   \popcatcodetable
-   \externalfilter@execute_filter
-   \endlinechar\minusone %to prevent line break after reading file
-   \externalfilter@read_processed_file
-   % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}%
-   \endgroup}
+\starttexdefinition externalfilter@process_inline #1
+    \immediate\openout \externalfilter@write\externalfilter@input_file
+    \immediate\write   \externalfilter@write{\detokenize{#1}}
+    \immediate\closeout\externalfilter@write
 
+    \popcatcodetable
+
+    \externalfilter@execute_filter
+    \endlinechar\minusone %to prevent line break after reading file
+    \externalfilter@read_processed_file
+
+    % Finalization
+    \doif{\externalfilterparameter\c!continue}\v!yes
+         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+    \endgroup
+\stoptexdefinition
 
 
 %D \section {Helper Functions}
@@ -233,20 +302,23 @@
 
 %D \subsubject {Set the name of output directory}
 
-\def\externalfilter@set_directory
-  {\edef\externalfilter@get_directory{\externalfilterparameter\c!directory}%
-   \doifsomething{\externalfilter@get_directory}\externalfilter@set_directory_aux}
+\starttexdefinition externalfilter@set_directory
+    \edef\externalfilter@get_directory{\externalfilterparameter\c!directory}
+    \doifsomething{\externalfilter@get_directory}\externalfilter@set_directory_aux
+\stoptexdefinition
    
-\def\externalfilter@set_directory_aux
-  {\doif{\externalfilter@get_first_character\externalfilter@get_directory}{/}
-      {\writeline
-       \showmessage\externalfilter@id{forbidden}\externalfilter@get_directory
-       \batchmode
-       \errmessage{}
-       \normalend}
-   \doifnot{\externalfilter@get_last_character\externalfilter@get_directory}{/}
-      {\showmessage\externalfilter@id{slash}\externalfilter@get_directory
-       \edef\externalfilter@get_directory{\externalfilter@get_directory/}}}
+\starttexdefinition externalfilter@set_directory_aux
+    \doif{\externalfilter@get_first_character\externalfilter@get_directory}{/}
+        {\writeline
+         \showmessage\externalfilter@id{forbidden}\externalfilter@get_directory
+         \batchmode
+         \errmessage{}
+         \normalend}
+
+    \doifnot{\externalfilter@get_last_character\externalfilter@get_directory}{/}
+        {\showmessage\externalfilter@id{slash}\externalfilter@get_directory
+         \edef\externalfilter@get_directory{\externalfilter@get_directory/}}
+\stoptexdefinition
   
 
 
@@ -258,15 +330,18 @@
 
 \starttexdefinition externalfilter@set_filenames
    \externalfilter@set_directory
+
    % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
         {\edef\externalfilter@temp_file{\externalfilter@temp_prefix-\currentexternalfilter-\csname\externalfilter@count\endcsname}}
         {\edef\externalfilter@temp_file{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
         {\edef\externalfilter@temp_file{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter\c!name}}
+
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
-   \edef\externalfilter@base_file  {\jobname-\externalfilter@temp_file}%
+   \edef\externalfilter@base_file  {\jobname-\externalfilter@temp_file}
+
    % In MkII, the buffer output is written to \TEXbufferfile{buffername} where
    % the macro \TEXbufferfile is defined as
    %
@@ -275,11 +350,13 @@
    % We redefine bufferprefix to include the directory name.
    \doifmode{\s!mkii}
         {\edef\bufferprefix{\externalfilter@get_directory\jobname-}}
+
    % In MkIV, we do not need to do such jugglary, because we can specify the
    % name of the file where the buffer has to be saved. This file is
    % \externalfilter@input_file (because it is the input to the filter).
    \edef\externalfilter@input_file {\externalfilter@get_directory\externalfilter@base_file.\f!temporaryextension}
-   % The name of the file to which the filter output is written
+
+   % Append directory name to the name of the output file
    \edef\externalfilter@output_file{\externalfilter@get_directory\externalfilterparameter\c!output}
    \externalfilter@show_filenames
 \stoptexdefinition
@@ -289,53 +366,62 @@
 %D
 %D Execute filter, read the output and do book-keeping if needed.
 
-\def\externalfilter@process_filter
-  {% By defualt, buffers are in memory in MkIV
-   \doifmode\s!mkiv{\savebuffer[\externalfilter@temp_file][\externalfilter@input_file]}%
-   % Run external command
-   \externalfilter@execute_filter
-   \externalfilter@read_processed_file
-   \endgroup 
-   % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}%
-   \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}%
-   \dorechecknextindentation
-   }
+\starttexdefinition externalfilter@process_filter
+     % By defualt, buffers are in memory in MkIV. So, we save them to disk
+     \doifmode\s!mkiv{\savebuffer[\externalfilter@temp_file][\externalfilter@input_file]}
+
+     \externalfilter@execute_filter
+     \externalfilter@read_processed_file
+     \endgroup 
+
+     % Finalization
+     \doif{\externalfilterparameter\c!continue}\v!yes
+          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+
+     \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
+     \dorechecknextindentation
+\stoptexdefinition
 
 %D \subsubject {Execute Filter}   
 
-\def\externalfilter@execute_filter
-  {\doshowfiltercommand
+\starttexdefinition externalfilter@execute_filter
+
+   \externalfilter@show_filtercommand
+
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\doifmode{*first}
            {\executesystemcommand
             {mtxrun --ifchanged=\externalfilter@input_file\space 
                 --direct \externalfilterparameter\c!filtercommand}}}
        {\executesystemcommand
-          {\externalfilterparameter\c!filtercommand}}}
+          {\externalfilterparameter\c!filtercommand}}
+\stoptexdefinition
 
 %D \subsubject {Read output}
 
-\def\externalfilter@read_processed_file
-  {\doif{\externalfilterparameter\c!read}\v!yes
-      {\doiffileelse{\externalfilter@output_file}
-          {\externalfilter@read_processed_file_aux}
-          {\showmessage\externalfilter@id{notfound}\externalfilter@output_file 
-           \blank
-             {\tttf [[\getmessage\externalfilter@id{missing}]]}%
-           \blank
-          }}}
+\starttexdefinition externalfilter@read_processed_file
+    \doif{\externalfilterparameter\c!read}\v!yes
+       {\doiffileelse{\externalfilter@output_file}
+           {\externalfilter@read_processed_file_aux}
+           {\showmessage\externalfilter@id{notfound}\externalfilter@output_file 
+            \blank
+              {\tttf [[\getmessage\externalfilter@id{missing}]]}
+            \blank}}
+\stoptexdefinition
 
-\def\externalfilter@read_processed_file_aux
-  {\externalfilterparameter\c!before
+\starttexdefinition externalfilter@read_processed_file_aux
+   \externalfilterparameter\c!before
+
    \begingroup
    \doifmode\s!mkiv
-       {\dosetexternalfilterattributes\c!style\c!color}%
+       {\dosetexternalfilterattributes\c!style\c!color}
+
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilter@output_file
    \endgroup
-   \externalfilterparameter\c!after}
+
+   \externalfilterparameter\c!after
+\stoptexdefinition
 
 %D \section {Default Values}
 
