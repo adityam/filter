@@ -1,0 +1,24 @@
+\usemodule  [vim]
+
+\definevimtyping  
+  [PYTHON]  
+  [syntax=python]
+
+
+\starttext
+
+\startPYTHON
+parents, babies = (1, 1)
+while babies < 100:
+	print 'This generation has %d babies' % babies
+	parents, babies = (babies, parents + babies)
+\stopPYTHON
+
+\startPYTHON[tab=8]
+parents, babies = (1, 1)
+while babies < 100:
+	print 'This generation has %d babies' % babies
+	parents, babies = (babies, parents + babies)
+\stopPYTHON
+\stoptext
+

@@ -1,17 +1,23 @@
 \setupcolors[state=start]
 \usemodule  [vim]
 
+\definevimtyping  
+  [LUA]  
+  [syntax=lua,
+   numbering=yes,
+   numbercolor=blue,
+   numberstep=2,
+  ]
+
 \startmode[mkii]
-% By default, we get ligatures in teletype fonts in MkII. This avoids the
-% ligatures
-\usetypescript[modern][texnansi]
-\setupbodyfont[modern]
+  \usetypescript[modern][texnansi]
+  \setupbodyfont[modern]
 \stopmode
 
-\definevimtyping  [LUA]  [syntax=lua,alternative=blackandwhite]
 
 \starttext
-\startLUA
+\tracingmacros1
+\startLUA[numbering=no]
 -- version   : 1.0.0 - 07/2005
 -- author    : Hans Hagen - PRAGMA ADE - www.pragma-ade.com
 -- copyright : public domain or whatever suits
@@ -22,14 +28,21 @@
 -- loading: scite-ctx.properties
 
 -- generic functions
+\stopLUA
 
+\blank[big]
+
+\startLUA[numbering=yes]
 local crlf = "\n"
 
 function traceln(str)
     trace(str .. crlf)
     io.flush()
 end
+\stopLUA
 
+
+\startLUA[numbering=no]
 table.len  = table.getn
 table.join = table.concat
 
@@ -52,7 +65,11 @@ function table.found(tab, str)
         return false
     end
 end
+\stopLUA
 
+\page
+
+\startLUA[numbering=yes,numbercontinue=yes]
 function string.grab(str, delimiter)
     local list = {}
     for snippet in string.gfind(str,delimiter) do
@@ -91,7 +108,11 @@ end
 function table.alphasort(list,i)
     table.sort(list, function(a,b) return string.alphacmp(a,b,i) end)
 end
+\stopLUA
 
+\page
+
+\startLUA[numberstart=5,numbercolor=red]
 function io.exists(filename)
     local ok, result, message = pcall(io.open,filename)
     if result then
@@ -129,5 +150,6 @@ function string.replace(original,pattern,replacement)
 end
 
 \stopLUA
+
 
 \stoptext

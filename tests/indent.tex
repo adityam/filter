@@ -1,0 +1,37 @@
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   indentnext=yes]
+
+\setupindenting[big,yes]
+
+\starttext
+\input tufte
+\startmarkdown
+test **indenting**
+\stopmarkdown
+this should be indented.
+
+\setupexternalfilters[markdown][indentnext=auto]
+
+\input tufte
+Random text
+\startmarkdown
+test **indenting**
+\stopmarkdown
+this should not be indented.
+
+
+\setupexternalfilters[markdown][indentnext=no]
+Random text
+\input tufte
+\startmarkdown
+test **indenting**
+\stopmarkdown
+
+this should not be indented.
+\stoptext
+\endinput
+

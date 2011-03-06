@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.02.21,
+%D      version=2011.03.06,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -13,7 +13,52 @@
 
 \startmodule    [filter]
 
-\unprotect
+% EXPERIMENTAL: Catcode table for internal commands
+
+\newcatcodetable \externalfiltermodulecatcodes
+
+\startcatcodetable \externalfiltermodulecatcodes
+    \catcode\tabasciicode       \spacecatcode
+    \catcode\endoflineasciicode \endoflinecatcode
+    \catcode\formfeedasciicode  \endoflinecatcode
+    \catcode\spaceasciicode     \spacecatcode
+    \catcode\endoffileasciicode \ignorecatcode
+    \catcode\circumflexasciicode\superscriptcatcode
+%   \catcode\underscoreasciicode\subscriptcatcode
+    \catcode\underscoreasciicode\lettercatcode
+    \catcode\ampersandasciicode \alignmentcatcode
+    \catcode\backslashasciicode \escapecatcode
+    \catcode\leftbraceasciicode \begingroupcatcode
+    \catcode\rightbraceasciicode\endgroupcatcode
+    \catcode\dollarasciicode    \mathshiftcatcode
+    \catcode\hashasciicode      \parametercatcode
+    \catcode\commentasciicode   \commentcatcode
+    \catcode`\@                 \lettercatcode
+    \catcode`\!                 \lettercatcode
+    \catcode`\?                 \lettercatcode
+    \catcode\tildeasciicode     \activecatcode
+    \catcode\barasciicode       \activecatcode
+    \catcode`\:                 \lettercatcode
+\stopcatcodetable
+
+% IDEA:
+% Instead of using \externalfilter::command we can also define:
+%
+% \startmoduledefinition command #1
+% ...
+% \stopmoduledefinition
+%
+% which will be equivalent to
+%
+% \starttexdefinition externalfilter::command
+% ...
+% \stoptexdefinition
+%
+% and \modulevalue{command} => \getvalue{externalfilter::command}
+
+
+\pushcatcodetable 
+\setcatcodetable\externalfiltermodulecatcodes
 
 %D \section {Initialization}
 %D
@@ -25,11 +70,11 @@
 %D can also add other multi-lingual names.
 
 \startinterface all
-  \setinterfaceconstant {filter}           {filter}
-  \setinterfaceconstant {filtercommand}    {filtercommand}
-  \setinterfaceconstant {output}           {output} 
-  \setinterfaceconstant {read}             {read} 
-  \setinterfaceconstant {readcommand}      {readcommand} 
+    \setinterfaceconstant {filter}           {filter}
+    \setinterfaceconstant {filtercommand}    {filtercommand}
+    \setinterfaceconstant {output}           {output} 
+    \setinterfaceconstant {read}             {read} 
+    \setinterfaceconstant {readcommand}      {readcommand} 
 \stopinterface
 
 \def\m!externalfilter{t-filter}
@@ -44,19 +89,24 @@
 
 %D \subsubject {Name space}
 
-\def\????externalfilter{@@@@externalfilter}
-\def\!!!!externalfilter{externalfilter}
-\def\currentexternalfilter{}
-\def\externalfiltercountername{\????externalfilter-\currentexternalfilter-counter}
+\def\externalfilter::id          {externalfilter}
+\def\externalfilter::namespace   {@@@@\externalfilter::id}
+\def\externalfilter::name        {}
+
+\def\externalfilter::temp_prefix {temp}
+\def\externalfilter::count{\externalfilter::namespace-\externalfilter::name-counter}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
-\installparameterhandler     \????externalfilter \!!!!externalfilter
-\installparameterhashhandler \????externalfilter \!!!!externalfilter
-\installsetuphandler         \????externalfilter {externalfilters} %Note the plural
+\installparameterhandler     \externalfilter::namespace \externalfilter::id
+\installparameterhashhandler \externalfilter::namespace \externalfilter::id
+\installsetuphandler         \externalfilter::namespace \externalfilter::id
 
 \doifmode\s!mkiv
-  {\installattributehandler \????externalfilter \!!!!externalfilter}
+    {\installattributehandler \externalfilter::namespace \externalfilter::id}
+
+% For backward compatibility
+\let\setupexternalfilters \setupexternalfilter
 
 %D \section {Tracing Macros}
 
@@ -64,21 +114,22 @@
 
 \let\traceexternalfilters\traceexternalfilterstrue
 
-\starttexdefinition doshowfilterstate
-  \iftraceexternalfilters
-    \writestatus\m!externalfilter{current filter : \currentexternalfilter}
-    \writestatus\m!externalfilter{base file : \externalfilterbasefile}
-    \writestatus\m!externalfilter{input file : \externalfilterinputfile}
-    \writestatus\m!externalfilter{output file : \externalfilteroutputfile}
-  \fi
+\starttexdefinition externalfilter::show_filenames
+    \iftraceexternalfilters
+        \writestatus\m!externalfilter{current filter : \externalfilter::name}
+        \writestatus\m!externalfilter{base file      : \externalfilter::base_file}
+        \writestatus\m!externalfilter{input file     : \externalfilter::input_file}
+        \writestatus\m!externalfilter{output file    : \externalfilter::output_file}
+    \fi
 \stoptexdefinition
 
-\def\doshowfilterstatus#1%
-  {\iftraceexternalfilters
-    \writestatus\m!externalfilter{#1}%
-  \fi}
+\starttexdefinition externalfilter::show_status #1
+    \iftraceexternalfilters
+        \writestatus\m!externalfilter{#1}
+    \fi
+\stoptexdefinition
 
-\starttexdefinition doshowfiltercommand
+\starttexdefinition externalfilter::show_filtercommand
     \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
 \stoptexdefinition
 
@@ -87,55 +138,75 @@
 %D \subsubject {Define a new filter}
 
 \def\defineexternalfilter
-  {\dodoubleargument\dodefineexternalfilter}
+  {\dodoubleargument\externalfilter::define}
 
-\def\dodefineexternalfilter[#1][#2]%
-  {\doshowfilterstatus{defining filter : #1}%
-   \edef\currentexternalfilter{#1}%
-   \getparameters[\????externalfilter#1][\s!parent=\????externalfilter,#2]%
-   \doif{\externalfilterparameter\c!continue}\v!yes
-      {\expandafter\newcounter\csname\externalfiltercountername\endcsname}%
-   \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\dostartexternalfilter[#1]}%
-   \setvalue{\e!stop#1}{\doprocessexternalfilter}%
-   \setvalue{process#1file}{\dodoubleargument\doprocessexternalfilterfile[#1]}%
-   \setvalue{inline#1}{\doinlineexternalfilter[#1]}
-   }
+\starttexdefinition externalfilter::define [#1][#2]
+    \externalfilter::show_status{defining filter : #1}
 
-\def\dostartexternalfilter[#1][#2]% filter options
-  {% Initializations
-   \egroup %\bgroup in \start#1 
-   \edef\currentexternalfilter   {#1}%
-   \begingroup % to keep assignments local
-   \getparameters[\????externalfilter#1][\c!name=,#2]%
-   \setexternalfilterfilenames
-   % Capture the contents of the buffer
-   \dostartbuffer[\externalfiltertmpfile][\e!start#1][\e!stop#1]}
+    \edef\externalfilter::name{#1}
+    \getparameters[\externalfilter::namespace#1][\s!parent=\externalfilter::namespace,#2]
 
-\def\doprocessexternalfilterfile[#1][#2]#3%
-  {\begingroup
-   \edef\currentexternalfilter    {#1}%
-   \getparameters[\????externalfilter#1][\c!name=,\c!continue=\v!yes,#2]% 
-   %NOTE: Currently filters with a pipe (|) fail with continue=yes
-   \setexternalfilterdirectory
-   \edef\externalfilterinputfile  {#3}%
-   \splitfilename {#3}%
-   %NOTE: \edef doesn not work
-   \def\externalfilterbasefile   {\splitoffname}%
-   % The output is always in the directory specified by 
-   % \c!directory; even if the input is from some other directory
-   \def\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}%
-   \doshowfilterstate
-   \doexecuteexternalfilter
-   \doreadprocessedfile
-   \endgroup}
+    \doif{\externalfilterparameter\c!continue}\v!yes
+         {\expandafter\newcounter\csname\externalfilter::count\endcsname}
+
+    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter::start[#1]}
+    \setvalue {\e!stop#1}{\externalfilter::process_filter}
+
+    \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
+    \setvalue{inline#1}{\externalfilter::inline[#1]}
+\stoptexdefinition
+
+\starttexdefinition externalfilter::start [#1][#2] 
+    % #1 = filter
+    % #2 = options
+    \egroup %\bgroup in \start#1 
+
+    \edef\externalfilter::name{#1}
+
+    \begingroup % to keep assignments local
+    \getparameters[\externalfilter::namespace#1][\c!name=,#2]
+
+    \externalfilter::set_filenames
+
+    % Capture the contents of the buffer
+    \dostartbuffer[\externalfilter::temp_file][\e!start#1][\e!stop#1]
+\stoptexdefinition
+
+\starttexdefinition externalfilter::process_file [#1][#2]#3
+    \begingroup
+
+    \edef\externalfilter::name{#1}
+    \getparameters[\externalfilter::namespace#1][\c!name=,#2]
+
+    \externalfilter::set_directory
+    
+    \edef\externalfilter::input_file{#3}
+    \splitfilename{#3}
+    %NOTE: \edef doesn not work because \splitoffname is not expandable
+    \def\externalfilter::base_file   {\splitoffname}
+
+    % The output is always in the directory specified by 
+    % \c!directory; even if the input is from some other directory
+    \def\externalfilter::output_file{\externalfilter::get_directory\externalfilterparameter\c!output}
+
+    \externalfilter::show_filenames
+    \externalfilter::execute_filter
+    \externalfilter::read_processed_file
+
+    \endgroup
+\stoptexdefinition
    
-\def\doinlineexternalfilter[#1]%
-  {\edef\currentexternalfilter {#1}%
+\starttexdefinition externalfilter::inline [#1]
+   \edef\externalfilter::name{#1}
+
    \begingroup % to keep assignments local
-   \getparameters[\????externalfilter#1][\c!name=]% 
-   \setexternalfilterfilenames
+   \getparameters[\externalfilter::namespace#1][\c!name=]
+
+   \externalfilter::set_filenames
+
    \pushcatcodetable
-   \futurelet\next\dodoinlineexternalfilter}
+   \futurelet\next\externalfilter::inline_aux
+\stoptexdefinition
 
 %D \subsubject {Catcode tables}
 %D 
@@ -143,35 +214,35 @@
 %D module. Some of these are repetition of what is defined in ConTeXt, but the
 %D internal names keep on changing which is a  maintenance nightmare.
 
-\newcatcodetable \externalfilterreadcatcodes
-\newcatcodetable \externalfilterwritecatcodes
-\newcatcodetable \externalfilterverbcatcodes
+\newcatcodetable \externalfilter::read_catcodes
+\newcatcodetable \externalfilter::write_catcodes
+\newcatcodetable \externalfilter::verb_catcodes
 
-\startcatcodetable \externalfilterreadcatcodes % same as typcatcodesa
-    \catcode\tabasciicode       \othercatcode
-    \catcode\endoflineasciicode \othercatcode
-    \catcode\formfeedasciicode  \othercatcode
-    \catcode\spaceasciicode     \othercatcode
-    \catcode\endoffileasciicode \othercatcode
-    \catcode\leftbraceasciicode \begingroupcatcode
-    \catcode\rightbraceasciicode\endgroupcatcode
+\startcatcodetable \externalfilter::read_catcodes % same as typcatcodesa
+    \catcode\tabasciicode        = \othercatcode
+    \catcode\endoflineasciicode  = \othercatcode
+    \catcode\formfeedasciicode   = \othercatcode
+    \catcode\spaceasciicode      = \othercatcode
+    \catcode\endoffileasciicode  = \othercatcode
+    \catcode\leftbraceasciicode  = \begingroupcatcode
+    \catcode\rightbraceasciicode = \endgroupcatcode
 \stopcatcodetable
 
-\startcatcodetable \externalfilterwritecatcodes
-  \catcode\backslashasciicode  = \escapecatcode
-  \catcode\leftbraceasciicode  = \begingroupcatcode  
-  \catcode\rightbraceasciicode = \endgroupcatcode
-  \catcode\endoflineasciicode  = \activecatcode
-  \catcode\formfeedasciicode   = \activecatcode
-  \catcode\spaceasciicode      = \activecatcode
+\startcatcodetable \externalfilter::write_catcodes
+    \catcode\backslashasciicode  = \escapecatcode
+    \catcode\leftbraceasciicode  = \begingroupcatcode  
+    \catcode\rightbraceasciicode = \endgroupcatcode
+    \catcode\endoflineasciicode  = \activecatcode
+    \catcode\formfeedasciicode   = \activecatcode
+    \catcode\spaceasciicode      = \activecatcode
 \stopcatcodetable 
 
-\startcatcodetable \externalfilterverbcatcodes % same as vrbcatcodes
-    \catcode\tabasciicode      \othercatcode
-    \catcode\endoflineasciicode\othercatcode
-    \catcode\formfeedasciicode \othercatcode
-    \catcode\spaceasciicode    \othercatcode
-    \catcode\endoffileasciicode\othercatcode
+\startcatcodetable \externalfilter::verb_catcodes % same as vrbcatcodes
+    \catcode\tabasciicode       = \othercatcode
+    \catcode\endoflineasciicode = \othercatcode
+    \catcode\formfeedasciicode  = \othercatcode
+    \catcode\spaceasciicode     = \othercatcode
+    \catcode\endoffileasciicode = \othercatcode
 \stopcatcodetable
 
 %D \subsubject {Write argument to file verbatim}
@@ -179,89 +250,103 @@
 %D Surprisingly, there is nothing in the core to define a function that write its
 %D argument to a file verbatim. I basically copied the \type{\type} macro.
 
-\def\dodoinlineexternalfilter
-  {\ifx\next\bgroup
-     \expandafter\dodoinlineexternalfilterA
+\starttexdefinition externalfilter::inline_aux
+   \ifx\next\bgroup
+       \expandafter\externalfilter::inline_group
    \else
-     \expandafter\dodoinlineexternalfilterB
-   \fi}
+       \expandafter\externalfilter::inline_other
+   \fi
+\stoptexdefinition
 
-\def\dodoinlineexternalfilterA
-  {\setcatcodetable \externalfilterreadcatcodes
-   \redoinlineexternalfilter}
+\starttexdefinition externalfilter::inline_group
+    \setcatcodetable \externalfilter::read_catcodes
+    \externalfilter::process_inline
+\stoptexdefinition
 
-\def\dodoinlineexternalfilterB#1%
-  {\setcatcodetable \externalfilterverbcatcodes
-   \def\dododoinlineexternalfilterB##1#1{\redoinlineexternalfilter{##1}}%
-   \dododoinlineexternalfilterB}
+\starttexdefinition externalfilter::inline_other #1
+    \setcatcodetable \externalfilter::verb_catcodes
 
-\newwrite\externalfilterwrite
+    \def\next##1#1{\externalfilter::process_inline{##1}}
+    \next
+\stoptexdefinition
 
-\def\redoinlineexternalfilter#1%
-  {\immediate\openout \externalfilterwrite\externalfilterinputfile
-   \immediate\write   \externalfilterwrite{\detokenize{#1}}%
-   \immediate\closeout\externalfilterwrite
-   \popcatcodetable
-   \doexecuteexternalfilter
-   \doreadprocessedfile
-   % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\doglobal\expandafter\increment\csname\externalfiltercountername\endcsname}%
-   \endgroup}
+\newwrite\externalfilter::write
 
+\starttexdefinition externalfilter::process_inline #1
+    \immediate\openout \externalfilter::write\externalfilter::input_file
+    \immediate\write   \externalfilter::write{\detokenize{#1}}
+    \immediate\closeout\externalfilter::write
+
+    \popcatcodetable
+
+    \externalfilter::execute_filter
+    \endlinechar\minusone %to prevent line break after reading file
+    \externalfilter::read_processed_file
+
+    % Finalization
+    \doif{\externalfilterparameter\c!continue}\v!yes
+         {\doglobal\expandafter\increment\csname\externalfilter::count\endcsname}
+    \endgroup
+\stoptexdefinition
 
 
 %D \section {Helper Functions}
 %D
 %D \subsubject {First and last character of a string}
 
-\def\getfirstcharacter#1%
-  {\dogetfirstcharacter#1\relax}
+\def\externalfilter::get_first_character#1%
+  {\externalfilter::get_first_character_aux#1\relax}
 
-\def\dogetfirstcharacter#1#2\relax{#1}
+\def\externalfilter::get_first_character_aux#1#2\relax{#1}
 
-\def\getlastcharacter#1%
-  {\@EA\dogetlastcharacter#1\relax}
+\def\externalfilter::get_last_character#1%
+  {\@EA\externalfilter::get_last_character_aux#1\relax}
 
-\def\dogetlastcharacter#1#2%
-  {\ifx#2\relax#1\else\@EA\dogetlastcharacter\@EA#2\fi}
+\def\externalfilter::get_last_character_aux#1#2%
+  {\ifx#2\relax#1\else\@EA\externalfilter::get_last_character_aux\@EA#2\fi}
 
 %D \subsubject {Set the name of output directory}
 
-\def\setexternalfilterdirectory
-  {\edef\getexternalfilterdirectory{\externalfilterparameter\c!directory}%
-   \doifsomething{\getexternalfilterdirectory}\dosetexternalfilterdirectory}
+\starttexdefinition externalfilter::set_directory
+    \edef\externalfilter::get_directory{\externalfilterparameter\c!directory}
+    \doifsomething{\externalfilter::get_directory}\externalfilter::set_directory_aux
+\stoptexdefinition
    
-\def\dosetexternalfilterdirectory
-  {\doif{\getfirstcharacter\getexternalfilterdirectory}{/}
-      {\writeline
-       \showmessage\!!!!externalfilter{forbidden}\getexternalfilterdirectory
-       \batchmode
-       \errmessage{}
-       \normalend}
-   \doifnot{\getlastcharacter\getexternalfilterdirectory}{/}
-      {\showmessage\!!!!externalfilter{slash}\getexternalfilterdirectory
-       \edef\getexternalfilterdirectory{\getexternalfilterdirectory/}}}
+\starttexdefinition externalfilter::set_directory_aux
+    \doif{\externalfilter::get_first_character\externalfilter::get_directory}{/}
+        {\writeline
+         \showmessage\externalfilter::id{forbidden}\externalfilter::get_directory
+         \batchmode
+         \errmessage{}
+         \normalend}
+
+    \doifnot{\externalfilter::get_last_character\externalfilter::get_directory}{/}
+        {\showmessage\externalfilter::id{slash}\externalfilter::get_directory
+         \edef\externalfilter::get_directory{\externalfilter::get_directory/}}
+\stoptexdefinition
   
 
 
 %D \subsubject {Set file names}
 %D
-%D \type{\externalfilterbasefile} is the name of the temporary file without
+%D \type{\externalfilter::base_file} is the name of the temporary file without
 %D extension. Its actual value depends on the state of \type{continue} key as
 %D well as the value of \type{name} key.
 
-\def\setexternalfilterfilenames
-  {\setexternalfilterdirectory
+\starttexdefinition externalfilter::set_filenames
+   \externalfilter::set_directory
+
    % Set the name of temp file for the filter
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter-\csname\externalfiltercountername\endcsname}}
-       {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter}}
+        {\edef\externalfilter::temp_file{\externalfilter::temp_prefix-\externalfilter::name-\csname\externalfilter::count\endcsname}}
+        {\edef\externalfilter::temp_file{\externalfilter::temp_prefix-\externalfilter::name}}
    \doifsomething{\externalfilterparameter\c!name}
-       {\edef\externalfiltertmpfile{\!!!!externalfilter-\currentexternalfilter-\externalfilterparameter\c!name}}
+        {\edef\externalfilter::temp_file{\externalfilter::temp_prefix-\externalfilter::name-\externalfilterparameter\c!name}}
+
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
-   \edef\externalfilterbasefile  {\jobname-\externalfiltertmpfile}%
+   \edef\externalfilter::base_file  {\jobname-\externalfilter::temp_file}
+
    % In MkII, the buffer output is written to \TEXbufferfile{buffername} where
    % the macro \TEXbufferfile is defined as
    %
@@ -269,66 +354,79 @@
    %
    % We redefine bufferprefix to include the directory name.
    \doifmode{\s!mkii}
-      {\edef\bufferprefix{\getexternalfilterdirectory\jobname-}}
+        {\edef\bufferprefix{\externalfilter::get_directory\jobname-}}
+
    % In MkIV, we do not need to do such jugglary, because we can specify the
    % name of the file where the buffer has to be saved. This file is
-   % \externalfilterinputfile (because it is the input to the filter).
-   \edef\externalfilterinputfile {\getexternalfilterdirectory\externalfilterbasefile.\f!temporaryextension}%
-   % The name of the file to which the filter output is written
-   \edef\externalfilteroutputfile{\getexternalfilterdirectory\externalfilterparameter\c!output}%
-   \doshowfilterstate
-  }
+   % \externalfilter::input_file (because it is the input to the filter).
+   \edef\externalfilter::input_file {\externalfilter::get_directory\externalfilter::base_file.\f!temporaryextension}
+
+   % Append directory name to the name of the output file
+   \edef\externalfilter::output_file{\externalfilter::get_directory\externalfilterparameter\c!output}
+   \externalfilter::show_filenames
+\stoptexdefinition
 
 
 %D \subsubject {Process Filter}
 %D
 %D Execute filter, read the output and do book-keeping if needed.
 
-\def\doprocessexternalfilter
-  {% By defualt, buffers are in memory in MkIV
-   \doifmode\s!mkiv{\savebuffer[\externalfiltertmpfile][\externalfilterinputfile]}%
-   % Run external command
-   \doexecuteexternalfilter
-   \doreadprocessedfile
-   \endgroup 
-   % Finalization
-   \doif{\externalfilterparameter\c!continue}\v!yes
-        {\doglobal\expandafter\increment\csname\externalfiltercountername\endcsname}%
-   }
+\starttexdefinition externalfilter::process_filter
+     % By defualt, buffers are in memory in MkIV. So, we save them to disk
+     \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+
+     \externalfilter::execute_filter
+     \externalfilter::read_processed_file
+     \endgroup 
+
+     % Finalization
+     \doif{\externalfilterparameter\c!continue}\v!yes
+          {\doglobal\expandafter\increment\csname\externalfilter::count\endcsname}
+
+     \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
+     \dorechecknextindentation
+\stoptexdefinition
 
 %D \subsubject {Execute Filter}   
 
-\def\doexecuteexternalfilter
-  {\doshowfiltercommand
+\starttexdefinition externalfilter::execute_filter
+
+   \externalfilter::show_filtercommand
+
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-     {\doifmode{*first}
+       {\doifmode{*first}
+           {\executesystemcommand
+            {mtxrun --ifchanged=\externalfilter::input_file\space 
+                --direct \externalfilterparameter\c!filtercommand}}}
        {\executesystemcommand
-        {mtxrun --ifchanged=\externalfilterinputfile\space 
-            --direct \externalfilterparameter\c!filtercommand}}}
-     {\executesystemcommand
-        {\externalfilterparameter\c!filtercommand}}}
+          {\externalfilterparameter\c!filtercommand}}
+\stoptexdefinition
 
 %D \subsubject {Read output}
 
-\def\doreadprocessedfile
-  {\doif{\externalfilterparameter\c!read}\v!yes
-      {\doiffileelse{\externalfilteroutputfile}
-          {\dodoreadprocessedfile}
-          {\showmessage\!!!!externalfilter{notfound}\externalfilteroutputfile 
-           \blank
-           {\tttf [[\getmessage\!!!!externalfilter{missing}]]}%
-           \blank
-          }}}
+\starttexdefinition externalfilter::read_processed_file
+    \doif{\externalfilterparameter\c!read}\v!yes
+       {\doiffileelse{\externalfilter::output_file}
+           {\externalfilter::read_processed_file_aux}
+           {\showmessage\externalfilter::id{notfound}\externalfilter::output_file 
+            \blank
+              {\tttf [[\getmessage\externalfilter::id{missing}]]}
+            \blank}}
+\stoptexdefinition
 
-\def\dodoreadprocessedfile
-  {\externalfilterparameter\c!before
+\starttexdefinition externalfilter::read_processed_file_aux
+   \externalfilterparameter\c!before
+
    \begingroup
    \doifmode\s!mkiv
-      {\dosetexternalfilterattributes\c!style\c!color}
+       {\dosetexternalfilterattributes\c!style\c!color}
+
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-   \externalfilterparameter\c!readcommand\externalfilteroutputfile
+   \externalfilterparameter\c!readcommand\externalfilter::output_file
    \endgroup
-   \externalfilterparameter\c!after}
+
+   \externalfilterparameter\c!after
+\stoptexdefinition
 
 %D \section {Default Values}
 
@@ -338,6 +436,7 @@
    \c!after=,
    \c!style=,
    \c!color=,
+   \c!indentnext=\v!auto,
    \c!setups=,
    \c!continue=\v!no,
    \c!read=\v!yes,
@@ -345,8 +444,13 @@
    \c!directory=,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
-   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilterinputfile},
+   \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilter::input_file},
  ]
+
+\def\externalfilterbasefile  {\externalfilter::base_file}
+\def\externalfilterinputfile {\externalfilter::input_file}
+\def\externalfilteroutputfile{\externalfilter::output_file}
+\def\currentexternalfilter   {\externalfilter::name}
    
-\protect
+\popcatcodetable
 \stopmodule
