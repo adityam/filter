@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.02.21,
+%D      version=2011.03.06,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -89,11 +89,11 @@
 
 %D \subsubject {Name space}
 
-\def\externalfilter::namespace   {@@@@externalfilter}
 \def\externalfilter::id          {externalfilter}
-\def\externalfilter::temp_prefix {temp}
-\def\externalfilter::name      {}
+\def\externalfilter::namespace   {@@@@\externalfilter::id}
+\def\externalfilter::name        {}
 
+\def\externalfilter::temp_prefix {temp}
 \def\externalfilter::count{\externalfilter::namespace-\externalfilter::name-counter}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi

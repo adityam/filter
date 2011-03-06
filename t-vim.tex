@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.02.21,
+%D      version=2011.03.06,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -12,51 +12,71 @@
 \writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
 
 \startmodule[vim]
-
-\unprotect
-
 \usemodule[filter]
 
-% We specify colors in hex so
-\setupcolor[hex]
+% I use the experimental namespaces defined in t-filter.
+\pushcatcodetable
+\setcatcodetable\externalfiltermodulecatcodes
+
+% Colors are specified in hex; in MkII the hex mode needs to be activated. 
+\doifmode\s!mkii
+    {\setupcolor[hex]}
 
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax} 
 \stopinterface
 
-\def\????vimtyping{@@@@vimtyping}
+\def\vimtyping::id          {vimtyping}
+\def\vimtyping::namespace   {@@@@\vimtyping::id}
+\def\vimtyping::name        {}
 
-\installparameterhandler \????vimtyping {vimtyping}
-\installsetuphandler     \????vimtyping {vimtyping}
+\def\vimalternative::id         {vimalternative}
+\def\vimalternative::namespace  {@@@@\vimalternative::id}
+\def\vimalternative::name       {}
+
+\installparameterhandler \vimtyping::namespace \vimtyping::id
+\installsetuphandler     \vimtyping::namespace \vimtyping::id
+
+    
 
 \def\definevimtyping
-  {\dodoubleargument\dodefinevimtyping}
+  {\dodoubleargument\vimtyping::define}
 
-\def\dodefinevimtyping[#1][#2]% 
-  {\getparameters[\????vimtyping#1][\s!parent=\????vimtyping,#2]%
-   \edef\currentvimtyping{#1}%
-   \defineexternalfilter[#1][\s!parent=\????vimtyping#1]%
-   \doifmode\s!mkiv{\setups{vimlinenumbering:mkiv}}%
-   \setvalue{type#1file}{\getvalue{process#1file}}%
-  }
+\starttexdefinition vimtyping::define [#1][#2]
+    \getparameters[\vimtyping::namespace#1][\s!parent=\vimtyping::namespace,#2]
 
-\startsetups[vimsetup]
-  \edef\currentvimtyping{\currentexternalfilter}%
-  \edef\currentvimalternative{\externalfilterparameter\c!alternative}%
+    \edef\vimtyping::name{#1}
+    \doifmode\s!mkiv{\setups{vimtyping::setup_line_number_mkiv}}
+
+    \defineexternalfilter[#1][\s!parent=\vimtyping::namespace#1]
+    \setvalue{type#1file}{\getvalue{process#1file}}
+
+\stoptexdefinition
+
+\startsetups vimtyping::setup
+
+  \edef\vimtyping::name{\currentexternalfilter}
+  \edef\vimalternative::name{\externalfilterparameter\c!alternative}
+  
   \let\SYN\vimsyntax
   \def\NL{\strut}% 
+
   \def\tab##1%
-    {\dorecurse{##1}{\space}}%
-   \doifmode\s!mkii{\setups{vimlinenumbering:mkii}}%
+      {\dorecurse{##1}{\space}}%
+  
+  \doifmode\s!mkii{\setups{vimtyping::setup_line_number_mkii}}%
+  
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
-    {\setupwhitespace[\v!none,\v!flexible]}%
-  \setcatcodetable\externalfilter@catcodes_write
+      {\setupwhitespace[\v!none,\v!flexible]}%
+  
+  \setcatcodetable\externalfilter::write_catcodes
 \stopsetups
 
-\startsetups vimlinenumbering:mkiv
+\startsetups vimtyping::setup_line_number_mkiv
  \definelinenumbering [#1]
+
  \setuplinenumbering
-   [\currentvimtyping]
+   [\vimtyping::name]
    [\c!conversion=\externalfilterparameter\c!numberconversion,
         \c!start=\externalfilterparameter{\c!number\c!start},
          \c!step=\externalfilterparameter{\c!number\c!step},
@@ -70,18 +90,18 @@
        \c!command=\externalfilterparameter\c!numbercommand,
       \c!distance=\externalfilterparameter{\c!number\c!distance},
          \c!align=\externalfilterparameter{\c!number\c!align},
-   ]%
+   ]
 \stopsetups
 
-\startmode[\s!mkii]
-\newcount\vimlinenumber
-\stopmode
+\doifmode\s!mkii
+    {\newcount\vimtyping::linenumber}
 
-\startsetups vimlinenumbering:mkii
- \doif{\externalfilterparameter\c!numbering}\v!yes
+\startsetups vimtyping::setup_line_number_mkii
+\doif{\externalfilterparameter\c!numbering}\v!yes
     {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
      % revert it back.
-     \vimlinenumber=\linenumber
+     \vimtyping::linenumber=\linenumber
+
      \setuplinenumbering
        [\c!conversion=\externalfilterparameter\c!numberconversion,
             \c!start=\externalfilterparameter{\c!number\c!start},
@@ -96,15 +116,16 @@
            \c!command=\externalfilterparameter\c!numbercommand,
           \c!distance=\externalfilterparameter{\c!number\c!distance},
              \c!align=\externalfilterparameter{\c!number\c!align},
-       ]%
-       \linenumber=\vimlinenumber}
+       ]
+
+    \linenumber=\vimtyping::linenumber}
 \stopsetups
 
 \doifmodeelse{vimtest}
-  {\def\vimconversionfile{2context.vim}}
-  {\def\vimconversionfile{kpse:2context.vim}}
+  {\def\vimtyping::script_name{2context.vim}}
+  {\def\vimtyping::script_name{kpse:2context.vim}}
 
-\def\vimfiltercommand
+\def\vimtyping::filter_command
   {vim -u NONE % don't read global config file
        -e % run in ex mode
        -s % silent
@@ -115,65 +136,76 @@
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let  contextstopline=\externalfilterparameter\c!stop" %
-       -c "source \vimconversionfile" %
+       -c "source \vimtyping::script_name" %
        -c "qa" %
        \externalfilterinputfile\space
        \externalfilteroutputfile}
 
-\def\vimreadcommand#1%
-  {\doifelse{\externalfilterparameter\c!numbering}\v!yes
-    {\startlinenumbering
-        [\currentvimtyping]%
-        [\c!continue=\externalfilterparameter{\c!number\c!continue}]%
-      \ReadFile{#1}%
-     \stoplinenumbering}
-     {\ReadFile{#1}}}
+\startmode [\s!mkiv]
+\starttexdefinition vimtyping::read_command #1
+   \doifelse{\externalfilterparameter\c!numbering}\v!yes
+       {\startlinenumbering
+          [\vimtyping::name]
+          [\c!continue=\externalfilterparameter{\c!number\c!continue}]
+            \ReadFile{#1}
+        \stoplinenumbering}
+       {\ReadFile{#1}}
+\stoptexdefinition
+\stopmode
 
-% Line numbering behaves differently in MkII
-% FIXME: numbercontinue=yes is not working in MkII
-
-\startmode[\s!mkii]
-  \def\vimreadcommand#1%
-    {\doifelse{\externalfilterparameter\c!numbering}\v!yes
+\startmode [\s!mkii]
+\starttexdefinition vimtyping::read_command #1
+    \doifelse{\externalfilterparameter\c!numbering}\v!yes
         {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
-          {\startlinenumbering[\v!continue]}
-          {\startlinenumbering}%
-       \ReadFile{#1}%
-       \stoplinenumbering}
-      {\ReadFile{#1}}}
+            {\startlinenumbering[\v!continue]}
+            {\startlinenumbering}
+        \ReadFile{#1}
+        \stoplinenumbering}
+        {\ReadFile{#1}}
+\stoptexdefinition
 \stopmode
 
 \def\startvimalternative
-  {\dosingleargument\dostartvimalternative}
+    {\dosingleargument\vimalternative::start}
 
-\def\dostartvimalternative[#1]%
-  {\pushmacro\currentvimalternative
-   \edef\currentvimalternative{#1}}
+\def\vimalternative::start[#1]%
+    {\pushmacro\vimalternative::name
+     \edef\vimalternative::name{#1}}
 
 \def\stopvimalternative
-  {\popmacro\currentvimalternative}
+    {\popmacro\vimalternative::name}
 
 \def\setvimsyntax
-  {\doquadrupleargument\dosetvimsyntax}
+    {\doquadrupleargument\vimalternative::set_syntax}
 
-\def\dosetvimsyntax[#1][#2][#3][#4]% name color style command
-  {\def\dodosetupvimsyntax##1%
-    { \doifsomething{#2}
-      {\definecolor[\????vimtyping:\currentvimalternative:##1:color] [#2]%
-       \getparameters[\????vimtyping::\currentvimalternative::##1]
-                     [\c!color={\????vimtyping:\currentvimalternative:##1:color}]}
-     \getparameters[\????vimtyping::\currentvimalternative::##1]
-                   [\c!style=#3,
-                    \c!command=#4]}%
-     \processcommalist[#1]\dodosetupvimsyntax}
+\starttexdefinition vimalternative::set_syntax [#1][#2][#3][#4]
+    % #1 = name
+    % #2 = color
+    % #3 = style
+    % #4 = command
+    \def\dodosetupvimsyntax##1%
+        {\doifsomething{#2}
+         % we check if color exists; otherwise ConTeXt gives a warning on stdout
+         % which is very distracting
+              {\definecolor[\vimalternative::namespace\vimalternative::name##1color_name] [#2]
+               \getparameters[\vimalternative::namespace\vimalternative::name##1]
+                             [\c!color={\vimalternative::namespace\vimalternative::name##1color_name}]}
+        \getparameters[\vimalternative::namespace\vimalternative::name##1]
+                      [\c!style=#3,
+                       \c!command=#4]}
+    \processcommalist[#1]\dodosetupvimsyntax
+\stoptexdefinition
 
 
-\def\vimsyntax[#1]#2% style content
-  {\dostartattributes{\????vimtyping::\currentvimalternative::Normal}\c!style\c!color\empty%
-   \dostartattributes{\????vimtyping::\currentvimalternative::#1}\c!style\c!color\empty%
-   \getvalue{\????vimtyping::\currentvimalternative::#1\c!command}{#2}%
-   \dostopattributes
-   \dostopattributes}
+\starttexdefinition vimsyntax [#1]#2
+    % #1 = style 
+    % #2 = content
+    \dostartattributes{\vimalternative::namespace\vimalternative::name Normal}\c!style\c!color\empty
+        \dostartattributes{\vimalternative::namespace\vimalternative::name #1}\c!style\c!color\empty
+            \getvalue{\vimalternative::namespace\vimalternative::name#1\c!command}{#2}
+        \dostopattributes
+    \dostopattributes
+\stoptexdefinition
 
 % \startvimalternative[pscolor]
 % 
@@ -274,14 +306,14 @@
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
-   \c!filtercommand=\vimfiltercommand,
+   \c!filtercommand=\vimtyping::filter_command,
    \c!continue=yes,
    \c!read=\v!yes,
-   \c!readcommand=\vimreadcommand,
+   \c!readcommand=\vimtyping::read_command,
    \c!output=\externalfilterbasefile.vimout,
-   \c!setups=vimsetup,
+   \c!setups=vimtyping::setup,
    \c!option=\v!packed, % Could be a list
-   \s!parent=\????externalfilter,
+   \s!parent=\externalfilter::namespace,
    % Numbering options
    \c!numbering=\v!no,
    \c!number\c!start=1,
@@ -300,7 +332,9 @@
    \c!number\c!align=\v!flushright,
   ]
 
-\protect
+\def\currentvimtyping  {\vimtyping::name}
+
+\popcatcodetable
 
 \stopmodule
 
