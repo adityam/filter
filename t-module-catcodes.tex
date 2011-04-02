@@ -1,0 +1,67 @@
+%D \module
+%D   [     file=t-module-catcodes,
+%D      version=2011.04.02,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=Module Catcodes,
+%D       author=Aditya Mahajan,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan,
+%D        email=adityam <at> umich <dot> edu,
+%D      license=Simplified BSD License]
+
+\writestatus{loading}{ConTeXt User Module / Module Catcodes}
+
+\startmodule    [module-catcodes]
+% EXPERIMENTAL: Catcode table for internal commands
+
+\newcatcodetable \modulecatcodes
+
+\startcatcodetable \modulecatcodes
+    \catcode\tabasciicode       \spacecatcode
+    \catcode\endoflineasciicode \endoflinecatcode
+    \catcode\formfeedasciicode  \endoflinecatcode
+    \catcode\spaceasciicode     \spacecatcode
+    \catcode\endoffileasciicode \ignorecatcode
+    \catcode\circumflexasciicode\superscriptcatcode
+%   \catcode\underscoreasciicode\subscriptcatcode
+    \catcode\underscoreasciicode\lettercatcode
+    \catcode\ampersandasciicode \alignmentcatcode
+    \catcode\backslashasciicode \escapecatcode
+    \catcode\leftbraceasciicode \begingroupcatcode
+    \catcode\rightbraceasciicode\endgroupcatcode
+    \catcode\dollarasciicode    \mathshiftcatcode
+    \catcode\hashasciicode      \parametercatcode
+    \catcode\commentasciicode   \commentcatcode
+    \catcode`\@                 \lettercatcode
+    \catcode`\!                 \lettercatcode
+    \catcode`\?                 \lettercatcode
+    \catcode\tildeasciicode     \activecatcode
+    \catcode\barasciicode       \activecatcode
+    \catcode`\:                 \lettercatcode
+\stopcatcodetable
+
+% IDEA:
+% Instead of using \externalfilter::command we can also define:
+%
+% \startmoduledefinition command #1
+% ...
+% \stopmoduledefinition
+%
+% which will be equivalent to
+%
+% \starttexdefinition externalfilter::command
+% ...
+% \stoptexdefinition
+%
+% and \modulevalue{command} => \getvalue{externalfilter::command}
+
+
+\def\unprotectmodulecatcodes
+    {\pushcatcodetable 
+     \setcatcodetable\modulecatcodes}
+
+\def\protectmodulecatcodes
+    {\popcatcodetable}
+
+
+\stopmodule
