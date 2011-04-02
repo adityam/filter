@@ -12,53 +12,10 @@
 \writestatus{loading}{ConTeXt User Module / Filter}
 
 \startmodule    [filter]
+\usemodule      [module-catcodes]
 
-% EXPERIMENTAL: Catcode table for internal commands
+\unprotectmodulecatcodes
 
-\newcatcodetable \externalfiltermodulecatcodes
-
-\startcatcodetable \externalfiltermodulecatcodes
-    \catcode\tabasciicode       \spacecatcode
-    \catcode\endoflineasciicode \endoflinecatcode
-    \catcode\formfeedasciicode  \endoflinecatcode
-    \catcode\spaceasciicode     \spacecatcode
-    \catcode\endoffileasciicode \ignorecatcode
-    \catcode\circumflexasciicode\superscriptcatcode
-%   \catcode\underscoreasciicode\subscriptcatcode
-    \catcode\underscoreasciicode\lettercatcode
-    \catcode\ampersandasciicode \alignmentcatcode
-    \catcode\backslashasciicode \escapecatcode
-    \catcode\leftbraceasciicode \begingroupcatcode
-    \catcode\rightbraceasciicode\endgroupcatcode
-    \catcode\dollarasciicode    \mathshiftcatcode
-    \catcode\hashasciicode      \parametercatcode
-    \catcode\commentasciicode   \commentcatcode
-    \catcode`\@                 \lettercatcode
-    \catcode`\!                 \lettercatcode
-    \catcode`\?                 \lettercatcode
-    \catcode\tildeasciicode     \activecatcode
-    \catcode\barasciicode       \activecatcode
-    \catcode`\:                 \lettercatcode
-\stopcatcodetable
-
-% IDEA:
-% Instead of using \externalfilter::command we can also define:
-%
-% \startmoduledefinition command #1
-% ...
-% \stopmoduledefinition
-%
-% which will be equivalent to
-%
-% \starttexdefinition externalfilter::command
-% ...
-% \stoptexdefinition
-%
-% and \modulevalue{command} => \getvalue{externalfilter::command}
-
-
-\pushcatcodetable 
-\setcatcodetable\externalfiltermodulecatcodes
 
 %D \section {Initialization}
 %D
@@ -452,5 +409,5 @@
 \def\externalfilteroutputfile{\externalfilter::output_file}
 \def\currentexternalfilter   {\externalfilter::name}
    
-\popcatcodetable
+\protectmodulecatcodes
 \stopmodule
