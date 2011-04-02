@@ -75,15 +75,30 @@ The `t-vim` module simply defines the macros that are used by `2context.vim`.
 Start and stop lines
 --------------------
 
-The `\start<typing>` ... `\stop<typing>` environment and the `\type<typing>file`
+The `\start<vimtyping>` ... `\stop<vimtyping>` environment and the `\type<vimtyping>file`
 macro take an optional argument that is used to set options.
 
-For example, if we only want to typeset lines 15 through 25 of a ruby file
-`rails_install.rb`, we can use:
+For example, to typeset lines 15 through 25 of a ruby file
+`rails_install.rb`, use:
 
     \typeRUBYfile[start=15,stop=25]{rails_install.rb}
 
 To exclude 10 lines from the end, set `stop=-10`.
+
+Changing tab skip
+-----------------
+
+By default, a literal tab (`0x09` or `^I`) character has a width of 8 spaces. For most
+cases, this is too excessive. To reduce the shift of a tab, use the `tab` key.
+For example:
+
+    \definevimtyping
+      [...]
+      [...
+       tab=4,
+       ...]
+
+changes the tab width to four spaces. 
 
 Avoid clutter
 -------------
@@ -92,8 +107,8 @@ Running an external file through vim is slow. So, `t-vim` reprocesses a snippet
 or a file only if its contents have changed. To check if the contents have
 changed, it writes each snippet to a different file and stores the md5 sum of
 that snippet. As a result, the working directory gets cluttered with lot of
-temporary files. To avoid the clutter, these temporary files can be written to a
-different directory, e.g.,
+temporary files. To avoid this clutter, write the temporary files to an a
+different directory using the `directory` key. For example,
 
     \definevimtyping[...]
                     [directory=output/]
@@ -127,6 +142,39 @@ A particular color scheme may be chosen using the options:
 
 The default color scheme is `pscolor`.
 
+Line numbering
+---------------
+
+To eanble line numbering for a particular snippet, use:
+
+    \start<vimtyping>[numbering=yes]
+      ...
+    \stop<vimtyping>
+
+To enable line numbering for all code snippets, use:
+
+    \definevimtyping
+      [...]
+      [...
+       numbering=yes,
+       ...]
+
+If you want a particular snippet not to have line numbering, use
+
+    \start<vimtyping>[numbering=no]
+      ...
+    \stop<vimtyping>
+
+By default, numbering starts from one, all lines are numbered, numbering is
+reset at each snippet, and numbers are displayed on the left. All these defaults
+can be changed. 
+
+TODO:   
+
+- Document linenumbering options
+- continue line numbering from previous environment
+
+
 A bit of a history
 ------------------
 
@@ -159,6 +207,4 @@ result, the module is smaller and more robust.
 TODO
 ----
 
-- Line numbering
-- continue line numbering from previous environment
-- modify tabs and spaces
+- active space

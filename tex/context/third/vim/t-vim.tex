@@ -11,12 +11,10 @@
 
 \writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
 
-\startmodule[vim]
-\usemodule[filter]
+\startmodule    [vim]
+\usemodule      [module-catcodes,filter]
 
-% I use the experimental namespaces defined in t-filter.
-\pushcatcodetable
-\setcatcodetable\externalfiltermodulecatcodes
+\unprotectmodulecatcodes
 
 % Colors are specified in hex; in MkII the hex mode needs to be activated. 
 \doifmode\s!mkii
@@ -334,7 +332,7 @@
 
 \def\currentvimtyping  {\vimtyping::name}
 
-\popcatcodetable
+\protectmodulecatcodes
 
 \stopmodule
 
