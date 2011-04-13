@@ -1,0 +1,56 @@
+\unprotect
+
+\usemodule[filter]
+
+\traceexternalfilters
+
+% Lilypond is a bit weird. When -dpreview option is called, it creates a file
+% with the name 'inputfile.preview.pdf'. I cannot find how to control this (get 
+% rid of '.preview'
+
+\defineexternalfilter
+  [lilypond]
+  [\c!output=\externalfilterbasefile.preview.pdf,
+   \c!filtercommand=\lilypondcommand,
+   \c!continue=\v!yes,
+   \c!readcommand=\readlilypondoutput,
+   %\c!directory=output,
+  ]
+
+% frame=on is for testing
+\def\readlilypondoutput#1{\externalfigure[#1][frame=on,location=lohi]}
+
+\def\lilypondcommand%
+	{lilypond -fpdf
+			  % Set the output directory, not the name of the output file
+			  --output=\externalfilterparameter\c!directory\space
+			  % I am not sure whether preview is the right option or not
+			  -dpreview
+			  -ddelete-intermediate-files
+			  % Not sure what no-print-page is supposed to do
+			  -dno-print-pages
+	\externalfilterinputfile}
+\protect
+
+\starttext
+\startlilypond
+\relative c <<
+  \new Staff {
+    \time 2/4 R2*3
+    r4 f8 a cis4 f e d
+  }
+  \new Staff {
+    \clef bass
+    r4 d,8 f | gis4 c | b bes |
+    a8 e f4 | g d | gis f
+  }
+>>
+\stoplilypond
+
+Some music score
+\inlinelilypond{\relative c''
+{ c-\markup { \bold \huge { Click here.}}}}
+testing
+
+\stoptext
+
