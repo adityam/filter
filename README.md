@@ -28,6 +28,11 @@ program would be a waste of effort. Each new program requires only a few changes
 in the R-module; what I needed was a R-module _template_ so that I could fill in
 the blanks with the appropriate values. And so, the filter module was born.
 
+Compatibility
+------------
+
+This module works with both MkII and MkIV
+
 Installation
 ------------
 
