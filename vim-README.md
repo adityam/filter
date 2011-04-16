@@ -11,6 +11,11 @@ editors, and many other syntax highlighting programs, already syntax highlight
 many programming languages. Why not just leverage these external programs to
 generate syntax highlighting? This module does exactly that.
 
+Compatibility
+------------
+
+This module works with both MkII and MkIV
+
 Installation
 ------------
 
@@ -207,10 +212,55 @@ By default, numbering starts from one, all lines are numbered, numbering is
 reset at each snippet, and numbers are displayed on the left. All these defaults
 can be changed. 
 
-TODO:   
+Number of the first line
+------------------------
 
-- Document linenumbering options
-- continue line numbering from previous environment
+By default, the numbering starts from one (that is, the first line is numbered
+`1`). If you want the first line to be numbered something else, say `15`, you
+need to set
+
+      \start<vimtyping>[numberstart=15]
+
+If you want the numbering to continue from where the previous snippet ended, use
+
+      \start<vimtyping>[numbercontinue=yes]
+
+By default, consecutive lines are numbered. If you want alternate lines to be
+numbered, use
+
+      \start<vimtyping>[numbertstep=2]
+
+If you want every fifth line to be numbered, use
+
+      \start<vimtyping>[numbertstep=5]
+
+Standard options for line numbering
+-----------------------------------
+
+- To change the color or style of the numbers, use the `numbercolor=...` and
+  `numberstyle=...` options. By default `numbercolor` is not set, while
+  `numberstyle` is set to `\ttx`.
+
+- To change the alignment of numbers, use the `numberalign=...` option. Default
+  value is `flushright`.
+
+- To change the width of the box in which the numbers are typeset, use
+  `numberwidth=...` option. Default value is `2em`.
+
+- To change the distance between the numbers and the rest of the code, use
+  `numberdistance=...` option. Default value is `0.5em`.
+
+- To change the conversion of numbers, use `numberconversion=...` option.
+  Default value is `numbers`.
+
+- Use `numberleft=...` and `numberright=...` options to typeset
+  something on the left and right of the number. By default, these options are
+  not set.
+
+- `numbercommand=...` is used to set a command for typesetting the number.
+
+- `numberlocation=...` is used to set the location of the numbers. Default value
+  is `left`. Change this to `right` if you want the numbers on the right.
 
 
 A bit of a history
