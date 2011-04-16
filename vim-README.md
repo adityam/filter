@@ -14,7 +14,45 @@ generate syntax highlighting? This module does exactly that.
 Installation
 ------------
 
-TODO:
+This module depends on the `t-filter` module. If you are using ConTeXt minimals,
+you can install the module using 
+
+    first-setup.sh --extras="t-filter,t-vim"
+
+Depending on your TeX distribution, you may already have the module.
+To verify, check if
+
+    kpsewhich t-vim.tex
+
+returns a meaningful path. If not, you have to manually install the module.
+Download the latest version of the `filter` and `vim` modules from
+[http://github.com/adityam/filter/downloads](http://github.com/adityam/filter/downloads)
+and unzip them either `$TEXMFHOME` or `$TEXMFLOCAL`. Run
+
+    mktexlsr
+
+and
+
+    mtxrun --generate
+
+to refresh the TeX file database (for MkII and MkIV, respectively). If
+everything went well
+
+    kpsewhich t-vim
+
+will return the path where you stored the file.
+
+Unfortunately, that is not enough. For the module to work, TeX must be able to
+call an external program. This feature is a potential security risk and is
+disabled by default on most TeX distributions. To enable this feature, you must
+set
+
+    shell_escape=t
+
+in your `texmf.cnf` file. See this page
+[http://wiki.contextgarden.net/write18](http://wiki.contextgarden.net/write18)
+on the ConTeXt wiki for detailed instructions.
+
 
 Usage
 -----
