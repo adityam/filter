@@ -157,9 +157,20 @@
         {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
             {\startlinenumbering[\v!continue]}
             {\startlinenumbering}
-        \ReadFile{#1}
+            \vimtyping::read_command_aux{#1}
         \stoplinenumbering}
-        {\ReadFile{#1}}
+        {\vimtyping::read_command_aux{#1}}
+\stoptexdefinition
+
+\starttexdefinition vimtyping::read_command_aux #1
+    % In the filter module, style=something does not work in MkII. 
+    % So, we explicitly add the global style before reading the file.
+    % 
+    \dostartattributes{\vimtyping::namespace}\c!style\c!color
+    \dostartattributes{\vimtyping::namespace\vimtyping::name}\c!style\c!color
+      \ReadFile{#1}
+    \dostopattributes
+    \dostopattributes
 \stoptexdefinition
 \stopmode
 
@@ -198,10 +209,8 @@
 \starttexdefinition vimsyntax [#1]#2
     % #1 = style 
     % #2 = content
-    \dostartattributes{\vimalternative::namespace\vimalternative::name Normal}\c!style\c!color\empty
-        \dostartattributes{\vimalternative::namespace\vimalternative::name #1}\c!style\c!color\empty
-            \getvalue{\vimalternative::namespace\vimalternative::name#1\c!command}{#2}
-        \dostopattributes
+    \dostartattributes{\vimalternative::namespace\vimalternative::name #1}\c!style\c!color
+        \getvalue{\vimalternative::namespace\vimalternative::name#1\c!command}{#2}
     \dostopattributes
 \stoptexdefinition
 
@@ -304,6 +313,8 @@
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
+   \c!style=\tttf,
+   \c!color=,
    \c!filtercommand=\vimtyping::filter_command,
    \c!continue=yes,
    \c!read=\v!yes,
