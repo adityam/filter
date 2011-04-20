@@ -76,9 +76,9 @@ while s:lnum <= s:end
 " The funny \type{||||||||||} and \type{$$$$$$$$$} characters should never
 " appear in {\em normal} \TEX\ file. As a side||effect, this script can not
 " pretty print itself.
-      let s:temp = substitute( s:temp,  '\\', '\\letterbackslash||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '{',  '\\letteropenbrace||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '}',  '\\letterclosebrace||||||||||$$$$$$$$$$', 'g')
+      let s:temp = substitute( s:temp,  '\\', '\\\\||||||||||$$$$$$$$$$', 'g')
+      let s:temp = substitute( s:temp,  '{',  '\\{||||||||||$$$$$$$$$$', 'g')
+      let s:temp = substitute( s:temp,  '}',  '\\}||||||||||$$$$$$$$$$', 'g')
       let s:temp = substitute( s:temp,  '||||||||||' , '{' , 'g')
       let s:temp = substitute( s:temp,  '\$\$\$\$\$\$\$\$\$\$' , '}' , 'g')
       let s:new  = s:new . '\SYN[' . s:id_name . ']{' . s:temp .  '}'
