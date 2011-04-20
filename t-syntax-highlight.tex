@@ -1,0 +1,222 @@
+%D \module
+%D   [     file=t-syntax-highlight,
+%D      version=2011.04.20,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=Syntax highlighting support,
+%D       author=Aditya Mahajan,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan,
+%D        email=adityam <at> umich <dot> edu,
+%D      license=Simplified BSD License]
+
+\writestatus{loading}{ConTeXt User Module / Syntax Highlighting Support}
+
+% Colors are specified in hex; in MkII the hex mode needs to be activated. 
+\doifmode\s!mkii
+    {\setupcolor[hex]}
+
+\startmodule    [syntax-highlight]
+\usemodule      [module-catcodes]
+  
+\unprotectmodulecatcodes
+
+\def\colorscheme::name {}
+
+\def\syntaxhighlight::id          {syntaxhighlight}
+\def\syntaxhighlight::namespace   {@@@@\colorscheme::name\syntaxhighlight::id}
+\def\syntaxhighlight::name        {}
+
+\installparameterhandler  \syntaxhighlight::namespace \syntaxhighlight::id
+
+\def\definesyntaxhighlight
+    {\dodoubleargument\syntaxhighlight::define}
+
+\starttexdefinition syntaxhighlight::define [#1][#2]
+  % #1 list name
+  % #2 options
+  \doifassignmentelse{#2}
+  {
+    \def\syntaxhighlight::get_parameters##1%
+    {
+         \edef\syntaxhighlight::name {##1}
+         \getparameters[\syntaxhighlight::namespace##1]
+                       [\c!color=,\c!style=,\c!command=,#2]
+         \doifsomething{\syntaxhighlightparameter\c!color}
+          {
+             \expanded{\definecolor[\syntaxhighlight::namespace-##1-color]
+                                   [\syntaxhighlightparameter\c!color]}
+             \getparameters[\syntaxhighlight::namespace##1][\c!color=\syntaxhighlight::namespace-##1-color]
+          }
+    }
+  }{
+    \def\syntaxhighlight::get_parameters##1%
+    {
+        \copyparameters[\syntaxhighlight::namespace##1][\syntaxhighlight::namespace#2]
+                       [\c!color,\c!style,\c!command]
+    }
+  }
+        
+  \processcommalist[#1]\syntaxhighlight::get_parameters
+\stoptexdefinition
+
+\def\startcolorscheme%
+    {\dosingleargument\colorscheme::start}
+
+\starttexdefinition colorscheme::start [#1]
+     \pushmacro\colorscheme::name
+     \setcolorscheme{#1}
+     \getparameters[\syntaxhighlight::namespace][\c!color=,\c!style=,\c!command=]
+\stoptexdefinition
+
+\def\stopcolorscheme
+    {\popmacro\colorscheme::name}
+
+\def\setcolorscheme#1%
+    {\edef\colorscheme::name{#1}}
+
+\starttexdefinition syntaxhighlight [#1]#2
+  % #1 = style
+  % #2 = content
+      \begingroup
+      \edef\syntaxhighlight::name{#1}%
+      \syntaxhighlightparameter\c!command
+      {
+        \dostartattributes{\syntaxhighlight::namespace #1}\c!style\c!color
+            #2
+        \dostopattributes
+      }
+      \endgroup
+\stoptexdefinition
+
+\def\currentsyntaxhighlight   {\syntaxhighlight::name}
+
+\startsetups[vim-minor-groups]
+    \definesyntaxhighlight
+        [SpecialComment]
+        [Comment]
+
+    \definesyntaxhighlight
+        [String,Character,Number,Boolean,Float]
+        [Constant]
+
+    \definesyntaxhighlight
+        [Function]
+        [Identifier]
+
+    \definesyntaxhighlight
+        [Condition,Repeat,Label,Operator,Keyword,Exception]
+        [Statement]
+
+    \definesyntaxhighlight
+        [Include,Define,Macro,PreCondit]
+        [Preproc]
+
+    \definesyntaxhighlight
+        [StorateClass,Structure,Typedef]
+        [Type]
+
+    \definesyntaxhighlight
+        [SpecialChar,Delimiter,Debug]
+        [Special]
+\stopsetups
+
+\startcolorscheme[pscolor]
+    % Vim Preferred groups
+    \definesyntaxhighlight 
+        [Constant]  
+        [\c!color={h=007068}]
+
+    \definesyntaxhighlight
+        [Identifier]
+        [\c!color={h=a030a0}]
+
+    \definesyntaxhighlight 
+        [Statement] 
+        [\c!color={h=2060a8}]
+
+    \definesyntaxhighlight 
+        [PreProc] 
+        [\c!color={h=009030}]
+
+    \definesyntaxhighlight 
+        [Type]      
+        [\c!color={h=0850a0}]
+
+    \definesyntaxhighlight 
+        [Special] 
+        [\c!color={h=907000}]
+
+    \definesyntaxhighlight 
+        [Comment]
+        [\c!color={h=606000}]
+
+    \definesyntaxhighlight
+         [Ignore]
+
+    \definesyntaxhighlight 
+        [Todo]      
+        [\c!color={h=800000}]
+
+    \definesyntaxhighlight 
+        [Error] 
+        [\c!color={h=c03000}]
+
+    \definesyntaxhighlight 
+        [Underlined]
+        [\c!color={h=6a5acd},
+         \c!command=\underbar]
+
+    \setups{vim-minor-groups}
+
+    \definesyntaxhighlight
+        [Number]
+        [\c!color={h=907000}]
+\stopcolorscheme
+
+\startcolorscheme[blackandwhite]
+    \definesyntaxhighlight 
+        [Constant]  
+
+    \definesyntaxhighlight
+        [Identifier]
+
+    \definesyntaxhighlight 
+        [Statement] 
+        [\c!style=bold]
+
+    \definesyntaxhighlight 
+        [PreProc] 
+        [\c!style=bold]
+
+    \definesyntaxhighlight 
+        [Type]      
+        [\c!style=bold]
+
+    \definesyntaxhighlight 
+        [Special] 
+
+    \definesyntaxhighlight 
+        [Comment]
+        [\c!style=italic]
+
+    \definesyntaxhighlight
+         [Ignore]
+
+    \definesyntaxhighlight 
+        [Todo]      
+        [\c!command=\inframed]
+
+    \definesyntaxhighlight 
+        [Error] 
+        [\c!command=\overstrike]
+
+    \definesyntaxhighlight 
+        [Underlined]
+        [\c!command=\underbar]
+
+    \setups{vim-minor-groups}
+
+\stopcolorscheme
+
+\protectmodulecatcodes
+\stopmodule

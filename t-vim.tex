@@ -12,13 +12,11 @@
 \writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
 
 \startmodule    [vim]
-\usemodule      [module-catcodes,filter]
+\usemodule      [module-catcodes]
+\usemodule      [filter]
+\usemodule      [t-syntax-highlight]
 
 \unprotectmodulecatcodes
-
-% Colors are specified in hex; in MkII the hex mode needs to be activated. 
-\doifmode\s!mkii
-    {\setupcolor[hex]}
 
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax} 
@@ -27,10 +25,6 @@
 \def\vimtyping::id          {vimtyping}
 \def\vimtyping::namespace   {@@@@\vimtyping::id}
 \def\vimtyping::name        {}
-
-\def\vimalternative::id         {vimalternative}
-\def\vimalternative::namespace  {@@@@\vimalternative::id}
-\def\vimalternative::name       {}
 
 \installparameterhandler \vimtyping::namespace \vimtyping::id
 \installsetuphandler     \vimtyping::namespace \vimtyping::id
@@ -54,9 +48,9 @@
 \startsetups vimtyping::setup
 
   \edef\vimtyping::name{\currentexternalfilter}
-  \edef\vimalternative::name{\externalfilterparameter\c!alternative}
+  \edef\colorscheme::name{\externalfilterparameter\c!alternative}
   
-  \let\SYN\vimsyntax
+  \let\SYN\syntaxhighlight
   \let\\\letterbackslash
   \def\NL{\strut}% 
 
@@ -69,6 +63,7 @@
       {\setupwhitespace[\v!none,\v!flexible]}%
   
   \setcatcodetable\externalfilter::write_catcodes
+  \loggingall
 \stopsetups
 
 \startsetups vimtyping::setup_line_number_mkiv
@@ -175,136 +170,6 @@
 \stoptexdefinition
 \stopmode
 
-\def\startvimalternative
-    {\dosingleargument\vimalternative::start}
-
-\def\vimalternative::start[#1]%
-    {\pushmacro\vimalternative::name
-     \edef\vimalternative::name{#1}}
-
-\def\stopvimalternative
-    {\popmacro\vimalternative::name}
-
-\def\setvimsyntax
-    {\doquadrupleargument\vimalternative::set_syntax}
-
-\starttexdefinition vimalternative::set_syntax [#1][#2][#3][#4]
-    % #1 = name
-    % #2 = color
-    % #3 = style
-    % #4 = command
-    \def\dodosetupvimsyntax##1%
-        {\doifsomething{#2}
-         % we check if color exists; otherwise ConTeXt gives a warning on stdout
-         % which is very distracting
-              {\definecolor[\vimalternative::namespace\vimalternative::name##1color_name] [#2]
-               \getparameters[\vimalternative::namespace\vimalternative::name##1]
-                             [\c!color={\vimalternative::namespace\vimalternative::name##1color_name}]}
-        \getparameters[\vimalternative::namespace\vimalternative::name##1]
-                      [\c!style=#3,
-                       \c!command=#4]}
-    \processcommalist[#1]\dodosetupvimsyntax
-\stoptexdefinition
-
-
-\starttexdefinition vimsyntax [#1]#2
-    % #1 = style 
-    % #2 = content
-    \dostartattributes{\vimalternative::namespace\vimalternative::name #1}\c!style\c!color
-        \getvalue{\vimalternative::namespace\vimalternative::name#1\c!command}{#2}
-    \dostopattributes
-\stoptexdefinition
-
-% \startvimalternative[pscolor]
-% 
-%   \definesyntax 
-%     [Normal]
-%     [color=\externalfilterparameter\c!color,
-%      style=\tttf,
-%      command=]
-% 
-% \stopvimalternative
-
-\startvimalternative[pscolor]
-  \setvimsyntax [Normal]    [\externalfilterparameter\c!color][\tttf]
-
-  \setvimsyntax 
-    [Constant,Character,Boolean,Float]  
-    [h=007068]      
-
-  \setvimsyntax [Number]    [h=907000]
-
-  \setvimsyntax
-    [Identifier, Function]
-    [h=a030a0]      
-
-  \setvimsyntax 
-    [Statement,Conditional,Repeat,Label,Operator,Keyword,Exception] 
-    [h=2060a8]      
-
-  \setvimsyntax 
-    [PreProc, Include, Define, Macro, PreCondit] 
-    [h=009030]
-
-  \setvimsyntax 
-    [Type,StorageClass, Structure, Typedef]      
-    [h=0850a0]      
-
-  \setvimsyntax [Special]   [h=907000]
-  \setvimsyntax [SpecialKey][h=1050a0]
-
-  \setvimsyntax
-    [Tag, Delmiter]
-
-  \setvimsyntax 
-    [Comment, SpecialComment]
-    [h=606000]
-
-  \setvimsyntax
-    [Debug,Ignore]
-
-  \setvimsyntax [Todo]      [h=e0e090]
-  \setvimsyntax [Error]     [h=c03000]
-  \setvimsyntax [Underlined][h=6a5acd][][\underbar]
-
-\stopvimalternative
-
-%TODO
-%   \setvimsyntax [id] [bg=, fc=, style=, command=] == \localframed[options]
-\startvimalternative[blackandwhite]
-  \setvimsyntax [Normal]    [\externalfilterparameter\c!color][\tttf]
-
-  \setvimsyntax 
-    [Constant,Character,Boolean,Float,Number,Identifier,Function]  
-
-  \setvimsyntax 
-    [Statement,Conditional,Repeat,Label,Operator,Keyword,Exception] 
-    [][][\bold]
-
-  \setvimsyntax 
-    [PreProc, Include, Define, Macro, PreCondit] 
-    [][][\bold]
-
-  \setvimsyntax 
-    [Type,StorageClass, Structure, Typedef]      
-    [][][\bold]
-
-  \setvimsyntax [Special, SpecialKey]
-
-  \setvimsyntax [Tag, Delmiter]
-
-  \setvimsyntax 
-    [Comment, SpecialComment]
-    [][][\italic]
-
-  \setvimsyntax
-    [Debug,Ignore]
-
-  \setvimsyntax [Todo]      [][][\inframed]
-  \setvimsyntax [Error]     [][][\overstrike]
-  \setvimsyntax [Underlined][][][\underbar]
-
-\stopvimalternative
 
 \setupvimtyping
   [\c!tab=4,
