@@ -1,0 +1,21 @@
+\usemodule[filter]
+\defineexternalfilter
+  [rest]
+  [filter={pandoc -f rst -t context -o \externalfilteroutputfile}]
+
+\traceexternalfilters
+
+\setupbodyfont[libertine]
+
+\starttext
+There should be a table here. An alpha α
+\startrest
+=========       =========
+  test            table
+=========       =========
+α                 b
+c                 d
+========        ========
+\stoprest
+\stoptext
+
