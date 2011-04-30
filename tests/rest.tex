@@ -1,7 +1,8 @@
 \usemodule[filter]
 \defineexternalfilter
   [rest]
-  [filter={pandoc -f rst -t context -o \externalfilteroutputfile}]
+  [filter={pandoc -f rst -t native -o \externalfilteroutputfile},
+   readcommand=\typefile]
 
 \traceexternalfilters
 
