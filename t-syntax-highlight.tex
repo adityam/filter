@@ -18,6 +18,11 @@
 
 \unprotectmodulecatcodes
 
+\startinterface all
+  \setinterfaceconstant {syntax}          {syntax} 
+\stopinterface
+
+
 %D Name space
 
 \def\syntaxhighlighting::id          {syntaxhighlighting}
@@ -150,7 +155,7 @@
   [\c!tab=4,
    \c!start=1,
    \c!stop=0,
-   \c!syntax=context,
+   % \c!syntax=context,
    \c!alternative=pscolor,
    \c!before=,
    \c!after=,
