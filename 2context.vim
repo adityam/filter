@@ -49,7 +49,7 @@ while s:lnum <= s:end
 " Get the current line
   let s:line = getline(s:lnum)
   let s:len  = strlen(s:line)
-  let s:new  = "\\NL{}"
+  let s:new  = "\\CR{}"
 
 " Loop over each character in the line
   let s:col = 1
@@ -73,14 +73,7 @@ while s:lnum <= s:end
 " we don't need to print in in that case
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
-" The funny \type{||||||||||} and \type{$$$$$$$$$} characters should never
-" appear in {\em normal} \TEX\ file. As a side||effect, this script can not
-" pretty print itself.
-      let s:temp = substitute( s:temp,  '\\', '\\\\||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '{',  '\\{||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '}',  '\\}||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '||||||||||' , '{' , 'g')
-      let s:temp = substitute( s:temp,  '\$\$\$\$\$\$\$\$\$\$' , '}' , 'g')
+      let s:temp = escape( s:temp, '\{}')
       let s:new  = s:new . '\SYN[' . s:id_name . ']{' . s:temp .  '}'
     endif
 

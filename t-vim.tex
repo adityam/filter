@@ -52,7 +52,7 @@
   
   \let\SYN\syntaxhighlight
   \let\\\letterbackslash
-  \def\NL{\strut}% 
+  \def\CR{\strut}% 
 
   \def\tab##1%
       {\dorecurse{##1}{\space}}%
@@ -63,7 +63,6 @@
       {\setupwhitespace[\v!none,\v!flexible]}%
   
   \setcatcodetable\externalfilter::write_catcodes
-  \loggingall
 \stopsetups
 
 \startsetups vimtyping::setup_line_number_mkiv
@@ -114,6 +113,8 @@
 
     \linenumber=\vimtyping::linenumber}
 \stopsetups
+
+% Mode to testing the dev version of 2context script.
 
 \doifmodeelse{vimtest}
   {\def\vimtyping::script_name{2context.vim}}
