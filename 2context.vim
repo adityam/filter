@@ -19,16 +19,16 @@ wincmd p
 
 " If contextstartline and contextstartline are set, use them.
 if exists("contextstartline")
-  let s:lnum = max( [1,  min( [line("$"), contextstartline]) ])
+  let s:lnum = max([1,  min([line("$"), contextstartline]) ])
 else
   let s:lnum = 1
 endif
 
 if exists("contextstopline")
-  if contextstopline < 0 
+  if contextstopline <= 0 
       let contextstopline = line("$") + contextstopline 
   endif
-  let s:end = min( [line("$"), max( [s:lnum, contextstopline]) ])
+  let s:end = min([line("$"), max([s:lnum, contextstopline]) ])
 else
   let s:end = line("$")
 endif
