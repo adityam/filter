@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.03.06,
+%D      version=2011.05.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -12,9 +12,8 @@
 \writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
 
 \startmodule    [vim]
-\usemodule      [module-catcodes]
-\usemodule      [filter]
-\usemodule      [t-syntax-highlight]
+\usemodule      [syntax-highlight]  
+                % Calls module-catcodes, filter, and syntax-groups
 
 \unprotectmodulecatcodes
 
@@ -29,8 +28,6 @@
 \installparameterhandler \vimtyping::namespace \vimtyping::id
 \installsetuphandler     \vimtyping::namespace \vimtyping::id
 
-    
-
 \def\definevimtyping
   {\dodoubleargument\vimtyping::define}
 
@@ -38,84 +35,11 @@
     \getparameters[\vimtyping::namespace#1][\s!parent=\vimtyping::namespace,#2]
 
     \edef\vimtyping::name{#1}
-    \doifmode\s!mkiv{\setups{vimtyping::setup_line_number_mkiv}}
 
-    \defineexternalfilter[#1][\s!parent=\vimtyping::namespace#1]
-    \setvalue{type#1file}{\getvalue{process#1file}}
-
+    \definesyntaxhighlighting[#1][\s!parent=\vimtyping::namespace#1]
 \stoptexdefinition
 
-\startsetups vimtyping::setup
-
-  \edef\vimtyping::name{\currentexternalfilter}
-  \edef\colorscheme::name{\externalfilterparameter\c!alternative}
-  
-  \let\SYN\syntaxhighlight
-  \let\\\letterbackslash
-  \def\CR{\strut}% 
-
-  \def\tab##1%
-      {\dorecurse{##1}{\space}}%
-  
-  \doifmode\s!mkii{\setups{vimtyping::setup_line_number_mkii}}%
-  
-  \doifinset{\externalfilterparameter\c!option}{\v!packed}
-      {\setupwhitespace[\v!none,\v!flexible]}%
-  
-  \setcatcodetable\externalfilter::write_catcodes
-\stopsetups
-
-\startsetups vimtyping::setup_line_number_mkiv
- \definelinenumbering [#1]
-
- \setuplinenumbering
-   [\vimtyping::name]
-   [\c!conversion=\externalfilterparameter\c!numberconversion,
-        \c!start=\externalfilterparameter{\c!number\c!start},
-         \c!step=\externalfilterparameter{\c!number\c!step},
-        \c!method=\externalfilterparameter{\c!number\c!method},
-      \c!location=\externalfilterparameter{\c!number\c!location},
-         \c!style=\externalfilterparameter\c!numberstyle,
-         \c!color=\externalfilterparameter\c!numbercolor,
-         \c!width=\externalfilterparameter{\c!number\c!width},
-          \c!left=\externalfilterparameter{\c!number\c!left},
-         \c!right=\externalfilterparameter{\c!number\c!right},
-       \c!command=\externalfilterparameter\c!numbercommand,
-      \c!distance=\externalfilterparameter{\c!number\c!distance},
-         \c!align=\externalfilterparameter{\c!number\c!align},
-   ]
-\stopsetups
-
-\doifmode\s!mkii
-    {\newcount\vimtyping::linenumber}
-
-\startsetups vimtyping::setup_line_number_mkii
-\doif{\externalfilterparameter\c!numbering}\v!yes
-    {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
-     % revert it back.
-     \vimtyping::linenumber=\linenumber
-
-     \setuplinenumbering
-       [\c!conversion=\externalfilterparameter\c!numberconversion,
-            \c!start=\externalfilterparameter{\c!number\c!start},
-             \c!step=\externalfilterparameter{\c!number\c!step},
-            \c!method=\externalfilterparameter{\c!number\c!method},
-          \c!location=\externalfilterparameter{\c!number\c!location},
-             \c!style=\externalfilterparameter\c!numberstyle,
-             \c!color=\externalfilterparameter\c!numbercolor,
-             \c!width=\externalfilterparameter{\c!number\c!width},
-              \c!left=\externalfilterparameter{\c!number\c!left},
-             \c!right=\externalfilterparameter{\c!number\c!right},
-           \c!command=\externalfilterparameter\c!numbercommand,
-          \c!distance=\externalfilterparameter{\c!number\c!distance},
-             \c!align=\externalfilterparameter{\c!number\c!align},
-       ]
-
-    \linenumber=\vimtyping::linenumber}
-\stopsetups
-
 % Mode to testing the dev version of 2context script.
-
 \doifmodeelse{vimtest}
   {\def\vimtyping::script_name{2context.vim}}
   {\def\vimtyping::script_name{kpse:2context.vim}}
@@ -130,86 +54,177 @@
        -c "syntax on" %
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
-       -c "let  contextstopline=\externalfilterparameter\c!stop" %
+       -c "let contextstopline=\externalfilterparameter\c!stop" %
        -c "source \vimtyping::script_name" %
        -c "qa" %
        \externalfilterinputfile\space
        \externalfilteroutputfile}
 
-\startmode [\s!mkiv]
-\starttexdefinition vimtyping::read_command #1
-   \doifelse{\externalfilterparameter\c!numbering}\v!yes
-       {\startlinenumbering
-          [\vimtyping::name]
-          [\c!continue=\externalfilterparameter{\c!number\c!continue}]
-            \ReadFile{#1}
-        \stoplinenumbering}
-       {\ReadFile{#1}}
-\stoptexdefinition
-\stopmode
-
-\startmode [\s!mkii]
-\starttexdefinition vimtyping::read_command #1
-    \doifelse{\externalfilterparameter\c!numbering}\v!yes
-        {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
-            {\startlinenumbering[\v!continue]}
-            {\startlinenumbering}
-            \vimtyping::read_command_aux{#1}
-        \stoplinenumbering}
-        {\vimtyping::read_command_aux{#1}}
-\stoptexdefinition
-
-\starttexdefinition vimtyping::read_command_aux #1
-    % In the filter module, style=something does not work in MkII. 
-    % So, we explicitly add the global style before reading the file.
-    % 
-    \dostartattributes{\vimtyping::namespace}\c!style\c!color
-    \dostartattributes{\vimtyping::namespace\vimtyping::name}\c!style\c!color
-      \ReadFile{#1}
-    \dostopattributes
-    \dostopattributes
-\stoptexdefinition
-\stopmode
-
-
 \setupvimtyping
-  [\c!tab=4,
-   \c!start=1,
-   \c!stop=0,
-   \c!syntax=context,
-   \c!alternative=pscolor,
-   \c!before=,
-   \c!after=,
-   \c!style=\tttf,
-   \c!color=,
+  [% \c!tab=4,
+   % \c!start=1,
+   % \c!stop=0,
+   % \c!syntax=context,
+   % \c!alternative=pscolor,
+   % \c!before=,
+   % \c!after=,
+   % \c!style=\tttf,
+   % \c!color=,
    \c!filtercommand=\vimtyping::filter_command,
-   \c!continue=yes,
-   \c!read=\v!yes,
-   \c!readcommand=\vimtyping::read_command,
+   % \c!continue=yes,
+   % \c!read=\v!yes,
+   % \c!readcommand=\syntaxhighlighting::read_command,
    \c!output=\externalfilterbasefile.vimout,
-   \c!setups=vimtyping::setup,
-   \c!option=\v!packed, % Could be a list
-   \s!parent=\externalfilter::namespace,
-   % Numbering options
-   \c!numbering=\v!no,
-   \c!number\c!start=1,
-   \c!number\c!step=1,
-   \c!number\c!continue=\v!no,
-   \c!numberconversion=\v!numbers,
-   \c!number\c!method=\v!first,
-   \c!number\c!location=\v!left,
-   \c!numberstyle=\ttx,
-   \c!numbercolor=,
-   \c!number\c!width=2em,
-   \c!number\c!left=,
-   \c!number\c!right=,
-   \c!number\c!command=,
-   \c!number\c!distance=0.5em,
-   \c!number\c!align=\v!flushright,
+   % \c!setups=syntaxhighlighting::setup,
+   % \c!option=\v!packed, % Could be a list
+   \s!parent=\syntaxhighlighting::namespace,
+   % % Numbering options
+   % \c!numbering=\v!no,
+   % \c!number\c!start=1,
+   % \c!number\c!step=1,
+   % \c!number\c!continue=\v!no,
+   % \c!numberconversion=\v!numbers,
+   % \c!number\c!method=\v!first,
+   % \c!number\c!location=\v!left,
+   % \c!numberstyle=\ttx,
+   % \c!numbercolor=,
+   % \c!number\c!width=2em,
+   % \c!number\c!left=,
+   % \c!number\c!right=,
+   % \c!number\c!command=,
+   % \c!number\c!distance=0.5em,
+   % \c!number\c!align=\v!flushright,
   ]
 
 \def\currentvimtyping  {\vimtyping::name}
 
+\startsetups[vim-minor-groups]
+    \definesyntaxgroup
+        [SpecialComment]
+        [Comment]
+
+    \definesyntaxgroup
+        [String,Character,Number,Boolean,Float]
+        [Constant]
+
+    \definesyntaxgroup
+        [Function]
+        [Identifier]
+
+    \definesyntaxgroup
+        [Condition,Repeat,Label,Operator,Keyword,Exception]
+        [Statement]
+
+    \definesyntaxgroup
+        [Include,Define,Macro,PreCondit]
+        [Preproc]
+
+    \definesyntaxgroup
+        [StorateClass,Structure,Typedef]
+        [Type]
+
+    \definesyntaxgroup
+        [SpecialChar,Delimiter,Debug]
+        [Special]
+\stopsetups
+
+\startcolorscheme[pscolor]
+    % Vim Preferred groups
+    \definesyntaxgroup 
+        [Constant]  
+        [\c!color={h=007068}]
+
+    \definesyntaxgroup
+        [Identifier]
+        [\c!color={h=a030a0}]
+
+    \definesyntaxgroup 
+        [Statement] 
+        [\c!color={h=2060a8}]
+
+    \definesyntaxgroup 
+        [PreProc] 
+        [\c!color={h=009030}]
+
+    \definesyntaxgroup 
+        [Type]      
+        [\c!color={h=0850a0}]
+
+    \definesyntaxgroup 
+        [Special] 
+        [\c!color={h=907000}]
+
+    \definesyntaxgroup 
+        [Comment]
+        [\c!color={h=606000}]
+
+    \definesyntaxgroup
+         [Ignore]
+
+    \definesyntaxgroup 
+        [Todo]      
+        [\c!color={h=800000}]
+
+    \definesyntaxgroup 
+        [Error] 
+        [\c!color={h=c03000}]
+
+    \definesyntaxgroup 
+        [Underlined]
+        [\c!color={h=6a5acd},
+         \c!command=\underbar]
+
+    \setups{vim-minor-groups}
+
+    \definesyntaxgroup
+        [Number]
+        [\c!color={h=907000}]
+\stopcolorscheme
+
+\startcolorscheme[blackandwhite]
+    \definesyntaxgroup 
+        [Constant]  
+
+    \definesyntaxgroup
+        [Identifier]
+
+    \definesyntaxgroup 
+        [Statement] 
+        [\c!style=bold]
+
+    \definesyntaxgroup 
+        [PreProc] 
+        [\c!style=bold]
+
+    \definesyntaxgroup 
+        [Type]      
+        [\c!style=bold]
+
+    \definesyntaxgroup 
+        [Special] 
+
+    \definesyntaxgroup 
+        [Comment]
+        [\c!style=italic]
+
+    \definesyntaxgroup
+         [Ignore]
+
+    \definesyntaxgroup 
+        [Todo]      
+        [\c!command=\inframed]
+
+    \definesyntaxgroup 
+        [Error] 
+        [\c!command=\overstrike]
+
+    \definesyntaxgroup 
+        [Underlined]
+        [\c!command=\underbar]
+
+    \setups{vim-minor-groups}
+
+\stopcolorscheme
 \protectmodulecatcodes
 
 \stopmodule

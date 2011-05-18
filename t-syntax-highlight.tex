@@ -1,222 +1,190 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.04.20,
+%D      version=2011.05.17,
 %D        title=\CONTEXT\ User Module,
-%D     subtitle=Syntax highlighting support,
+%D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
 %D        email=adityam <at> umich <dot> edu,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Syntax Highlighting Support}
-
-% Colors are specified in hex; in MkII the hex mode needs to be activated. 
-\doifmode\s!mkii
-    {\setupcolor[hex]}
+\writestatus{loading}{ConTeXt User Module / Code syntax highlighting}
 
 \startmodule    [syntax-highlight]
 \usemodule      [module-catcodes]
-  
+\usemodule      [filter]
+\usemodule      [syntax-groups]
+
 \unprotectmodulecatcodes
 
-\def\colorscheme::name {}
+%D Name space
 
-\def\syntaxhighlight::id          {syntaxhighlight}
-\def\syntaxhighlight::namespace   {@@@@\colorscheme::name\syntaxhighlight::id}
-\def\syntaxhighlight::name        {}
+\def\syntaxhighlighting::id          {syntaxhighlighting}
+\def\syntaxhighlighting::namespace   {@@@@\syntaxhighlighting::id}
+\def\syntaxhighlighting::name        {}
 
-\installparameterhandler  \syntaxhighlight::namespace \syntaxhighlight::id
+\installparameterhandler \syntaxhighlighting::namespace \syntaxhighlighting::id
+\installsetuphandler     \syntaxhighlighting::namespace \syntaxhighlighting::id
 
-\def\definesyntaxhighlight
-    {\dodoubleargument\syntaxhighlight::define}
+\def\definesyntaxhighlighting
+  {\dodoubleargument\syntaxhighlighting::define}
 
-\starttexdefinition syntaxhighlight::define [#1][#2]
-  % #1 list name
-  % #2 options
-  \doifassignmentelse{#2}
-  {
-    \def\syntaxhighlight::get_parameters##1%
-    {
-         \edef\syntaxhighlight::name {##1}
-         \getparameters[\syntaxhighlight::namespace##1]
-                       [\c!color=,\c!style=,\c!command=,#2]
-         \doifsomething{\syntaxhighlightparameter\c!color}
-          {
-             \expanded{\definecolor[\syntaxhighlight::namespace-##1-color]
-                                   [\syntaxhighlightparameter\c!color]}
-             \getparameters[\syntaxhighlight::namespace##1][\c!color=\syntaxhighlight::namespace-##1-color]
-          }
-    }
-  }{
-    \def\syntaxhighlight::get_parameters##1%
-    {
-        \copyparameters[\syntaxhighlight::namespace##1][\syntaxhighlight::namespace#2]
-                       [\c!color,\c!style,\c!command]
-    }
-  }
-        
-  \processcommalist[#1]\syntaxhighlight::get_parameters
+\starttexdefinition syntaxhighlighting::define [#1][#2]
+    \getparameters[\syntaxhighlighting::namespace#1][\s!parent=\syntaxhighlighting::namespace,#2]
+
+    \edef\syntaxhighlighting::name{#1}
+    \doifmode\s!mkiv{\setups{syntaxhighlighting::setup_line_number_mkiv}}
+
+    \defineexternalfilter[#1][\s!parent=\syntaxhighlighting::namespace#1]
+    \setvalue{type#1file}{\getvalue{process#1file}}
+
 \stoptexdefinition
 
-\def\startcolorscheme%
-    {\dosingleargument\colorscheme::start}
+\startsetups syntaxhighlighting::setup
 
-\starttexdefinition colorscheme::start [#1]
-     \pushmacro\colorscheme::name
-     \setcolorscheme{#1}
-     \getparameters[\syntaxhighlight::namespace][\c!color=,\c!style=,\c!command=]
-\stoptexdefinition
+  \edef\syntaxhighlighting::name{\currentexternalfilter}
+  \edef\colorscheme::name{\externalfilterparameter\c!alternative}
+  
+  \let\SYN\syntaxgroup
+  \let\\\letterbackslash
+  \def\CR{\strut}% 
 
-\def\stopcolorscheme
-    {\popmacro\colorscheme::name}
-
-\def\setcolorscheme#1%
-    {\edef\colorscheme::name{#1}}
-
-\starttexdefinition syntaxhighlight [#1]#2
-  % #1 = style
-  % #2 = content
-      \begingroup
-      \edef\syntaxhighlight::name{#1}%
-      \syntaxhighlightparameter\c!command
-      {
-        \dostartattributes{\syntaxhighlight::namespace #1}\c!style\c!color
-            #2
-        \dostopattributes
-      }
-      \endgroup
-\stoptexdefinition
-
-\def\currentsyntaxhighlight   {\syntaxhighlight::name}
-
-\startsetups[vim-minor-groups]
-    \definesyntaxhighlight
-        [SpecialComment]
-        [Comment]
-
-    \definesyntaxhighlight
-        [String,Character,Number,Boolean,Float]
-        [Constant]
-
-    \definesyntaxhighlight
-        [Function]
-        [Identifier]
-
-    \definesyntaxhighlight
-        [Condition,Repeat,Label,Operator,Keyword,Exception]
-        [Statement]
-
-    \definesyntaxhighlight
-        [Include,Define,Macro,PreCondit]
-        [Preproc]
-
-    \definesyntaxhighlight
-        [StorateClass,Structure,Typedef]
-        [Type]
-
-    \definesyntaxhighlight
-        [SpecialChar,Delimiter,Debug]
-        [Special]
+  \def\tab##1%
+      {\dorecurse{##1}{\space}}%
+  
+  \doifmode\s!mkii{\setups{syntaxhighlighting::setup_line_number_mkii}}%
+  
+  \doifinset{\externalfilterparameter\c!option}{\v!packed}
+      {\setupwhitespace[\v!none,\v!flexible]}%
+  
+  \setcatcodetable\externalfilter::write_catcodes
 \stopsetups
 
-\startcolorscheme[pscolor]
-    % Vim Preferred groups
-    \definesyntaxhighlight 
-        [Constant]  
-        [\c!color={h=007068}]
+\startsetups syntaxhighlighting::setup_line_number_mkiv
+ \definelinenumbering [#1]
 
-    \definesyntaxhighlight
-        [Identifier]
-        [\c!color={h=a030a0}]
+ \setuplinenumbering
+   [\syntaxhighlighting::name]
+   [\c!conversion=\externalfilterparameter\c!numberconversion,
+        \c!start=\externalfilterparameter{\c!number\c!start},
+         \c!step=\externalfilterparameter{\c!number\c!step},
+        \c!method=\externalfilterparameter{\c!number\c!method},
+      \c!location=\externalfilterparameter{\c!number\c!location},
+         \c!style=\externalfilterparameter\c!numberstyle,
+         \c!color=\externalfilterparameter\c!numbercolor,
+         \c!width=\externalfilterparameter{\c!number\c!width},
+          \c!left=\externalfilterparameter{\c!number\c!left},
+         \c!right=\externalfilterparameter{\c!number\c!right},
+       \c!command=\externalfilterparameter\c!numbercommand,
+      \c!distance=\externalfilterparameter{\c!number\c!distance},
+         \c!align=\externalfilterparameter{\c!number\c!align},
+   ]
+\stopsetups
 
-    \definesyntaxhighlight 
-        [Statement] 
-        [\c!color={h=2060a8}]
+\doifmode\s!mkii
+    {\newcount\syntaxhighlighting::linenumber}
 
-    \definesyntaxhighlight 
-        [PreProc] 
-        [\c!color={h=009030}]
+\startsetups syntaxhighlighting::setup_line_number_mkii
+\doif{\externalfilterparameter\c!numbering}\v!yes
+    {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
+     % revert it back.
+     \syntaxhighlighting::linenumber=\linenumber
 
-    \definesyntaxhighlight 
-        [Type]      
-        [\c!color={h=0850a0}]
+     \setuplinenumbering
+       [\c!conversion=\externalfilterparameter\c!numberconversion,
+            \c!start=\externalfilterparameter{\c!number\c!start},
+             \c!step=\externalfilterparameter{\c!number\c!step},
+            \c!method=\externalfilterparameter{\c!number\c!method},
+          \c!location=\externalfilterparameter{\c!number\c!location},
+             \c!style=\externalfilterparameter\c!numberstyle,
+             \c!color=\externalfilterparameter\c!numbercolor,
+             \c!width=\externalfilterparameter{\c!number\c!width},
+              \c!left=\externalfilterparameter{\c!number\c!left},
+             \c!right=\externalfilterparameter{\c!number\c!right},
+           \c!command=\externalfilterparameter\c!numbercommand,
+          \c!distance=\externalfilterparameter{\c!number\c!distance},
+             \c!align=\externalfilterparameter{\c!number\c!align},
+       ]
 
-    \definesyntaxhighlight 
-        [Special] 
-        [\c!color={h=907000}]
+    \linenumber=\syntaxhighlighting::linenumber}
+\stopsetups
 
-    \definesyntaxhighlight 
-        [Comment]
-        [\c!color={h=606000}]
+\startmode [\s!mkiv]
+\starttexdefinition syntaxhighlighting::read_command #1
+   \doifelse{\externalfilterparameter\c!numbering}\v!yes
+       {\startlinenumbering
+          [\syntaxhighlighting::name]
+          [\c!continue=\externalfilterparameter{\c!number\c!continue}]
+            \ReadFile{#1}
+        \stoplinenumbering}
+       {\ReadFile{#1}}
+\stoptexdefinition
+\stopmode
 
-    \definesyntaxhighlight
-         [Ignore]
+\startmode [\s!mkii]
+\starttexdefinition syntaxhighlighting::read_command #1
+    \doifelse{\externalfilterparameter\c!numbering}\v!yes
+        {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
+            {\startlinenumbering[\v!continue]}
+            {\startlinenumbering}
+            \syntaxhighlighting::read_command_aux{#1}
+        \stoplinenumbering}
+        {\syntaxhighlighting::read_command_aux{#1}}
+\stoptexdefinition
 
-    \definesyntaxhighlight 
-        [Todo]      
-        [\c!color={h=800000}]
+\starttexdefinition syntaxhighlighting::read_command_aux #1
+    % In the filter module, style=something does not work in MkII. 
+    % So, we explicitly add the global style before reading the file.
+    % 
+    \dostartattributes{\syntaxhighlighting::namespace}\c!style\c!color
+    \dostartattributes{\syntaxhighlighting::namespace\syntaxhighlighting::name}\c!style\c!color
+      \ReadFile{#1}
+    \dostopattributes
+    \dostopattributes
+\stoptexdefinition
+\stopmode
 
-    \definesyntaxhighlight 
-        [Error] 
-        [\c!color={h=c03000}]
 
-    \definesyntaxhighlight 
-        [Underlined]
-        [\c!color={h=6a5acd},
-         \c!command=\underbar]
+\setupsyntaxhighlighting
+  [\c!tab=4,
+   \c!start=1,
+   \c!stop=0,
+   \c!syntax=context,
+   \c!alternative=pscolor,
+   \c!before=,
+   \c!after=,
+   \c!style=\tttf,
+   \c!color=,
+   \c!filtercommand=echo, % placeholder
+   \c!continue=yes,
+   \c!read=\v!yes,
+   \c!readcommand=\syntaxhighlighting::read_command,
+   \c!output=\externalfilterinputfile, % placeholder
+   \c!setups=syntaxhighlighting::setup,
+   \c!option=\v!packed, % Could be a list
+   \s!parent=\externalfilter::namespace,
+   % Numbering options
+   \c!numbering=\v!no,
+   \c!number\c!start=1,
+   \c!number\c!step=1,
+   \c!number\c!continue=\v!no,
+   \c!numberconversion=\v!numbers,
+   \c!number\c!method=\v!first,
+   \c!number\c!location=\v!left,
+   \c!numberstyle=\ttx,
+   \c!numbercolor=,
+   \c!number\c!width=2em,
+   \c!number\c!left=,
+   \c!number\c!right=,
+   \c!number\c!command=,
+   \c!number\c!distance=0.5em,
+   \c!number\c!align=\v!flushright,
+  ]
 
-    \setups{vim-minor-groups}
-
-    \definesyntaxhighlight
-        [Number]
-        [\c!color={h=907000}]
-\stopcolorscheme
-
-\startcolorscheme[blackandwhite]
-    \definesyntaxhighlight 
-        [Constant]  
-
-    \definesyntaxhighlight
-        [Identifier]
-
-    \definesyntaxhighlight 
-        [Statement] 
-        [\c!style=bold]
-
-    \definesyntaxhighlight 
-        [PreProc] 
-        [\c!style=bold]
-
-    \definesyntaxhighlight 
-        [Type]      
-        [\c!style=bold]
-
-    \definesyntaxhighlight 
-        [Special] 
-
-    \definesyntaxhighlight 
-        [Comment]
-        [\c!style=italic]
-
-    \definesyntaxhighlight
-         [Ignore]
-
-    \definesyntaxhighlight 
-        [Todo]      
-        [\c!command=\inframed]
-
-    \definesyntaxhighlight 
-        [Error] 
-        [\c!command=\overstrike]
-
-    \definesyntaxhighlight 
-        [Underlined]
-        [\c!command=\underbar]
-
-    \setups{vim-minor-groups}
-
-\stopcolorscheme
+\def\currentsyntaxhighlighting  {\syntaxhighlighting::name}
 
 \protectmodulecatcodes
+
 \stopmodule
+
