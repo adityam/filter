@@ -3,53 +3,44 @@
 " license   : Simplified BSD License
 
 " This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
-" It assumes that two buffers are open. The first buffer is the input buffer,
-" and the second buffer is the output buffer.
+" Since this script is called by the t-vim module, we assume that Two buffers
+" are open. The first buffer is the input buffer, and the second buffer is the
+" output buffer. The script parses content line-by-line from the first buffer
+" and pastes the modified result on the second buffer.
 
-" We move back and forth between the buffers, 
-
-" Split and go to the last buffer
+" Split screen and go to the second buffer, ensure modifiable is set, and the
+" buffer is empty.
 sblast 
-
-" Make sure that the buffer is modifiable
 set modifiable
-
-" ... and empty
 %d 
 
-" Loop over all lines in the original text.
-
+" Go to first buffer
 wincmd p
 
-" Use contextstartline and contextstopline if they are set.
-
+" If contextstartline and contextstartline are set, use them.
 if exists("contextstartline")
-  let s:lnum = contextstartline
-  if !(s:lnum >= 1 && s:lnum <= line("$"))
-    let s:lnum = 1
-  endif
+  let s:lnum = max([1,  min([line("$"), contextstartline]) ])
 else
   let s:lnum = 1
 endif
 
 if exists("contextstopline")
-  let s:end = contextstopline
-  if !(s:end >= s:lnum && s:end <= line("$"))
-    let s:end = line("$")
-  elseif s:end < 0
-    let s:end = line("$") - s:end
+  if contextstopline <= 0 
+      let contextstopline = line("$") + contextstopline 
   endif
+  let s:end = min([line("$"), max([s:lnum, contextstopline]) ])
 else
   let s:end = line("$")
 endif
 
 let s:buffer_lnum = 1
 
+" Loop over all lines in the original text.
 while s:lnum <= s:end
 " Get the current line
   let s:line = getline(s:lnum)
   let s:len  = strlen(s:line)
-  let s:new  = "\\NL{}"
+  let s:new  = '' 
 
 " Loop over each character in the line
   let s:col = 1
@@ -73,15 +64,11 @@ while s:lnum <= s:end
 " we don't need to print in in that case
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
-" The funny \type{||||||||||} and \type{$$$$$$$$$} characters should never
-" appear in {\em normal} \TEX\ file. As a side||effect, this script can not
-" pretty print itself.
-      let s:temp = substitute( s:temp,  '\\', '\\letterbackslash||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '{',  '\\letteropenbrace||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '}',  '\\letterclosebrace||||||||||$$$$$$$$$$', 'g')
-      let s:temp = substitute( s:temp,  '||||||||||' , '{' , 'g')
-      let s:temp = substitute( s:temp,  '\$\$\$\$\$\$\$\$\$\$' , '}' , 'g')
-      let s:new  = s:new . '\SYN[' . s:id_name . ']{' . s:temp .  '}'
+      let s:temp = escape( s:temp, '\{}')
+      if !empty(s:id_name)
+        let s:temp = '\SYN[' . s:id_name . ']{' . s:temp .  '}'
+      endif
+      let s:new  = s:new . s:temp
     endif
 
 " Why will we ever enter this loop

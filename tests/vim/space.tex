@@ -1,0 +1,30 @@
+\usemodule  [vim]
+
+\definevimtyping [HASKELL] [syntax=haskell]
+
+\starttext
+\startHASKELL[space=on]
+main :: IO()
+main = do
+    putStringLn "Greetings, user!"
+    putStringLn "Surrender all hope"
+    putStringLn "A very very very very very very very very very very very very very long line"
+\stopHASKELL
+
+\startHASKELL[space=yes]
+main :: IO()
+main = do
+    putStringLn "Greetings, user!"
+    putStringLn "Surrender all hope"
+    putStringLn "A very very very very very very very very very very very very very long line"
+\stopHASKELL
+
+\startHASKELL[space=fixed]
+main :: IO()
+main = do
+    putStringLn "Greetings, user!"
+    putStringLn "Surrender all hope"
+    putStringLn "A very very very very very very very very very very very very very long line"
+\stopHASKELL
+
+\stoptext
