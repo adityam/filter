@@ -52,7 +52,10 @@
   \edef\colorscheme::name{\externalfilterparameter\c!alternative}
   
   \let\SYN\syntaxgroup
-  \let\\\letterbackslash
+  \let\\\textbackslash
+  \let\{\textbraceleft
+  \let\}\textbraceright
+  \activatespacehandler{\externalfilterparameter\c!space}%
 
   \def\tab##1%
       {\dorecurse{##1}{\space}}%
@@ -152,6 +155,7 @@
 
 \setupsyntaxhighlighting
   [\c!tab=4,
+   \c!space=yes,
    \c!start=1,
    \c!stop=0,
    % \c!syntax=context,
