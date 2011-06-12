@@ -65,7 +65,10 @@ while s:lnum <= s:end
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
       let s:temp = escape( s:temp, '\{}')
-      let s:new  = s:new . '\SYN[' . s:id_name . ']{' . s:temp .  '}'
+      if !empty(s:id_name)
+        let s:temp = '\SYN[' . s:id_name . ']{' . s:temp .  '}'
+      endif
+      let s:new  = s:new . s:temp
     endif
 
 " Why will we ever enter this loop
