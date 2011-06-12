@@ -65,7 +65,8 @@
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
   
-  \setcatcodetable\externalfilter::write_catcodes
+  \setcatcodetable\externalfilter::minimal_catcodes
+  \activatespacehandler{\externalfilterparameter\c!space}
 \stopsetups
 
 \startsetups syntaxhighlighting::setup_line_number_mkiv

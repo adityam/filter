@@ -11,6 +11,8 @@
 
 \writestatus{loading}{ConTeXt User Module / Filter}
 
+\ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
+
 \startmodule    [filter]
 \usemodule      [module-catcodes]
 
@@ -52,8 +54,6 @@
 
 \def\externalfilter::temp_prefix {temp}
 \def\externalfilter::count{\externalfilter::namespace-\externalfilter::name-counter}
-
-\ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
 \installparameterhandler     \externalfilter::namespace \externalfilter::id
 \installparameterhashhandler \externalfilter::namespace \externalfilter::id
@@ -172,7 +172,7 @@
 %D internal names keep on changing which is a  maintenance nightmare.
 
 \newcatcodetable \externalfilter::read_catcodes
-\newcatcodetable \externalfilter::write_catcodes
+\newcatcodetable \externalfilter::minimal_catcodes
 \newcatcodetable \externalfilter::verb_catcodes
 
 \startcatcodetable \externalfilter::read_catcodes % same as typcatcodesa
@@ -185,7 +185,7 @@
     \catcode\rightbraceasciicode = \endgroupcatcode
 \stopcatcodetable
 
-\startcatcodetable \externalfilter::write_catcodes
+\startcatcodetable \externalfilter::minimal_catcodes
     \catcode\backslashasciicode  = \escapecatcode
     \catcode\leftbraceasciicode  = \begingroupcatcode  
     \catcode\rightbraceasciicode = \endgroupcatcode
