@@ -22,7 +22,6 @@
   \setinterfaceconstant {syntax}          {syntax} 
 \stopinterface
 
-
 %D Name space
 
 \def\syntaxhighlighting::id          {syntaxhighlighting}
@@ -55,7 +54,6 @@
   \let\\\textbackslash
   \let\{\textbraceleft
   \let\}\textbraceright
-  \activatespacehandler{\externalfilterparameter\c!space}%
 
   \def\tab##1%
       {\dorecurse{##1}{\space}}%
@@ -66,7 +64,7 @@
       {\setupwhitespace[\v!none,\v!flexible]}%
   
   \setcatcodetable\externalfilter::minimal_catcodes
-  \activatespacehandler{\externalfilterparameter\c!space}
+  \activatespacehandler{\syntaxhighlighting::namespace\externalfilterparameter\c!space}
 \stopsetups
 
 \startsetups syntaxhighlighting::setup_line_number_mkiv
@@ -156,7 +154,8 @@
 
 \setupsyntaxhighlighting
   [\c!tab=4,
-   \c!space=yes,
+   \c!space=\v!no,
+   \c!lines=\v!split,
    \c!start=1,
    \c!stop=0,
    % \c!syntax=context,
@@ -192,6 +191,38 @@
   ]
 
 \def\currentsyntaxhighlighting  {\syntaxhighlighting::name}
+
+% Space handler
+%
+% The space handing code for MkII and MkIV is not consistent. So, we provide our
+% own versions.
+
+\setvalue{\syntaxhighlighting::namespace ::\c!lines ::\v!split}{\hskip}
+\setvalue {\syntaxhighlighting::namespace ::\c!lines ::\v!fixed}{\dontleavehmode\kern}
+
+% default
+\setvalue{\syntaxhighlighting::namespace ::\c!lines ::}{\hskip}
+
+\def\syntaxhighlighting::split%
+    {\getvalue{\syntaxhighlighting::namespace ::\c!lines ::\externalfilterparameter\c!lines}}
+
+% Visible space
+\installspacehandler {\syntaxhighlighting::namespace\v!yes}
+  {\obeyspaces
+   \unexpanded\def\obeyedspace
+      {\syntaxhighlighting::split\zeropoint\relax
+       \hbox{\normalcontrolspace}%
+       \syntaxhighlighting::split\zeropoint\relax}}%
+
+% Invisible space
+\installspacehandler {\syntaxhighlighting::namespace\v!no}
+  {\obeyspaces
+   \unexpanded\def\obeyedspace
+      {\syntaxhighlighting::split\interwordspace\relax}}
+
+% Default
+\installspacehandler {\syntaxhighlighting::namespace}
+  {\activatespacehandler {\syntaxhighlighting::namespace\v!no}}
 
 \protectmodulecatcodes
 

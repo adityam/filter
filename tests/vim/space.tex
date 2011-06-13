@@ -3,7 +3,8 @@
 \definevimtyping [HASKELL] [syntax=haskell]
 
 \starttext
-\startHASKELL[space=on]
+
+\startHASKELL[space=no, lines=fixed]
 main :: IO()
 main = do
     putStringLn "Greetings, user!"
@@ -11,7 +12,7 @@ main = do
     putStringLn "A very very very very very very very very very very very very very long line"
 \stopHASKELL
 
-\startHASKELL[space=yes]
+\startHASKELL[space=yes, lines=fixed]
 main :: IO()
 main = do
     putStringLn "Greetings, user!"
@@ -19,7 +20,15 @@ main = do
     putStringLn "A very very very very very very very very very very very very very long line"
 \stopHASKELL
 
-\startHASKELL[space=fixed]
+\startHASKELL[space=no, lines=split]
+main :: IO()
+main = do
+    putStringLn "Greetings, user!"
+    putStringLn "Surrender all hope"
+    putStringLn "A very very very very very very very very very very very very very long line"
+\stopHASKELL
+
+\startHASKELL[space=yes, lines=split]
 main :: IO()
 main = do
     putStringLn "Greetings, user!"
