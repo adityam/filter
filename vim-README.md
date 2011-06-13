@@ -14,7 +14,19 @@ generate syntax highlighting? This module does exactly that.
 Compatibility
 ------------
 
-This module works with both MkII and MkIV
+This module works with both MkII and MkIV. 
+
+To get colors with MkII, use
+
+    \setupcolors[state=start]
+
+If avoid `--` and `---` to turn into `–` and `—` in MkII, use
+
+    \usetypescript [modern] [texnansi]
+    \setupbodyfont [modern]
+
+Both colors and no ligatures work out of the box in MkIV.
+   
 
 Installation
 ------------
@@ -261,6 +273,32 @@ Standard options for line numbering
 
 - `numberlocation=...` is used to set the location of the numbers. Default value
   is `left`. Change this to `right` if you want the numbers on the right.
+
+Spaces
+------
+
+By default, the space is invisible. If you want to make the space visible, set
+
+    \definevimtyping
+        [...]
+        [...
+         space=yes,
+         ...]
+
+The default value is `space=no`.
+
+Splitting lines
+---------------
+
+By default, long lines are not split. If you want to split long lines, set
+
+    \definevimtyping
+        [...]
+        [...
+         split=yes,
+         ...]
+
+The default value is `split=no`.
 
 
 A bit of a history
