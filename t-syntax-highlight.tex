@@ -154,8 +154,8 @@
 
 \setupsyntaxhighlighting
   [\c!tab=4,
-   \c!space=no,
-   \c!split=no,
+   \c!space=\v!no,
+   \c!lines=\v!split,
    \c!start=1,
    \c!stop=0,
    % \c!syntax=context,
@@ -197,14 +197,14 @@
 % The space handing code for MkII and MkIV is not consistent. So, we provide our
 % own versions.
 
-\setuvalue{\syntaxhighlighting::namespace ::\c!split ::\v!yes}{\hskip}
-\setuvalue {\syntaxhighlighting::namespace ::\c!split ::\v!no}{\dontleavehmode\kern}
+\setvalue{\syntaxhighlighting::namespace ::\c!lines ::\v!split}{\hskip}
+\setvalue {\syntaxhighlighting::namespace ::\c!lines ::\v!fixed}{\dontleavehmode\kern}
 
 % default
-\setuvalue{\syntaxhighlighting::namespace ::\c!split ::}{\hskip}
+\setvalue{\syntaxhighlighting::namespace ::\c!lines ::}{\hskip}
 
 \def\syntaxhighlighting::split%
-    {\getvalue{\syntaxhighlighting::namespace ::\c!split ::\externalfilterparameter\c!split}}
+    {\getvalue{\syntaxhighlighting::namespace ::\c!lines ::\externalfilterparameter\c!lines}}
 
 % Visible space
 \installspacehandler {\syntaxhighlighting::namespace\v!yes}

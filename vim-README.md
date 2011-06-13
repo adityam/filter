@@ -295,10 +295,10 @@ By default, long lines are not split. If you want to split long lines, set
     \definevimtyping
         [...]
         [...
-         split=yes,
+         lines=split,
          ...]
 
-The default value is `split=no`.
+The default value is `lines=fixed`.
 
 
 A bit of a history
