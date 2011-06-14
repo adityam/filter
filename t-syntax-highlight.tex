@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.06.12,
+%D      version=2011.06.14,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -154,7 +154,7 @@
 
 \setupsyntaxhighlighting
   [\c!tab=4,
-   \c!space=\v!no,
+   \c!space=\v!off,
    \c!lines=\v!split,
    \c!start=1,
    \c!stop=0,
@@ -207,7 +207,7 @@
     {\getvalue{\syntaxhighlighting::namespace ::\c!lines ::\externalfilterparameter\c!lines}}
 
 % Visible space
-\installspacehandler {\syntaxhighlighting::namespace\v!yes}
+\installspacehandler {\syntaxhighlighting::namespace\v!on}
   {\obeyspaces
    \unexpanded\def\obeyedspace
       {\syntaxhighlighting::split\zeropoint\relax
@@ -215,14 +215,14 @@
        \syntaxhighlighting::split\zeropoint\relax}}%
 
 % Invisible space
-\installspacehandler {\syntaxhighlighting::namespace\v!no}
+\installspacehandler {\syntaxhighlighting::namespace\v!off}
   {\obeyspaces
    \unexpanded\def\obeyedspace
       {\syntaxhighlighting::split\interwordspace\relax}}
 
 % Default
 \installspacehandler {\syntaxhighlighting::namespace}
-  {\activatespacehandler {\syntaxhighlighting::namespace\v!no}}
+  {\activatespacehandler {\syntaxhighlighting::namespace\v!off}}
 
 \protectmodulecatcodes
 

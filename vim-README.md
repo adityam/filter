@@ -282,10 +282,10 @@ By default, the space is invisible. If you want to make the space visible, set
     \definevimtyping
         [...]
         [...
-         space=yes,
+         space=on,
          ...]
 
-The default value is `space=no`.
+The default value is `space=off`.
 
 Splitting lines
 ---------------
@@ -329,8 +329,3 @@ in the module, except a few minor bug fixes.
 Around June 2010, I decided to completely rewrite the module from scratch. The
 new version of `t-vim` relies on `t-filter` for all the bookkeeping. As a
 result, the module is smaller and more robust.
-
-TODO
-----
-
-- active space
