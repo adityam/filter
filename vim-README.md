@@ -300,6 +300,38 @@ By default, long lines are not split. If you want to split long lines, set
 
 The default value is `lines=fixed`.
 
+Messages and Tracing
+--------------------
+
+The vim module uses the filter module in the background. The filter module
+outputs some diagnostic information on the console output to indicate what is
+happening. For example, for each code snippet, you will see messages like
+
+    t-filter        > command : vim -u NONE -e -s -C -n -c "set tabstop=4" -c "syntax on" -c "set syntax=scala" -c "let contextstartline=1" -c "let contextstopline=0" -c "source kpse:2context.vim" -c "qa" scala-temp-SCALA-0.tmp scala-temp-SCALA-0.vimout
+
+If, for some reason, the output file is not generated, or not found, a message
+similar to 
+
+    t-filter        > file matlab-temp-MATLAB-0.vimout cannot be found
+
+is displayed in the console. At the same time, the string
+
+    [[output file missing]]
+
+is displayed in the PDF output. To debug what went wrong, add
+
+    \traceexternalfilters
+
+in your tex file. This shows the name of all the input and output files on the
+console:
+
+    t-filter        > current filter : MATLAB
+    t-filter        > base file : matlab-temp-MATLAB-0
+    t-filter        > input file : matlab-temp-MATLAB-0.tmp
+    t-filter        > output file : matlab-temp-MATLAB-0.vimout
+
+This data, along with the filter command, is useful for debugging what when
+wrong.
 
 A bit of a history
 ------------------
