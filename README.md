@@ -254,7 +254,7 @@ do not work. If you try to use a absolute path like
 
 you will get an error message
 
-    t-filter        : Fatal Error: Cannot use absolute path /tmp/ as directory
+    t-filter        > Fatal Error: Cannot use absolute path /tmp/ as directory
 
 and compilation will stop.
 
@@ -447,12 +447,12 @@ indicate what is happening. Loading of the module is indicated by:
 Whenever a filter is executed, the expanded name of the command is displayed.
 For example, for the markdown filter we get:
 
-    t-filter        : command : pandoc -w context -o markdown-temp-markdown.tex markdown-temp-markdown.tmp
+    t-filter        > command : pandoc -w context -o markdown-temp-markdown.tex markdown-temp-markdown.tmp
 
 If, for some reason, the output file is not generated, or not found, a message
 similar to
 
-    t-filter        : file markdown-temp-markdown.tex cannot be found
+    t-filter        > file markdown-temp-markdown.tex cannot be found
 
 is displayed on the console. At the same time, the string 
 
@@ -465,10 +465,10 @@ is displayed in the PDF output. To debug what went wrong, add
 in your tex file. This shows the name of all input and output files on the
 console:
 
-    t-filter        : current filter : markdown
-    t-filter        : base file : markdown-temp-markdown
-    t-filter        : input file : markdown-temp-markdown.tmp
-    t-filter        : output file : markdown-temp-markdown.tex
+    t-filter        > current filter : markdown
+    t-filter        > base file : markdown-temp-markdown
+    t-filter        > input file : markdown-temp-markdown.tmp
+    t-filter        > output file : markdown-temp-markdown.tex
 
 This data, along with the name of the filter command, is useful for debugging
 what went wrong.
