@@ -313,25 +313,17 @@ If, for some reason, the output file is not generated, or not found, a message
 similar to 
 
     t-filter        > file matlab-temp-MATLAB-0.vimout cannot be found
-
-is displayed in the console. At the same time, the string
-
-    [[output file missing]]
-
-is displayed in the PDF output. To debug what went wrong, add
-
-    \traceexternalfilters
-
-in your tex file. This shows the name of all the input and output files on the
-console:
-
     t-filter        > current filter : MATLAB
     t-filter        > base file : matlab-temp-MATLAB-0
     t-filter        > input file : matlab-temp-MATLAB-0.tmp
     t-filter        > output file : matlab-temp-MATLAB-0.vimout
 
-This data, along with the filter command, is useful for debugging what when
-wrong.
+is displayed in the console. At the same time, the string
+
+    [[output file missing]]
+
+is displayed in the PDF output. This data, along with the filter command, is
+useful for debugging what whenwrong.
 
 A bit of a history
 ------------------

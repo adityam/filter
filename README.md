@@ -453,26 +453,22 @@ If, for some reason, the output file is not generated, or not found, a message
 similar to
 
     t-filter        > file markdown-temp-markdown.tex cannot be found
-
-is displayed on the console. At the same time, the string 
-
-    [[output file missing]]
-
-is displayed in the PDF output. To debug what went wrong, add
-
-    \traceexternalfilters
-
-in your tex file. This shows the name of all input and output files on the
-console:
-
     t-filter        > current filter : markdown
     t-filter        > base file : markdown-temp-markdown
     t-filter        > input file : markdown-temp-markdown.tmp
     t-filter        > output file : markdown-temp-markdown.tex
 
-This data, along with the name of the filter command, is useful for debugging
-what went wrong.
+is displayed on the console. At the same time, the string 
 
+    [[output file missing]]
+
+is displayed in the PDF output. This data, along with the name of the filter
+command, is useful for debugging what went wrong. To get more debugging
+information add 
+
+    \traceexternalfilters
+
+in your tex file. This shows the name of the filters when they are defined.
 
 
 Version History

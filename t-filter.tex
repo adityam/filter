@@ -73,12 +73,10 @@
 \let\traceexternalfilters\traceexternalfilterstrue
 
 \starttexdefinition externalfilter::show_filenames
-    \iftraceexternalfilters
-        \writestatus\m!externalfilter{current filter : \externalfilter::name}
-        \writestatus\m!externalfilter{base file      : \externalfilter::base_file}
-        \writestatus\m!externalfilter{input file     : \externalfilter::input_file}
-        \writestatus\m!externalfilter{output file    : \externalfilter::output_file}
-    \fi
+    \writestatus\m!externalfilter{current filter : \externalfilter::name}
+    \writestatus\m!externalfilter{base file      : \externalfilter::base_file}
+    \writestatus\m!externalfilter{input file     : \externalfilter::input_file}
+    \writestatus\m!externalfilter{output file    : \externalfilter::output_file}
 \stoptexdefinition
 
 \starttexdefinition externalfilter::show_status #1
@@ -147,7 +145,7 @@
     % \c!directory; even if the input is from some other directory
     \def\externalfilter::output_file{\externalfilter::get_directory\externalfilterparameter\c!output}
 
-    \externalfilter::show_filenames
+    \iftraceexternalfilters \externalfilter::show_filenames \fi
     \externalfilter::execute_filter
     \externalfilter::read_processed_file
 
@@ -321,7 +319,7 @@
 
    % Append directory name to the name of the output file
    \edef\externalfilter::output_file{\externalfilter::get_directory\externalfilterparameter\c!output}
-   \externalfilter::show_filenames
+   \iftraceexternalfilters \externalfilter::show_filenames \fi
 \stoptexdefinition
 
 
@@ -367,6 +365,7 @@
        {\doiffileelse{\externalfilter::output_file}
            {\externalfilter::read_processed_file_aux}
            {\showmessage\m!externalfilter{notfound}\externalfilter::output_file 
+            \externalfilter::show_filenames
             \blank
               {\tttf [[\getmessage\m!externalfilter{missing}]]}
             \blank}}
