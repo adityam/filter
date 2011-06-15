@@ -36,15 +36,6 @@
     \setinterfaceconstant {readcommand}      {readcommand} 
 \stopinterface
 
-\def\m!externalfilter{t-filter}
-
-%D \subsubject {Messages}
-
-\setinterfacemessage{externalfilter}{title}     {\m!externalfilter}
-\setinterfacemessage{externalfilter}{notfound}  {file -- cannot be found}
-\setinterfacemessage{externalfilter}{missing}   {output file missing}
-\setinterfacemessage{externalfilter}{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
-\setinterfacemessage{externalfilter}{slash}     {Appending / to directory -- }
 
 %D \subsubject {Name space}
 
@@ -61,6 +52,16 @@
 
 \doifmode\s!mkiv
     {\installattributehandler \externalfilter::namespace \externalfilter::id}
+
+\def\m!externalfilter{t-filter}
+
+%D \subsubject {Messages}
+
+\setinterfacemessage\m!externalfilter{title}     {\m!externalfilter}
+\setinterfacemessage\m!externalfilter{notfound}  {file -- cannot be found}
+\setinterfacemessage\m!externalfilter{missing}   {output file missing}
+\setinterfacemessage\m!externalfilter{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
+\setinterfacemessage\m!externalfilter{slash}     {Appending / to directory -- }
 
 % For backward compatibility
 \let\setupexternalfilters \setupexternalfilter
@@ -272,13 +273,13 @@
 \starttexdefinition externalfilter::set_directory_aux
     \doif{\externalfilter::get_first_character\externalfilter::get_directory}{/}
         {\writeline
-         \showmessage\externalfilter::id{forbidden}\externalfilter::get_directory
+         \showmessage\m!externalfilter{forbidden}\externalfilter::get_directory
          \batchmode
          \errmessage{}
          \normalend}
 
     \doifnot{\externalfilter::get_last_character\externalfilter::get_directory}{/}
-        {\showmessage\externalfilter::id{slash}\externalfilter::get_directory
+        {\showmessage\m!externalfilter{slash}\externalfilter::get_directory
          \edef\externalfilter::get_directory{\externalfilter::get_directory/}}
 \stoptexdefinition
   
@@ -365,9 +366,9 @@
     \doif{\externalfilterparameter\c!read}\v!yes
        {\doiffileelse{\externalfilter::output_file}
            {\externalfilter::read_processed_file_aux}
-           {\showmessage\externalfilter::id{notfound}\externalfilter::output_file 
+           {\showmessage\m!externalfilter{notfound}\externalfilter::output_file 
             \blank
-              {\tttf [[\getmessage\externalfilter::id{missing}]]}
+              {\tttf [[\getmessage\m!externalfilter{missing}]]}
             \blank}}
 \stoptexdefinition
 
