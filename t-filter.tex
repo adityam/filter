@@ -351,9 +351,13 @@
 
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\doifmode{*first}
-           {\executesystemcommand
-            {mtxrun --ifchanged=\externalfilter::input_file\space 
-                --direct \externalfilterparameter\c!filtercommand}}}
+           {\doifmodeelse{force}
+               {\message{\externalfilterparameter\c!filtercommand}
+                \executesystemcommand
+                  {\externalfilterparameter\c!filtercommand}}
+               {\executesystemcommand
+                {mtxrun --ifchanged=\externalfilter::input_file\space 
+                    --direct \externalfilterparameter\c!filtercommand}}}}
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
 \stoptexdefinition

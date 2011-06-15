@@ -158,6 +158,20 @@ definition:
          continue=yes,
          ...]
 
+Sometimes you want to force a rerun of all filters, even when `continue=yes` is
+set. This could be because the filters depend on an external script that might
+have changed. To force a rerun of all filters, enable the
+[mode](http://wiki.contextgarden.net/Modes) `force` either by adding
+`mode=force` to the compiler:
+
+    context --mode=force filename
+
+or adding
+
+    \enablemode[force]
+
+somewhere near the top of your file.
+
 Reading the input
 ----------------
 
