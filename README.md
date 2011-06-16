@@ -272,6 +272,19 @@ you will get an error message
 
 and compilation will stop.
 
+Disabling filters
+----------------
+
+Adding `state=stop` option disables the filters. The
+`\externalfilterinputfile` is still written, but the filter is not run.
+
+When used in conjunction with `continue=yes` and `directory=...`, this
+is useful for sharing your files with others who do not have the
+external program that you are using. 
+
+Enabling the `reuse` mode (before the `filter` module is loaded) sets
+`state=stop` as the default value.
+
 Deleting temporary files
 ------------------------
 

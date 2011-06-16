@@ -62,6 +62,7 @@
 \setinterfacemessage\m!externalfilter{missing}   {output file missing}
 \setinterfacemessage\m!externalfilter{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
 \setinterfacemessage\m!externalfilter{slash}     {Appending / to directory -- }
+\setinterfacemessage\m!externalfilter{reuse}     {\c!state=\v!stop : Not running filter on file --}
 
 % For backward compatibility
 \let\setupexternalfilters \setupexternalfilter
@@ -350,14 +351,16 @@
    \externalfilter::show_filtercommand
 
    \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\doifmode{*first}
-           {\doifmodeelse{force}
-               {\message{\externalfilterparameter\c!filtercommand}
-                \executesystemcommand
-                  {\externalfilterparameter\c!filtercommand}}
-               {\executesystemcommand
-                {mtxrun --ifchanged=\externalfilter::input_file\space 
-                    --direct \externalfilterparameter\c!filtercommand}}}}
+       {\doifelse{\externalfilterparameter\c!state}\v!stop
+            {\showmessage\m!externalfilter{reuse}\externalfilter::input_file}
+            {\doifmode{*first}
+               {\doifmodeelse{force}
+                   {\message{\externalfilterparameter\c!filtercommand}
+                    \executesystemcommand
+                      {\externalfilterparameter\c!filtercommand}}
+                   {\executesystemcommand
+                    {mtxrun --ifchanged=\externalfilter::input_file\space 
+                        --direct \externalfilterparameter\c!filtercommand}}}}}
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
 \stoptexdefinition
@@ -407,6 +410,10 @@
    \c!filter=,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilter::input_file},
  ]
+
+\doifmodeelse{reuse}
+  {\setupexternalfilters[state=stop]}
+  {\setupexternalfilters[state=start]}
 
 \def\externalfilterbasefile  {\externalfilter::base_file}
 \def\externalfilterinputfile {\externalfilter::input_file}
