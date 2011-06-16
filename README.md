@@ -519,8 +519,14 @@ Version History
 - **2011.02.27**
     - The external files are called `\jobname-temp-<filter>*` instead of
       `\jobname-externalfilter-<filter>*`. As a result, these files are deleted
-      by `context --purge`.
+      by `context --purgeall`.
 - **2011.03.06**
     - Complete rewrite of internal macro names. The internal macros are now
       named `\modulename::command_name`. This is an experiment to see if this
       style works better than the traditional naming convention in TeX.
+- **2011.06.16**
+    - Added `force` mode to force recompilation of all filters that have
+      `continue=yes`. 
+    - Added `reuse` mode to skip running all filters that have
+      `continue=yes`. 
+    - Added `state=stop` option to skip running external filter.
