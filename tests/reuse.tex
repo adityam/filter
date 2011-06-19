@@ -1,0 +1,28 @@
+\usemodule[filter]
+
+\defineexternalfilter
+  [barcode]
+  [continue=yes,
+   output=\externalfilterbasefile.eps,
+   filtercommand=\barcodefiltercommand,
+   readcommand=\barcodereadcommand,
+   directory=output,
+   % Options specific to barcode program
+   encoding=code128,
+   %
+  ]
+
+\def\barcodereadcommand#1%
+  {\externalfigure[#1][location=lohi]}
+
+\def\barcodefiltercommand
+  {barcode -i \externalfilterinputfile\space -o \externalfilteroutputfile\space
+   -E % EPS output
+   -e \externalfilterparameter{encoding}}
+
+
+
+\starttext
+The barcode for \quotation{some text} is \inlinebarcode{some text}
+\stoptext
+
