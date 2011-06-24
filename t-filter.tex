@@ -46,6 +46,9 @@
 \def\externalfilter::temp_prefix {temp}
 \def\externalfilter::count{\externalfilter::namespace-\externalfilter::name-counter}
 
+\def\externalfilter::preamble_name  {\externalfilter::name-preamble}
+\def\externalfilter::postamble_name {\externalfilter::name-postamble}
+
 \installparameterhandler     \externalfilter::namespace \externalfilter::id
 \installparameterhashhandler \externalfilter::namespace \externalfilter::id
 \installsetuphandler         \externalfilter::namespace \externalfilter::id
@@ -111,6 +114,16 @@
 
     \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
     \setvalue{inline#1}{\externalfilter::inline[#1]}
+
+    \doifmode\s!mkiv
+        {
+         \setvalue{\e!start#1preamble}%
+                  {\dostartbuffer[\externalfilter::preamble_name][\e!start#1preamble][\e!stop#1preamble]}
+         \letvalue{\e!stop#1preamble}\donothing
+         \setvalue{\e!start#1postamble}%
+                  {\dostartbuffer[\externalfilter::postamble_name][\e!start#1postamble][\e!stop#1postamble]}
+         \letvalue{\e!stop#1postamble}\donothing
+        }
 \stoptexdefinition
 
 \starttexdefinition externalfilter::start [#1][#2] 
@@ -330,7 +343,15 @@
 
 \starttexdefinition externalfilter::process_filter
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+     % To imitate the behavior of MkII, we need 
+     %
+     %      \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+     %
+     % However, in MkIV, we can save a list of buffers to a file. The empty
+     % elements of the list are ignored. So, instead we use the following
+     \doifmode\s!mkiv
+         {\savebuffer[\externalfilter::preamble_name,\externalfilter::temp_file,\externalfilter::postamble_name]
+                     [\externalfilter::input_file]}
 
      \externalfilter::execute_filter
      \externalfilter::read_processed_file

@@ -1,0 +1,38 @@
+\usemodule[filter]
+
+\defineexternalfilter[mkii]
+                     [filter={PATH=/usr/bin texexec --xtx --result=\externalfilteroutputfile  },
+                      output=\externalfilterbasefile.pdf,
+                      directory=output,
+                      continue=yes,
+                      readcommand=\readMKII]
+
+\define[1]\readMKII
+    {\dontleavehmode\externalfigure[#1][location=low]}
+                     
+\startmkiipreamble
+\enableregime[utf-8]
+%I don't know how to setup typescripts with xetex
+\font\devnagari="AkaashNormal" at 12pt
+\starttext
+\startTEXpage[foregroundstyle=\devnagari]
+\stopmkiipreamble
+
+\startmkiipostamble
+\stopTEXpage
+\stoptext
+\stopmkiipostamble
+
+\starttext
+
+Check if this works.
+\startmkii
+\startlines
+जाति न पूछो साधु की, पूछ लीजिए ग्‍यान।
+मोल करो तलवार के, पड़ा रहन दो म्‍यान।।
+\stoplines
+\stopmkii
+
+% \inlinemkii does not currently work with pre- and postamble
+
+\stoptext
