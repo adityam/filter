@@ -49,6 +49,9 @@
 \def\externalfilter::preamble_name  {\externalfilter::name-preamble}
 \def\externalfilter::postamble_name {\externalfilter::name-postamble}
 
+\def\externalfilter::preamble  {filterpreamble}
+\def\externalfilter::postamble {filterpostamble}
+
 \installparameterhandler     \externalfilter::namespace \externalfilter::id
 \installparameterhashhandler \externalfilter::namespace \externalfilter::id
 \installsetuphandler         \externalfilter::namespace \externalfilter::id
@@ -115,15 +118,6 @@
     \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
     \setvalue{inline#1}{\externalfilter::inline[#1]}
 
-    \doifmode\s!mkiv
-        {
-         \setvalue{\e!start#1preamble}%
-                  {\dostartbuffer[\externalfilter::preamble_name][\e!start#1preamble][\e!stop#1preamble]}
-         \letvalue{\e!stop#1preamble}\donothing
-         \setvalue{\e!start#1postamble}%
-                  {\dostartbuffer[\externalfilter::postamble_name][\e!start#1postamble][\e!stop#1postamble]}
-         \letvalue{\e!stop#1postamble}\donothing
-        }
 \stoptexdefinition
 
 \starttexdefinition externalfilter::start [#1][#2] 
@@ -177,6 +171,38 @@
    \pushcatcodetable
    \futurelet\next\externalfilter::inline_aux
 \stoptexdefinition
+
+% Preambles and postamble
+
+\setvalue{\e!start\externalfilter::preamble}%
+    {\bgroup\obeylines\dosingleargument\externalfilter::start_preamble}
+    
+\starttexdefinition externalfilter::start_preamble [#1]
+    % #1 = filter
+    \egroup
+    \edef\externalfilter::name{#1}
+
+    \dostartbuffer[\externalfilter::preamble_name]
+                  [\e!start\externalfilter::preamble]
+                  [\e!stop\externalfilter::preamble]
+\stoptexdefinition
+
+\setvalue{\e!stop\externalfilter::preamble}{}
+
+\setvalue{\e!start\externalfilter::postamble}%
+    {\bgroup\obeylines\dosingleargument\externalfilter::start_postamble}
+    
+\starttexdefinition externalfilter::start_postamble [#1]
+    % #1 = filter
+    \egroup
+    \edef\externalfilter::name{#1}
+
+    \dostartbuffer[\externalfilter::postamble_name]
+                  [\e!start\externalfilter::postamble]
+                  [\e!stop\externalfilter::postamble]
+\stoptexdefinition
+
+\setvalue{\e!stop\externalfilter::postamble}{}
 
 %D \subsubject {Catcode tables}
 %D 

@@ -8,28 +8,42 @@
                       readcommand=\readMKII]
 
 \define[1]\readMKII
-    {\dontleavehmode\externalfigure[#1][location=low]}
+    {\dontleavehmode\externalfigure[#1][location=lohi]}
                      
-\startmkiipreamble
+\startfilterpreamble[mkii]
 \enableregime[utf-8]
 %I don't know how to setup typescripts with xetex
-\font\devnagari="AkaashNormal" at 12pt
+\font\devnagari="Lohit-Hindi" at 12pt
 \starttext
 \startTEXpage[foregroundstyle=\devnagari]
-\stopmkiipreamble
+\stopfilterpreamble
 
-\startmkiipostamble
+\startfilterpostamble[mkii]
 \stopTEXpage
 \stoptext
-\stopmkiipostamble
+\stopfilterpostamble
 
 \starttext
 
 Check if this works.
+
 \startmkii
 \startlines
 जाति न पूछो साधु की, पूछ लीजिए ग्‍यान।
 मोल करो तलवार के, पड़ा रहन दो म्‍यान।।
+
+सोना, सज्‍जन, साधुजन, टूटि जुरै सौ बार।
+दुर्जन कुंभ-कुम्‍हार के, एकै धका दरार।।
+
+
+पाहन पुजे तो हरि मिले, तो मैं पूजूँ पहाड़।
+ताते या चाकी भली, पीस खाए संसार।।
+
+
+कॉंकर पाथर जोरि कै, मस्जिद लई बनाय।
+ता चढ़ मुल्‍ला बॉंग दे, बहिरा हुआ खुदाए।।
+
+
 \stoplines
 \stopmkii
 
