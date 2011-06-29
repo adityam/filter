@@ -34,7 +34,7 @@ Installation
 This module depends on the `t-filter` module. If you are using ConTeXt minimals,
 you can install the module using 
 
-    first-setup.sh --extras="t-filter,t-vim"
+    first-setup.sh --modules="t-filter,t-vim"
 
 Depending on your TeX distribution, you may already have the module.
 To verify, check if

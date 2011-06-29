@@ -39,7 +39,7 @@ Installation
 Writing installation instructions is always boring. If you are using ConTeXt
 minimals, you can install the module using
 
-    first-setup.sh --extras="t-filter"
+    first-setup.sh --modules="t-filter"
 
 Depending on your TeX distribution, you may already have the module.
 To verify, check if
