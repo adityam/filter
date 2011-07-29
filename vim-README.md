@@ -31,8 +31,8 @@ Both colors and no ligatures work out of the box in MkIV.
 Installation
 ------------
 
-This module depends on the `t-filter` module. If you are using ConTeXt minimals,
-you can install the module using 
+This module depends on the `t-filter` module. If you are using ConTeXt
+standalone, you can install the module using 
 
     first-setup.sh --modules="t-filter,t-vim"
 
