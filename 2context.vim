@@ -33,20 +33,20 @@ else
   let s:lstop = line("$")
 endif
 
-let s:trim = strlen( matchstr( getline(s:lstart), '^\s*' ) )
+let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
 
 " Find the smallest leading white space
-if exists("trimspaces") && trimspaces && s:trim != 0
+if exists("strip") && strip && (s:strip != 0)
   echo "In the loop"
   for s:lnum in range(s:lstart, s:lstop)
     let s:line  = getline(s:lnum)
     let s:space = matchstr(s:line, '^\s*')
     let s:len   = strlen(s:space)
     echo s:len
-    let s:trim = min(s:trim, s:len)
+    let s:strip = min(s:strip, s:len)
   endfor
 else
-  let s:trim = 0
+  let s:strip = 0
 endif
 
 " Loop over all lines in the original text.
@@ -108,7 +108,7 @@ while s:lnum <= s:lstop
   endwhile
 
 " Remove leading whitespace
-  let s:new = substitute(s:new, '^\s\{' . s:trim . '\}', "", "")
+  let s:new = substitute(s:new, '^\s\{' . s:strip . '\}', "", "")
 
 " Go back and paste the current line
   wincmd p

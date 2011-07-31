@@ -338,10 +338,10 @@ set
     \definevimtyping
         [...]
         [...
-         trimspaces=on,
+         strip=on,
          ...]
 
-The default value of `trimspaces` is `off`.
+The default value of `strip` is `off`.
 
 Splitting lines
 ---------------
