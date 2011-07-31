@@ -2,24 +2,22 @@
 
 \traceexternalfilters
 
-\unprotect
+% Convert width and height to inches before passing them to gnuplot. 
+% That way, width=\textwidth will work
+
+\unprotectmodulecatcodes
 \def\gnuplotcommand
-  {--noquotes gnuplot 
-     '-e "set term pdf
+  {gnuplot 
+     -e "set term pdf
              size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
-          set output \string\"\externalfilteroutputfile\string\""
-      \jobname-gnuplotinclusions.tmp \externalfilterinputfile'}
-
-\def\startgnuplotinclusions
-  {\dostartbuffer[gnuplotinclusions][startgnuplotinclusions][stopgnuplotinclusions]}
-
-\def\stopgnuplotinclusions
-  {\doifmode\s!mkiv{\savebuffer[gnuplotinclusions][\jobname-gnuplotinclusions.tmp]}}
+          set output '\externalfilteroutputfile' ;"
+          \externalfilterinputfile}
 
 \defineexternalfilter
   [gnuplot]
   [\c!output=\externalfilterbasefile.pdf,
    \c!filtercommand=\gnuplotcommand,
+   \c!directory=output,
    \c!width=5in,
    \c!height=3in,
    \c!continue=\v!yes,
@@ -27,20 +25,24 @@
   ]
 
 \def\usegnuplotgraphic#1[#2]%
-  {\externalfigure[\jobname-\!!!!externalfilter-gnuplot-#2]} 
-
-\protect
+  {\edef\externalfilter::name{gnuplot}%
+   \externalfilter::set_directory
+   \dontleavehmode
+   \externalfigure[\externalfilter::get_directory\jobname-\externalfilter::temp_prefix-\externalfilter::name-#2]
+                  [location=lohi,factor=max]}
+   
+\protectmodulecatcodes
 
 \starttext
-\startgnuplotinclusions
+\startfilterpreamble[gnuplot]
   set title "Made with ConTeXt"
-\stopgnuplotinclusions
+\stopfilterpreamble
 
 \startgnuplot[name=sin]
   plot sin(x)
 \stopgnuplot
 
-\startgnuplot[width=3in,name=cos]
+\startgnuplot[width=\the\dimexpr\textwidth\relax,name=cos]
   plot cos(x)
 \stopgnuplot
 
@@ -51,7 +53,7 @@
 
 sin: \usegnuplotgraphic[sin]
 
-cos: \usegnuplotgraphic[sin]
+cos: \usegnuplotgraphic[cos]
 
 both 1: \usegnuplotgraphic[both]
 

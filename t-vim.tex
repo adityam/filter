@@ -6,7 +6,7 @@
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
-%D        email=adityam <at> umich <dot> edu,
+%D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
 \writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
@@ -53,10 +53,18 @@
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let contextstopline=\externalfilterparameter\c!stop" %
+       -c "let strip=\getvalue{\vimtyping::id-\c!strip-\externalfilterparameter\c!strip}" %
        -c "source \vimtyping::script_name" %
        -c "qa" %
        \externalfilterinputfile\space
        \externalfilteroutputfile}
+
+\setvalue{\vimtyping::id-\c!strip-\v!off}{0}
+\setvalue{\vimtyping::id-\c!strip-\v!on}{1}
+
+% Undocumented ... but useful if the user makes a mistake
+\setvalue{\vimtyping::id-\c!strip-\v!no}{0}
+\setvalue{\vimtyping::id-\c!strip-\v!yes}{1}
 
 \setupvimtyping
   [% \c!tab=4,
@@ -68,6 +76,7 @@
    % \c!after=,
    % \c!style=\tttf,
    % \c!color=,
+   \c!strip=\v!off, 
    \c!filtercommand=\vimtyping::filter_command,
    % \c!continue=yes,
    % \c!read=\v!yes,

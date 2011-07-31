@@ -46,6 +46,12 @@
 \def\externalfilter::temp_prefix {temp}
 \def\externalfilter::count{\externalfilter::namespace-\externalfilter::name-counter}
 
+\def\externalfilter::preamble_name  {\externalfilter::name-preamble}
+\def\externalfilter::postamble_name {\externalfilter::name-postamble}
+
+\def\externalfilter::preamble  {filterpreamble}
+\def\externalfilter::postamble {filterpostamble}
+
 \installparameterhandler     \externalfilter::namespace \externalfilter::id
 \installparameterhashhandler \externalfilter::namespace \externalfilter::id
 \installsetuphandler         \externalfilter::namespace \externalfilter::id
@@ -111,6 +117,7 @@
 
     \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
     \setvalue{inline#1}{\externalfilter::inline[#1]}
+
 \stoptexdefinition
 
 \starttexdefinition externalfilter::start [#1][#2] 
@@ -164,6 +171,38 @@
    \pushcatcodetable
    \futurelet\next\externalfilter::inline_aux
 \stoptexdefinition
+
+% Preambles and postamble
+
+\setvalue{\e!start\externalfilter::preamble}%
+    {\bgroup\obeylines\dosingleargument\externalfilter::start_preamble}
+    
+\starttexdefinition externalfilter::start_preamble [#1]
+    % #1 = filter
+    \egroup
+    \edef\externalfilter::name{#1}
+
+    \dostartbuffer[\externalfilter::preamble_name]
+                  [\e!start\externalfilter::preamble]
+                  [\e!stop\externalfilter::preamble]
+\stoptexdefinition
+
+\setvalue{\e!stop\externalfilter::preamble}{}
+
+\setvalue{\e!start\externalfilter::postamble}%
+    {\bgroup\obeylines\dosingleargument\externalfilter::start_postamble}
+    
+\starttexdefinition externalfilter::start_postamble [#1]
+    % #1 = filter
+    \egroup
+    \edef\externalfilter::name{#1}
+
+    \dostartbuffer[\externalfilter::postamble_name]
+                  [\e!start\externalfilter::postamble]
+                  [\e!stop\externalfilter::postamble]
+\stoptexdefinition
+
+\setvalue{\e!stop\externalfilter::postamble}{}
 
 %D \subsubject {Catcode tables}
 %D 
@@ -330,7 +369,15 @@
 
 \starttexdefinition externalfilter::process_filter
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+     % To imitate the behavior of MkII, we need 
+     %
+     %      \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+     %
+     % However, in MkIV, we can save a list of buffers to a file. The empty
+     % elements of the list are ignored. So, instead we use the following
+     \doifmode\s!mkiv
+         {\savebuffer[\externalfilter::preamble_name,\externalfilter::temp_file,\externalfilter::postamble_name]
+                     [\externalfilter::input_file]}
 
      \externalfilter::execute_filter
      \externalfilter::read_processed_file

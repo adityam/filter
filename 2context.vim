@@ -19,24 +19,41 @@ wincmd p
 
 " If contextstartline and contextstartline are set, use them.
 if exists("contextstartline")
-  let s:lnum = max([1,  min([line("$"), contextstartline]) ])
+  let s:lstart = max([1,  min([line("$"), contextstartline]) ])
 else
-  let s:lnum = 1
+  let s:lstart = 1
 endif
 
 if exists("contextstopline")
   if contextstopline <= 0 
       let contextstopline = line("$") + contextstopline 
   endif
-  let s:end = min([line("$"), max([s:lnum, contextstopline]) ])
+  let s:lstop = min([line("$"), max([s:lstart, contextstopline]) ])
 else
-  let s:end = line("$")
+  let s:lstop = line("$")
 endif
 
-let s:buffer_lnum = 1
+let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
+
+" Find the smallest leading white space
+if exists("strip") && strip && (s:strip != 0)
+  echo "In the loop"
+  for s:lnum in range(s:lstart, s:lstop)
+    let s:line  = getline(s:lnum)
+    let s:space = matchstr(s:line, '^\s*')
+    let s:len   = strlen(s:space)
+    echo s:len
+    let s:strip = min(s:strip, s:len)
+  endfor
+else
+  let s:strip = 0
+endif
 
 " Loop over all lines in the original text.
-while s:lnum <= s:end
+let s:buffer_lnum = 1
+let s:lnum = s:lstart
+
+while s:lnum <= s:lstop
 " Get the current line
   let s:line = getline(s:lnum)
   let s:len  = strlen(s:line)
@@ -89,6 +106,9 @@ while s:lnum <= s:end
     let s:start = s:start + s:idx + 1
     let s:idx   = stridx(strpart(s:line, s:start), "\t")
   endwhile
+
+" Remove leading whitespace
+  let s:new = substitute(s:new, '^\s\{' . s:strip . '\}', "", "")
 
 " Go back and paste the current line
   wincmd p
