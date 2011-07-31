@@ -2,13 +2,15 @@
 
 \traceexternalfilters
 
+% Convert width and height to inches before passing them to gnuplot. 
+% That way, width=\textwidth will work
 
 \unprotectmodulecatcodes
 \def\gnuplotcommand
   {gnuplot 
      -e "set term pdf
              size \externalfilterparameter\c!width,\externalfilterparameter\c!height ; 
-          set output '\externalfilteroutputfile\string' ;"
+          set output '\externalfilteroutputfile' ;"
           \externalfilterinputfile}
 
 \defineexternalfilter
@@ -40,7 +42,7 @@
   plot sin(x)
 \stopgnuplot
 
-\startgnuplot[width=9in,name=cos]
+\startgnuplot[width=\the\dimexpr\textwidth\relax,name=cos]
   plot cos(x)
 \stopgnuplot
 
