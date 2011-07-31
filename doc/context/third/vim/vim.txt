@@ -31,10 +31,10 @@ Both colors and no ligatures work out of the box in MkIV.
 Installation
 ------------
 
-This module depends on the `t-filter` module. If you are using ConTeXt minimals,
-you can install the module using 
+This module depends on the `t-filter` module. If you are using ConTeXt
+standalone, you can install the module using 
 
-    first-setup.sh --extras="t-filter,t-vim"
+    first-setup.sh --modules="t-filter,t-vim"
 
 Depending on your TeX distribution, you may already have the module.
 To verify, check if
@@ -287,6 +287,62 @@ By default, the space is invisible. If you want to make the space visible, set
 
 The default value is `space=off`.
 
+Removing leading spaces
+-----------------------
+
+If you are listing a code snippet inside another environment, it is common to
+indent the TeX code. For example:
+
+    \definevimtyping[C][syntax=C]
+    \definevimtyping[ruby][syntax=ruby]
+
+    \startitemize
+        \item A hello world example in C
+            \startC
+              #include<stdio.h>
+
+              int main()
+              {
+                printf("Hello World")
+              }
+            \stopC
+        \item A hello world example in ruby
+            \startruby
+              puts "Hello World"
+            \stopruby
+    \stopitemize
+
+Although, the source code is easy to read, the output will not be. This is
+because, unlike regular TeX,  `\start<vimtyping>` ... `\stop<vimtyping>`
+environment does not ignore whote space. So, the output is the same as 
+
+    \startitemize
+    \item A hello world example in C
+    \startC
+              #include<stdio.h>
+
+              int main()
+              {
+                printf("Hello World")
+              }
+    \stopC
+    \item A hello world example in ruby
+    \startruby
+              puts "Hello World"
+    \stopruby
+    \stopitemize
+
+So, all the code snippets are indented by nine space. To avoid this behavior,
+set
+
+    \definevimtyping
+        [...]
+        [...
+         strip=on,
+         ...]
+
+The default value of `strip` is `off`.
+
 Splitting lines
 ---------------
 
@@ -353,3 +409,8 @@ in the module, except a few minor bug fixes.
 Around June 2010, I decided to completely rewrite the module from scratch. The
 new version of `t-vim` relies on `t-filter` for all the bookkeeping. As a
 result, the module is smaller and more robust.
+
+TODO
+----
+
+- Implement a dedent option (?)
