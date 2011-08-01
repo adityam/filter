@@ -20,6 +20,8 @@
 
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax} 
+  \setinterfaceconstant {highlight}       {highlight} 
+  \setinterfaceconstant {highlightcolor}  {highlightcolor} 
 \stopinterface
 
 %D Name space
@@ -51,6 +53,7 @@
   \edef\colorscheme::name{\externalfilterparameter\c!alternative}
   
   \let\SYN\syntaxgroup
+  \let\HGL\syntaxhighlightline
   \let\\\textbackslash
   \let\{\textbraceleft
   \let\}\textbraceright
@@ -223,6 +226,30 @@
 % Default
 \installspacehandler {\syntaxhighlighting::namespace}
   {\activatespacehandler {\syntaxhighlighting::namespace\v!off}}
+
+% Line highlighting
+% For MkIV, we can use the new bar mechanism to highlight a line. 
+% For consistency, we use text background, which is slower but works for both
+% MkII and MkIV.
+
+% \startmode[*mkiv]
+% \definebar[syntaxhighlightline]
+%           [\c!order=\v!background,
+%    \c!rulethickness=2.5,
+%           \c!offset=1.25,
+%         \c!continue=\v!yes,
+%            \c!color=\externalfilterparameter\c!highlightcolor,
+%           ]
+% \stopmode
+
+\definetextbackground[syntaxhighlightline] 
+                     [\c!location=\v!paragraph,
+                   \c!alternative=0,
+                         \c!frame=\v!off,
+                    \c!background=\v!color,
+               \c!backgroundcolor=\externalfilterparameter\c!highlightcolor,
+                     ]
+
 
 \protectmodulecatcodes
 

@@ -54,6 +54,7 @@
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let contextstopline=\externalfilterparameter\c!stop" %
        -c "let strip=\getvalue{\vimtyping::id-\c!strip-\externalfilterparameter\c!strip}" %
+       -c "let highlight=[\externalfilterparameter\c!highlight]" %
        -c "source \vimtyping::script_name" %
        -c "qa" %
        \externalfilterinputfile\space
@@ -77,6 +78,8 @@
    % \c!style=\tttf,
    % \c!color=,
    \c!strip=\v!off, 
+   \c!highlight=,
+   \c!highlightcolor=lightgray,
    \c!filtercommand=\vimtyping::filter_command,
    % \c!continue=yes,
    % \c!read=\v!yes,
