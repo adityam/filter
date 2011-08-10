@@ -110,6 +110,11 @@ while s:lnum <= s:lstop
 " Remove leading whitespace
   let s:new = substitute(s:new, '^\s\{' . s:strip . '\}', "", "")
 
+" Highlight line, if needed.
+  if (index(highlight, s:lnum) != -1)
+    let s:new = '\HGL{' . s:new . '}'
+  endif
+
 " Go back and paste the current line
   wincmd p
   call append (s:buffer_lnum-1, s:new)
