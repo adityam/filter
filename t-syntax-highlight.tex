@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.06.14,
+%D      version=2011.08.10,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -32,6 +32,10 @@
 
 \installparameterhandler \syntaxhighlighting::namespace \syntaxhighlighting::id
 \installsetuphandler     \syntaxhighlighting::namespace \syntaxhighlighting::id
+
+%D Helper macro
+
+\def\syntaxhighlighting::yes{\v!yes,\v!on}
 
 \def\definesyntaxhighlighting
   {\dodoubleargument\syntaxhighlighting::define}
@@ -95,7 +99,7 @@
     {\newcount\syntaxhighlighting::linenumber}
 
 \startsetups syntaxhighlighting::setup_line_number_mkii
-\doif{\externalfilterparameter\c!numbering}\v!yes
+\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
     {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
      % revert it back.
      \syntaxhighlighting::linenumber=\linenumber
@@ -121,7 +125,7 @@
 
 \startmode [\s!mkiv]
 \starttexdefinition syntaxhighlighting::read_command #1
-   \doifelse{\externalfilterparameter\c!numbering}\v!yes
+   \doifinsetelse{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
        {\startlinenumbering
           [\syntaxhighlighting::name]
           [\c!continue=\externalfilterparameter{\c!number\c!continue}]
@@ -133,8 +137,8 @@
 
 \startmode [\s!mkii]
 \starttexdefinition syntaxhighlighting::read_command #1
-    \doifelse{\externalfilterparameter\c!numbering}\v!yes
-        {\doifelse{\externalfilterparameter{\c!number\c!continue}}\v!yes
+    \doifinsetelse{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+        {\doifinsetelse{\externalfilterparameter{\c!number\c!continue}}\syntaxhighlighting::yes
             {\startlinenumbering[\v!continue]}
             {\startlinenumbering}
             \syntaxhighlighting::read_command_aux{#1}
