@@ -1,0 +1,27 @@
+\usemodule[vim]
+
+\definevimtyping[python][syntax=python]
+
+\starttext
+
+\startpython[highlight={1,3}]
+def sum_upto(n)
+    r = range(1, n+1)
+    return sum(r)
+\stoppython
+
+\startpython[highlight={1,3}, highlightcolor=yellow]
+def sum_upto(n)
+    r = range(1, n+1)
+    return sum(r)
+\stoppython
+
+There is a bug with line numbering!
+\startpython[highlight={1,3}, numbering=yes]
+def sum_upto(n)
+    r = range(1, n+1)
+    return sum(r)
+\stoppython
+
+
+\stoptext

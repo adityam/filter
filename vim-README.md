@@ -338,15 +338,15 @@ set
     \definevimtyping
         [...]
         [...
-         strip=on,
+         strip=yes,
          ...]
 
-The default value of `strip` is `off`.
+The default value of `strip` is `no`.
 
-Splitting lines
+Wrapping lines
 ---------------
 
-By default, long lines are not split. If you want to split long lines, set
+By default, long lines are not wrapped. If you want to wrap long lines, set
 
     \definevimtyping
         [...]
@@ -355,6 +355,40 @@ By default, long lines are not split. If you want to split long lines, set
          ...]
 
 The default value is `lines=fixed`.
+
+Highlighting lines
+------------------
+
+Sometimes you want to draw attention to a particular line (or set of lines). One
+way to do so it to highlight the lines by a background color. This can be done
+using:
+
+    \start<vimtyping>[highlight={<list>}]
+      ...
+    \stop<vimtyping>
+
+where `<list>` is a comma separated list. For example, if you want to highlight
+lines 1 and 5, you may use:
+
+    \start<vimtyping>[highlight={1,5}]
+      ...
+    \stop<vimtyping>
+
+This will highlight lines 1 and 5 with gray background color. To change the
+highlight color use
+
+    \definevimtyping
+        [...]
+        [...
+         highlightcolor=<color>,
+         ...]
+
+where `<color>` is any valid ConTeXt color.
+
+**Note**: Currently, if you use `highlight` with `numbering=on`, each
+highlighted line will be numbered thrice (with the numbers overprinted on one
+another). This is because, internally, highlighting is implemented using text
+backgrounds and they do not work with line numbering. 
 
 Messages and Tracing
 --------------------
@@ -380,6 +414,19 @@ is displayed in the console. At the same time, the string
 
 is displayed in the PDF output. This data, along with the filter command, is
 useful for debugging what whenwrong.
+
+Yes, on, whatever
+-----------------
+
+ConTeXt has two ways of indicating binary options:
+
+- `option=yes` and `option=no`
+- `option=on` and `option=off`
+
+The core commands freely switch between the two. In some cases, `option=yes` has
+a different meaning than `option=on`. To avoid confusion, I have made these
+synonyms. Thus, whenever the documentation says `option=yes`, you may use
+`option=on`. One less thing to worry about!
 
 A bit of a history
 ------------------
@@ -413,4 +460,4 @@ result, the module is smaller and more robust.
 TODO
 ----
 
-- Implement a dedent option (?)
+- Fix line highlighting with highlight={list}
