@@ -1,0 +1,64 @@
+\writestatus{loading}{ConTeXt User Module / Lilypond}
+
+\startmodule    [vim]
+\usemodule      [filter]
+
+\unprotectmodulecatcodes
+
+% When lilypond processes a file, it saves the typeset music scores in a 
+% pdf file and generates a latex file to include these pdf images. Rather 
+% than trying to reproduce the logic used in lilypond, I simply include the 
+% resulting latex file. In order to do so, we need to tell define \includegraphics
+% at the ConTeXt end.
+
+\def\lilypond::readPDFfile#1%
+    {\externalfigure[#1][location=lohi]}
+
+\startsetups lilypond::setups
+  \let\includegraphics\lilypond::readPDFfile
+\stopsetups
+
+% The command to call lilypond
+% Command invoked by lilypond-book
+% lilypond
+%       --formats=ps 
+%       -dbackend=eps  
+%       -I  "$CWD" 
+%       --formap-eps --pdf
+%       -dinclude-eps-fonts
+%       -dgs-load-fonts
+%       -deps-box-padding=3.00000
+%       -dread-file-list
+%       -dno-strip-output-dir
+%       <filename>
+
+\def\lilypond::filter
+    {lilypond 
+      -dbackend=eps 
+      -dinclude-eps-fonts 
+      -d-gs-load-fonts 
+      -dno-strip-output-dir
+      -deps-box-padding=3
+      \iftraceexternalfilters \else
+        -ddelete-intermediate-files
+      \fi
+      % DO NOT add -o option!
+      % Otherwise the name of graphic in \includegraphic
+      % is relative to the output directory.
+    }
+
+\defineexternalfilter
+    [lilypond]
+    [\c!continue=\v!yes,
+     \c!setups=lilypond::setups,
+     \c!output=\externalfilterbasefile-systems.tex, 
+     \c!filter=\lilypond::filter]
+
+\def\setuplilypond
+    {\setupexternalfilter[lilypond]}
+
+\traceexternalfilters
+
+\protectmodulecatcodes
+\stopmodule
+
