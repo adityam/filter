@@ -339,8 +339,8 @@
      % However, in MkIV, we can save a list of buffers to a file. The empty
      % elements of the list are ignored. So, instead we use the following
      \doifmode\s!mkiv
-         {\savebuffer[\externalfilterparameter{\c!buffer\c!before},,\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
-                     [\externalfilter::input_file]}
+         {\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
+                     [\externalfilter::temp_file]}
 
      \externalfilter::execute_filter
      \externalfilter::read_processed_file
