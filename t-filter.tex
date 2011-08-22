@@ -100,8 +100,8 @@
 \starttexdefinition externalfilter::define [#1][#2]
     \externalfilter::show_status{defining filter : #1}
 
+    \setupexternalfilter[#1][\s!parent=\externalfilter::namespace,#2]
     \edef\externalfilter::name{#1}
-    \getparameters[\externalfilter::namespace#1][\s!parent=\externalfilter::namespace,#2]
 
     \doif{\externalfilterparameter\c!continue}\v!yes
          {\expandafter\newcounter\csname\externalfilter::count\endcsname}
@@ -339,8 +339,11 @@
      % However, in MkIV, we can save a list of buffers to a file. The empty
      % elements of the list are ignored. So, instead we use the following
      \doifmode\s!mkiv
+         %{\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
+         %            [\externalfilter::input_file]}
          {\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
-                     [\externalfilter::temp_file]}
+                     [\externalfilter::id]%
+          \ctxlua{file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")}}
 
      \externalfilter::execute_filter
      \externalfilter::read_processed_file
@@ -431,6 +434,10 @@
 \def\externalfilterinputfile {\externalfilter::input_file}
 \def\externalfilteroutputfile{\externalfilter::output_file}
 \def\currentexternalfilter   {\externalfilter::name}
+
+% Default value
+\def\externalfilter::input_file {}
+\def\externalfilter::output_file{}
    
 \protectmodulecatcodes
 \stopmodule
