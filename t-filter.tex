@@ -338,12 +338,20 @@
      %
      % However, in MkIV, we can save a list of buffers to a file. The empty
      % elements of the list are ignored. So, instead we use the following
-     \doifmode\s!mkiv
+     %\doifmode\s!mkiv
          %{\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
          %            [\externalfilter::input_file]}
-         {\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
-                     [\externalfilter::id]%
-          \ctxlua{file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")}}
+     \startmode[\s!mkiv]
+         \savebuffer[\externalfilterparameter{\c!buffer\c!before},
+                     \externalfilter::temp_file,
+                     \externalfilterparameter{\c!buffer\c!after}]
+                    [\externalfilter::id]
+         \startluacode
+           file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
+           os.remove("\jobname-\externalfilter::id.\f!temporaryextension")
+         \stopluacode
+     \stopmode
+           
 
      \externalfilter::execute_filter
      \externalfilter::read_processed_file
