@@ -7,33 +7,36 @@
 
 \def\lilypond::preamble{lilypond::preamble}
 
-% When lilypond processes a file, it saves the typeset music scores in a 
-% pdf file and generates a latex file to include these pdf images. Rather 
-% than trying to reproduce the logic used in lilypond, I simply include the 
-% resulting latex file. In order to do so, we need to tell define \includegraphics
-% at the ConTeXt end.
+\defineexternalfilter
+    [lilypond]
+    [\c!continue=\v!yes,
+     \c!setups=lilypond::setups,
+     \c!output=\externalfilterbasefile-systems.tex, 
+     \c!buffer\c!before=\lilypond::preamble,
+     \c!filter=\lilypond::filter,
+     \c!align=\v!right]
 
+\def\setuplilypond
+    {\setupexternalfilter[lilypond]}
+
+% Based on an idea of David Wooten
+\definefloat
+  [lilypondfloat]
+  [lilypondfloats]
+  [figure]
+
+\setupfloat
+  [lilypondfloat]
+  [\c!frame=\v!off,
+   \c!location=\v!right,
+   \c!default={\v!nonumber,\v!here,\v!always}]
+
+% TODO: Make configurable:
+% Alternative = float | display | inline
+% Not sure how to handle captions for floats (which can be split into multiple
+% images)
 \def\lilypond::readPDFfile#1%
-    {\externalfigure[#1][location=lohi]}
-
-\startsetups lilypond::setups
-  \let\includegraphics \lilypond::readPDFfile
-  \let\linebreak       \donothing
-\stopsetups
-
-% The command to call lilypond
-% Command invoked by lilypond-book
-% lilypond
-%       --formats=ps 
-%       -dbackend=eps  
-%       -I  "$CWD" 
-%       --formap-eps --pdf
-%       -dinclude-eps-fonts
-%       -dgs-load-fonts
-%       -deps-box-padding=3.00000
-%       -dread-file-list
-%       -dno-strip-output-dir
-%       <filename>
+    {\placelilypondfloat{}{\externalfigure[#1]}}
 
 \def\lilypond::filter
     {lilypond 
@@ -49,33 +52,31 @@
       % is relative to the output directory.
     }
 
-\defineexternalfilter
-    [lilypond]
-    [\c!continue=\v!yes,
-     \c!setups=lilypond::setups,
-     \c!output=\externalfilterbasefile-systems.tex, 
-     \c!buffer\c!before=\lilypond::preamble,
-     \c!filter=\lilypond::filter]
 
-\def\setuplilypond
-    {\setupexternalfilter[lilypond]}
+% When lilypond processes a file, it saves the typeset music scores in a 
+% pdf file and generates a latex file to include these pdf images. Rather 
+% than trying to reproduce the logic used in lilypond, I simply include the 
+% resulting latex file. In order to do so, we need to tell define \includegraphics
+% at the ConTeXt end.
 
-\traceexternalfilters
-
-\edef\lualetterbackslash{\letterbackslash}
+\startsetups lilypond::setups
+  \let\includegraphics \lilypond::readPDFfile
+  \let\linebreak       \donothing
+\stopsetups
 
 \startluacode
 local template = [[
 \string\include "lilypond-book-preamble.ly"
 
 \string\paper {
-  line-width = %s
+  line-width    = %s
 }
 ]]
 
-local function initialize(name, linewidth)
-  linewidth = number.topoints(string.todimen(linewidth), "%0.3f\\\\pt") or "6\\in"
-  buffers.assign(name, string.format(template, linewidth))
+local function initialize(name, hsize, vsize)
+  hsize = number.topoints(string.todimen(hsize), "%0.3f\\pt") or "6\\in"
+  vsize = number.topoints(string.todimen(vsize), "%0.3f\\pt") or "6\\in"
+  buffers.assign(name, string.format(template, hsize, vsize))
 end
 
 commands.lilypondinitialize = initialize
@@ -84,9 +85,12 @@ commands.lilypondinitialize = initialize
 % Ugly hack
 
 \def\stoplilypond
-    {\ctxcommand{lilypondinitialize("\lilypond::preamble", "\the\hsize")}
+    {\ctxcommand{lilypondinitialize("\lilypond::preamble", "\the\hsize", "\the\vsize")}
      \externalfilter::process_filter}
 
 \protectmodulecatcodes
+
+\traceexternalfilters
+
 \stopmodule
 
