@@ -5,6 +5,8 @@
 
 \unprotectmodulecatcodes
 
+\def\lilypond::preamble{lilypond::preamble}
+
 % When lilypond processes a file, it saves the typeset music scores in a 
 % pdf file and generates a latex file to include these pdf images. Rather 
 % than trying to reproduce the logic used in lilypond, I simply include the 
@@ -15,7 +17,8 @@
     {\externalfigure[#1][location=lohi]}
 
 \startsetups lilypond::setups
-  \let\includegraphics\lilypond::readPDFfile
+  \let\includegraphics \lilypond::readPDFfile
+  \let\linebreak       \donothing
 \stopsetups
 
 % The command to call lilypond
@@ -51,12 +54,38 @@
     [\c!continue=\v!yes,
      \c!setups=lilypond::setups,
      \c!output=\externalfilterbasefile-systems.tex, 
+     \c!buffer\c!before=\lilypond::preamble,
      \c!filter=\lilypond::filter]
 
 \def\setuplilypond
     {\setupexternalfilter[lilypond]}
 
 \traceexternalfilters
+
+\edef\lualetterbackslash{\letterbackslash}
+
+\startluacode
+local template = [[
+\string\include "lilypond-book-preamble.ly"
+
+\string\paper {
+  line-width = %s
+}
+]]
+
+local function initialize(name, linewidth)
+  linewidth = number.topoints(string.todimen(linewidth), "%0.3f\\\\pt") or "6\\in"
+  buffers.assign(name, string.format(template, linewidth))
+end
+
+commands.lilypondinitialize = initialize
+\stopluacode
+
+% Ugly hack
+
+\def\stoplilypond
+    {\ctxcommand{lilypondinitialize("\lilypond::preamble", "\the\hsize")}
+     \externalfilter::process_filter}
 
 \protectmodulecatcodes
 \stopmodule
