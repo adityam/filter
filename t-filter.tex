@@ -347,8 +347,7 @@
                      \externalfilterparameter{\c!buffer\c!after}]
                     [\externalfilter::id]
          \startluacode
-           file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
-           os.remove("\jobname-\externalfilter::id.\f!temporaryextension")
+           os.rename("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
          \stopluacode
      \stopmode
            
