@@ -1,0 +1,151 @@
+%D \module
+%D   [     file=t-lilypond,
+%D      version=2011.08.22,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=Lilypond,
+%D       author=Aditya Mahajan and Henning Hraban Ramm,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan and Henning Hraban Ramm,
+%D        email=adityam <at> umich <dot> edu and hraban@fiee.net,
+%D      license=Simplified BSD License]
+\writestatus{loading}{ConTeXt User Module / Lilypond}
+
+\startmodule    [lilypond]
+\usemodule      [filter]
+
+\unprotectmodulecatcodes
+
+\def\lilypond::preamble{lilypond::preamble}
+
+\defineexternalfilter
+    [lilypond]
+    [\c!continue=\v!yes,
+     \c!setups=lilypond::setups,
+     \c!output=\externalfilterbasefile-systems.tex, 
+     \c!buffer\c!before=\lilypond::preamble,
+     \c!filter=\lilypond::filter,
+     \c!alternative=\v!float]
+
+\def\setuplilypond
+    {\setupexternalfilter[lilypond]}
+
+% Based on an idea of David Wooten
+\definefloat
+  [lilypondfloat]
+  [lilypondfloats]
+  [figure]
+
+\setupfloat
+  [lilypondfloat]
+  [\c!frame=\v!off,
+   \c!location=\v!right,
+   \c!default={\v!nonumber,\v!here,\v!always}]
+
+\def\lilypond::readPDFfile::float#1%
+    {\placelilypondfloat{}{\externalfigure[#1]}}
+
+\def\lilypond::readPDFfile::display#1%
+    {\rightaligned{\externalfigure[#1]}}
+
+\def\lilypond::readPDFfile::inline#1%
+    {\externalfigure[#1][\c!location=\v!lohi]}
+
+\def\lilypond::filter
+    {lilypond 
+      -dbackend=eps 
+      -dinclude-eps-fonts 
+      -dno-gs-load-fonts 
+      -dno-strip-output-dir
+      \iftraceexternalfilters \else
+        -ddelete-intermediate-files
+      \fi
+      % DO NOT add -o option!
+      % Otherwise the name of graphic in \includegraphics
+      % is relative to the output directory.
+    }
+
+
+% When lilypond processes a file, it saves the typeset music scores in a 
+% pdf file and generates a latex file to include these pdf images. Rather 
+% than trying to reproduce the logic used in lilypond, I simply include the 
+% resulting latex file. In order to do so, we need to tell define \includegraphics
+% at the ConTeXt end.
+
+\startsetups lilypond::setups
+  \def\includegraphics{\getvalue{lilypond::readPDFfile::\externalfilterparameter\c!alternative}}
+  \writestatus{lilypond}{alternative: \externalfilterparameter\c!alternative}
+  \let\linebreak       \donothing
+\stopsetups
+
+\startluacode
+local template = [[
+%% \string\include "lilypond-book-preamble.ly"
+
+\string\version "2.14.0"
+#(define version-seen #t)
+
+\string\layout {
+  \string\context { \string\RemoveEmptyStaffContext } 
+  \string\context { \string\Score \string\override VerticalAxisGroup #'remove-first = ##t }
+
+  \string\context { \string\Score timing = ##f }
+  \string\context { \string\Score \string\remove "Time_signature_engraver" }
+
+  \string\context { \string\Score \string\remove "Bar_number_engraver" }
+}
+
+\string\paper {
+  #(define dump-extents #t)
+  line-width    = %s
+  vsize         = %s 
+  indent        = 0.0
+
+  printpagenumber  = ##f
+  oddFooterMarkup  = ##f
+  oddHeaderMarkup  = ##f
+  bookTitleMarkup  = ##f
+  scoreTitleMarkup = ##f
+
+  ragged-right     = %s
+
+  ragged-last-bottom = ##t
+  ragged-bottom      = ##t
+
+  between-system-padding = #0
+  between-system-space   = 54\string\pt
+}
+
+]]
+
+local raggedright = {
+  ["float"]   = "##f",
+  ["display"] = "##f",
+  ["inline"]  = "##t",
+}
+
+local function initialize(name, properties)
+  properties.raggedright = raggedright[properties.alternative]
+  properties.hsize = number.topoints(string.todimen(properties.hsize), "%0.3f\\pt") or "6\\in"
+  properties.vsize = number.topoints(string.todimen(properties.vsize), "%0.3f\\pt") or "6\\in"
+  buffers.assign(name, string.format(template, properties.hsize, properties.vsize, 
+                 properties.raggedright))
+end
+
+commands.lilypondinitialize = initialize
+\stopluacode
+
+% Ugly hack
+
+\def\stoplilypond
+    {\setlocalhsize
+     \ctxcommand{lilypondinitialize("\lilypond::preamble", 
+                 { hsize = "\the\localhsize", 
+                   vsize = "\the\vsize",
+                   alternative = "\externalfilterparameter\c!alternative",
+                 })}
+     \externalfilter::process_filter}
+
+\protectmodulecatcodes
+
+\stopmodule
+

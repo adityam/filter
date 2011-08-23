@@ -441,6 +441,71 @@ options:
 
 The options in the `[...]` are the same as those for `\defineexternalfilter`.
 
+Prepend and append text
+-----------------------
+
+**NOTE** Only works in MkIV
+
+Some external programs require boilerplate text at the beginning and end of each
+file. Including this boilerplate code in each snippet can get verbose. The
+filter module provides two options `bufferbefore` and `bufferafter` to shorten
+such snippets. Define the boilerplate code in ConTeXt buffers and then use
+
+    \defineexternalfilter
+        [...]
+        [...
+         bufferbefore={...list of buffers...},
+         bufferafter={...list of buffers...},
+        ]
+
+For example, suppose you want to generate images using a latex package that does
+not work well with ConTeXt, say shak. One way to use this is as follows: first
+define a file that processes its content using `latex`.
+
+        \defineexternalfilter
+            [chess]
+            [filter=pdflatex,
+             output=\externalfilterbasefile.pdf,
+             readcommand=\readPDFfile,
+            ]
+
+        \def\readPDFfile#1{\externalfigure[#1]}
+
+
+Next create buffers containing boilerplate code needed to run latex:
+
+       \startbuffer[chess::before]
+        \documentclass{minimal}
+        \usepackage{skak}
+        \usepackage[active,tightpage]{preview}
+
+        \begin{document}
+        \begin{preview}
+        \newgame
+        \hidemoves{
+      \stopbuffer
+
+      \startbuffer[chess::after]
+        }
+        \showboard
+        \end{preview}
+        \end{document}
+      \stopbuffer
+
+and tell the filter to prepend and append these buffers
+
+      \setupexternalfilter
+        [chess]
+        [bufferbefore={chess::before},
+         bufferafter={chess::after}]
+
+Then you can use
+
+      \inlinechess{1.e4 e5 2. Nf3 Nc6 3.Bb5}
+
+to get a chess board.
+
+
 Limitations
 ------------
 

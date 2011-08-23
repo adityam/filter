@@ -1,0 +1,178 @@
+\usemodule[lilypond]
+
+\setuplilypond[directory=output]
+
+\showframe
+
+\starttext
+\startlilypond[alternative=float]
+global = {
+  \key c \major
+  \time 4/4
+}
+
+sopMusic = \relative c'' {
+  c4 c c8[( b)] c4
+}
+sopWords = \lyricmode {
+  hi hi hi hi
+}
+
+altoMusic = \relative c' {
+  e4 f d e
+}
+altoWords =\lyricmode {
+  ha ha ha ha
+}
+
+tenorMusic = \relative c' {
+  g4 a f g
+}
+tenorWords = \lyricmode {
+  hu hu hu hu
+}
+
+bassMusic = \relative c {
+  c4 c g c
+}
+bassWords = \lyricmode {
+  ho ho ho hø
+}
+
+\score {
+  <<
+    \new ChoirStaff <<
+      \new Lyrics = "sopranos"
+      \new Staff = "women" <<
+        \new Voice = "sopranos" { \voiceOne << \global \sopMusic >> }
+        \new Voice = "altos" { \voiceTwo << \global \altoMusic >> }
+      >>
+      \new Lyrics = "altos"
+      \new Lyrics = "tenors"
+      \new Staff = "men" <<
+        \clef bass
+        \new Voice = "tenors" { \voiceOne << \global \tenorMusic >> }
+        \new Voice = "basses" { \voiceTwo << \global \bassMusic >> }
+      >>
+      \new Lyrics = "basses"
+      \context Lyrics = "sopranos" \lyricsto "sopranos" \sopWords
+      \context Lyrics = "altos" \lyricsto "altos" \altoWords
+      \context Lyrics = "tenors" \lyricsto "tenors" \tenorWords
+      \context Lyrics = "basses" \lyricsto "basses" \bassWords
+    >>
+    \new PianoStaff <<
+      \new Staff <<
+        \set Staff.printPartCombineTexts = ##f
+        \partcombine
+        << \global \sopMusic >>
+        << \global \altoMusic >>
+      >>
+      \new Staff <<
+        \clef bass
+        \set Staff.printPartCombineTexts = ##f
+        \partcombine
+        << \global \tenorMusic >>
+        << \global \bassMusic >>
+      >>
+    >>
+    \new ChoirStaff <<
+      \new Lyrics = "sopranos"
+      \new Staff = "women" <<
+        \new Voice = "sopranos" { \voiceOne << \global \sopMusic >> }
+        \new Voice = "altos" { \voiceTwo << \global \altoMusic >> }
+      >>
+      \new Lyrics = "altos"
+      \new Lyrics = "tenors"
+      \new Staff = "men" <<
+        \clef bass
+        \new Voice = "tenors" { \voiceOne << \global \tenorMusic >> }
+        \new Voice = "basses" { \voiceTwo << \global \bassMusic >> }
+      >>
+      \new Lyrics = "basses"
+      \context Lyrics = "sopranos" \lyricsto "sopranos" \sopWords
+      \context Lyrics = "altos" \lyricsto "altos" \altoWords
+      \context Lyrics = "tenors" \lyricsto "tenors" \tenorWords
+      \context Lyrics = "basses" \lyricsto "basses" \bassWords
+    >>
+    \new PianoStaff <<
+      \new Staff <<
+        \set Staff.printPartCombineTexts = ##f
+        \partcombine
+        << \global \sopMusic >>
+        << \global \altoMusic >>
+      >>
+      \new Staff <<
+        \clef bass
+        \set Staff.printPartCombineTexts = ##f
+        \partcombine
+        << \global \tenorMusic >>
+        << \global \bassMusic >>
+      >>
+    >>
+    \new ChoirStaff <<
+      \new Lyrics = "sopranos"
+      \new Staff = "women" <<
+        \new Voice = "sopranos" { \voiceOne << \global \sopMusic >> }
+        \new Voice = "altos" { \voiceTwo << \global \altoMusic >> }
+      >>
+      \new Lyrics = "altos"
+      \new Lyrics = "tenors"
+      \new Staff = "men" <<
+        \clef bass
+        \new Voice = "tenors" { \voiceOne << \global \tenorMusic >> }
+        \new Voice = "basses" { \voiceTwo << \global \bassMusic >> }
+      >>
+      \new Lyrics = "basses"
+      \context Lyrics = "sopranos" \lyricsto "sopranos" \sopWords
+      \context Lyrics = "altos" \lyricsto "altos" \altoWords
+      \context Lyrics = "tenors" \lyricsto "tenors" \tenorWords
+      \context Lyrics = "basses" \lyricsto "basses" \bassWords
+    >>
+    \new PianoStaff <<
+      \new Staff <<
+        \set Staff.printPartCombineTexts = ##f
+        \partcombine
+        << \global \sopMusic >>
+        << \global \altoMusic >>
+      >>
+      \new Staff <<
+        \clef bass
+        \set Staff.printPartCombineTexts = ##f
+        \partcombine
+        << \global \tenorMusic >>
+        << \global \bassMusic >>
+      >>
+    >>
+  >>
+}
+\stoplilypond
+
+\page
+
+\startlilypond[alternative=display]
+\relative c'' {
+  b c  % c is 1 staff space up, so is the c above
+  b d  % d is 2 up or 5 down, so is the d above
+  b e  % e is 3 up or 4 down, so is the e above
+  b a  % a is 6 up or 1 down, so is the a below
+  b g  % g is 5 up or 2 down, so is the g below
+  b f  % f is 4 up or 3 down, so is the f below
+}
+\stoplilypond
+
+\page
+
+
+\startlilypond[alternative=inline]
+\relative c'' {
+  b c  % c is 1 staff space up, so is the c above
+  b d  % d is 2 up or 5 down, so is the d above
+  b e  % e is 3 up or 4 down, so is the e above
+  b a  % a is 6 up or 1 down, so is the a below
+  b g  % g is 5 up or 2 down, so is the g below
+  b f  % f is 4 up or 3 down, so is the f below
+}
+\stoplilypond
+
+
+\stoptext
