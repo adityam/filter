@@ -1,0 +1,41 @@
+\usemodule[filter]
+
+ \startbuffer[chess::before]
+  \documentclass{minimal}
+  \usepackage{skak}
+  \usepackage[active,tightpage]{preview}
+
+  \begin{document}
+  \begin{preview}
+  \newgame
+  \hidemoves{
+\stopbuffer
+
+\startbuffer[chess::after]
+  }
+  \showboard
+  \end{preview}
+  \end{document}
+\stopbuffer
+
+
+\defineexternalfilter
+    [chess]
+    [filter=/usr/bin/pdflatex,
+     output=\externalfilterbasefile.pdf,
+     readcommand=\readPDFfile,
+     bufferbefore=chess::before,
+     bufferafter=chess::after]
+    ]
+
+\def\readPDFfile#1{\externalfigure[#1]}
+
+
+\starttext
+\placefigure{A chess board}
+  {\startchess 
+1.e4 e5 2. Nf3 Nc6 3.Bb5
+\stopchess
+}
+
+\stoptext
