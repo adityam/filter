@@ -1,3 +1,13 @@
+%D \module
+%D   [     file=t-lilypond,
+%D      version=2011.08.22,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=Lilypond,
+%D       author=Aditya Mahajan and Henning Hraban Ramm,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan and Henning Hraban Ramm,
+%D        email=adityam <at> umich <dot> edu and hraban@fiee.net,
+%D      license=Simplified BSD License]
 \writestatus{loading}{ConTeXt User Module / Lilypond}
 
 \startmodule    [lilypond]
@@ -14,7 +24,7 @@
      \c!output=\externalfilterbasefile-systems.tex, 
      \c!buffer\c!before=\lilypond::preamble,
      \c!filter=\lilypond::filter,
-     \c!align=\v!right]
+     \c!alternative=\v!float]
 
 \def\setuplilypond
     {\setupexternalfilter[lilypond]}
@@ -31,12 +41,14 @@
    \c!location=\v!right,
    \c!default={\v!nonumber,\v!here,\v!always}]
 
-% TODO: Make configurable:
-% Alternative = float | display | inline
-% Not sure how to handle captions for floats (which can be split into multiple
-% images)
-\def\lilypond::readPDFfile#1%
+\def\lilypond::readPDFfile::float#1%
     {\placelilypondfloat{}{\externalfigure[#1]}}
+
+\def\lilypond::readPDFfile::display#1%
+    {\rightaligned{\externalfigure[#1]}}
+
+\def\lilypond::readPDFfile::inline#1%
+    {\externalfigure[#1][\c!location=\v!lohi]}
 
 \def\lilypond::filter
     {lilypond 
@@ -48,7 +60,7 @@
         -ddelete-intermediate-files
       \fi
       % DO NOT add -o option!
-      % Otherwise the name of graphic in \includegraphic
+      % Otherwise the name of graphic in \includegraphics
       % is relative to the output directory.
     }
 
@@ -60,23 +72,63 @@
 % at the ConTeXt end.
 
 \startsetups lilypond::setups
-  \let\includegraphics \lilypond::readPDFfile
+  \def\includegraphics{\getvalue{lilypond::readPDFfile::\externalfilterparameter\c!alternative}}
+  \writestatus{lilypond}{alternative: \externalfilterparameter\c!alternative}
   \let\linebreak       \donothing
 \stopsetups
 
 \startluacode
 local template = [[
-\string\include "lilypond-book-preamble.ly"
+%% \string\include "lilypond-book-preamble.ly"
+
+\string\version "2.14.0"
+#(define version-seen #t)
+
+\string\layout {
+  \string\context { \string\RemoveEmptyStaffContext } 
+  \string\context { \string\Score \string\override VerticalAxisGroup #'remove-first = ##t }
+
+  \string\context { \string\Score timing = ##f }
+  \string\context { \string\Score \string\remove "Time_signature_engraver" }
+
+  \string\context { \string\Score \string\remove "Bar_number_engraver" }
+}
 
 \string\paper {
+  #(define dump-extents #t)
   line-width    = %s
+  vsize         = %s 
+  indent        = 0.0
+
+  printpagenumber  = ##f
+  oddFooterMarkup  = ##f
+  oddHeaderMarkup  = ##f
+  bookTitleMarkup  = ##f
+  scoreTitleMarkup = ##f
+
+  ragged-right     = %s
+
+  ragged-last-bottom = ##t
+  ragged-bottom      = ##t
+
+  between-system-padding = #0
+  between-system-space   = 54\string\pt
 }
+
 ]]
 
-local function initialize(name, hsize, vsize)
-  hsize = number.topoints(string.todimen(hsize), "%0.3f\\pt") or "6\\in"
-  vsize = number.topoints(string.todimen(vsize), "%0.3f\\pt") or "6\\in"
-  buffers.assign(name, string.format(template, hsize, vsize))
+local raggedright = {
+  ["float"]   = "##f",
+  ["display"] = "##f",
+  ["inline"]  = "##t",
+}
+
+local function initialize(name, properties)
+  properties.raggedright = raggedright[properties.alternative]
+  properties.hsize = number.topoints(string.todimen(properties.hsize), "%0.3f\\pt") or "6\\in"
+  properties.vsize = number.topoints(string.todimen(properties.vsize), "%0.3f\\pt") or "6\\in"
+  buffers.assign(name, string.format(template, properties.hsize, properties.vsize, 
+                 properties.raggedright))
 end
 
 commands.lilypondinitialize = initialize
@@ -85,7 +137,12 @@ commands.lilypondinitialize = initialize
 % Ugly hack
 
 \def\stoplilypond
-    {\ctxcommand{lilypondinitialize("\lilypond::preamble", "\the\hsize", "\the\vsize")}
+    {\setlocalhsize
+     \ctxcommand{lilypondinitialize("\lilypond::preamble", 
+                 { hsize = "\the\localhsize", 
+                   vsize = "\the\vsize",
+                   alternative = "\externalfilterparameter\c!alternative",
+                 })}
      \externalfilter::process_filter}
 
 \protectmodulecatcodes
