@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.06.16,
+%D      version=2011.08.23,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -100,8 +100,8 @@
 \starttexdefinition externalfilter::define [#1][#2]
     \externalfilter::show_status{defining filter : #1}
 
+    \setupexternalfilter[#1][\s!parent=\externalfilter::namespace,#2]
     \edef\externalfilter::name{#1}
-    \getparameters[\externalfilter::namespace#1][\s!parent=\externalfilter::namespace,#2]
 
     \doif{\externalfilterparameter\c!continue}\v!yes
          {\expandafter\newcounter\csname\externalfilter::count\endcsname}
@@ -111,6 +111,7 @@
 
     \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
     \setvalue{inline#1}{\externalfilter::inline[#1]}
+
 \stoptexdefinition
 
 \starttexdefinition externalfilter::start [#1][#2] 
@@ -121,7 +122,7 @@
     \edef\externalfilter::name{#1}
 
     \begingroup % to keep assignments local
-    \getparameters[\externalfilter::namespace#1][\c!name=,#2]
+    \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter::set_filenames
 
@@ -133,7 +134,7 @@
     \begingroup
 
     \edef\externalfilter::name{#1}
-    \getparameters[\externalfilter::namespace#1][\c!name=,#2]
+    \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter::set_directory
     
@@ -157,13 +158,14 @@
    \edef\externalfilter::name{#1}
 
    \begingroup % to keep assignments local
-   \getparameters[\externalfilter::namespace#1][\c!name=]
+   \setupexternalfilter[#1][\c!name=]
 
    \externalfilter::set_filenames
 
    \pushcatcodetable
    \futurelet\next\externalfilter::inline_aux
 \stoptexdefinition
+
 
 %D \subsubject {Catcode tables}
 %D 
@@ -330,7 +332,25 @@
 
 \starttexdefinition externalfilter::process_filter
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+     % To imitate the behavior of MkII, we need 
+     %
+     %      \doifmode\s!mkiv{\savebuffer[\externalfilter::temp_file][\externalfilter::input_file]}
+     %
+     % However, in MkIV, we can save a list of buffers to a file. The empty
+     % elements of the list are ignored. So, instead we use the following
+     %\doifmode\s!mkiv
+         %{\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter::temp_file,\externalfilterparameter{\c!buffer\c!after}]
+         %            [\externalfilter::input_file]}
+     \startmode[\s!mkiv]
+         \savebuffer[\externalfilterparameter{\c!buffer\c!before},
+                     \externalfilter::temp_file,
+                     \externalfilterparameter{\c!buffer\c!after}]
+                    [\externalfilter::id]
+         \startluacode
+           os.rename("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
+         \stopluacode
+     \stopmode
+           
 
      \externalfilter::execute_filter
      \externalfilter::read_processed_file
@@ -409,6 +429,8 @@
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilter::input_file},
+   \c!buffer\c!before=,
+   \c!buffer\c!after=,
  ]
 
 \doifmodeelse{reuse}
@@ -419,6 +441,10 @@
 \def\externalfilterinputfile {\externalfilter::input_file}
 \def\externalfilteroutputfile{\externalfilter::output_file}
 \def\currentexternalfilter   {\externalfilter::name}
+
+% Default value
+\def\externalfilter::input_file {}
+\def\externalfilter::output_file{}
    
 \protectmodulecatcodes
 \stopmodule
