@@ -595,3 +595,5 @@ Version History
     - Added `reuse` mode to skip running all filters that have
       `continue=yes`. 
     - Added `state=stop` option to skip running external filter.
+- **2011.08.23**
+    - Added `bufferbefore` and `bufferafter` options
