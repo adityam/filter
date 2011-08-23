@@ -122,7 +122,7 @@
     \edef\externalfilter::name{#1}
 
     \begingroup % to keep assignments local
-    \getparameters[\externalfilter::namespace#1][\c!name=,#2]
+    \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter::set_filenames
 
@@ -134,7 +134,7 @@
     \begingroup
 
     \edef\externalfilter::name{#1}
-    \getparameters[\externalfilter::namespace#1][\c!name=,#2]
+    \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter::set_directory
     
@@ -158,7 +158,7 @@
    \edef\externalfilter::name{#1}
 
    \begingroup % to keep assignments local
-   \getparameters[\externalfilter::namespace#1][\c!name=]
+   \setupexternalfilter[#1][\c!name=]
 
    \externalfilter::set_filenames
 
