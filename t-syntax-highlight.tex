@@ -147,14 +147,7 @@
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting::read_command_aux #1
-    % In the filter module, style=something does not work in MkII. 
-    % So, we explicitly add the global style before reading the file.
-    % 
-    \dostartattributes{\syntaxhighlighting::namespace}\c!style\c!color
-    \dostartattributes{\syntaxhighlighting::namespace\syntaxhighlighting::name}\c!style\c!color
-      \ReadFile{#1}
-    \dostopattributes
-    \dostopattributes
+    \ReadFile{#1}
 \stoptexdefinition
 \stopmode
 
