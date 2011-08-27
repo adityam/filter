@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.08.10,
+%D      version=2011.08.27,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Vim syntax highlighting}
+\writestatus{loading}{ConTeXt User Module / Vim syntax highlighting ver: 2011.08.27}
 
 \startmodule    [vim]
 \usemodule      [filter]
@@ -30,7 +30,7 @@
   {\dodoubleargument\vimtyping::define}
 
 \starttexdefinition vimtyping::define [#1][#2]
-    \getparameters[\vimtyping::namespace#1][\s!parent=\vimtyping::namespace,#2]
+    \setupvimtyping[#1][\s!parent=\vimtyping::namespace,#2]
 
     \edef\vimtyping::name{#1}
 
