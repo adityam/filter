@@ -30,7 +30,7 @@
   {\dodoubleargument\vimtyping::define}
 
 \starttexdefinition vimtyping::define [#1][#2]
-    \getparameters[\vimtyping::namespace#1][\s!parent=\vimtyping::namespace,#2]
+    \setupvimtyping[#1][\s!parent=\vimtyping::namespace,#2]
 
     \edef\vimtyping::name{#1}
 

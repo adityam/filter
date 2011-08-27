@@ -41,7 +41,7 @@
   {\dodoubleargument\syntaxhighlighting::define}
 
 \starttexdefinition syntaxhighlighting::define [#1][#2]
-    \getparameters[\syntaxhighlighting::namespace#1][\s!parent=\syntaxhighlighting::namespace,#2]
+    \setupsyntaxhighlighting[#1][\s!parent=\syntaxhighlighting::namespace,#2]
 
     \edef\syntaxhighlighting::name{#1}
     \doifmode\s!mkiv{\setups{syntaxhighlighting::setup_line_number_mkiv}}
