@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.08.10,
+%D      version=2011.08.27,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> umich <dot> edu,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Code syntax highlighting}
+\writestatus{loading}{ConTeXt User Module / Code syntax highlighting ver: 2011.08.27}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -41,7 +41,7 @@
   {\dodoubleargument\syntaxhighlighting::define}
 
 \starttexdefinition syntaxhighlighting::define [#1][#2]
-    \getparameters[\syntaxhighlighting::namespace#1][\s!parent=\syntaxhighlighting::namespace,#2]
+    \setupsyntaxhighlighting[#1][\s!parent=\syntaxhighlighting::namespace,#2]
 
     \edef\syntaxhighlighting::name{#1}
     \doifmode\s!mkiv{\setups{syntaxhighlighting::setup_line_number_mkiv}}
