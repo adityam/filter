@@ -71,6 +71,7 @@
       {\setupwhitespace[\v!none,\v!flexible]}%
   
   \setcatcodetable\externalfilter::minimal_catcodes
+  \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\syntaxhighlighting::namespace\externalfilterparameter\c!space}
 \stopsetups
 

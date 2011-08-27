@@ -64,4 +64,14 @@
     {\popcatcodetable}
 
 
+\ifdefined \activeendoflinetoken \else
+    % from catc-ini.mkiv
+    \bgroup
+        \catcode \tabasciicode       \activecatcode  \gdef\activetabtoken      {^^I}
+                                                     \gdef\outputnewlinechar   {^^J}
+        \catcode \formfeedasciicode  \activecatcode  \gdef\activeformfeedtoken {^^L}
+        \catcode \endoflineasciicode \activecatcode  \gdef\activeendoflinetoken{^^M}
+    \egroup
+\fi
+
 \stopmodule
