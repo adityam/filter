@@ -305,8 +305,7 @@ Standard options
 
 - `before` and `after`: to set the spacing of the environment or enclose the
   output in a frame, etc. 
-- `style` and `color` (these currently only work in MkIV): to set the color and
-  style of the output.
+- `style` and `color`: to set the color and style of the output.
 - `indentnext`: Should the next line be indented?
 - `setups`: specify a list of setups (defined using `\startsetups`). These
   setups may be used to define commands that are needed inside the environment.
@@ -362,6 +361,8 @@ of all options. The current defaults are
 Passing options to filters
 --------------------------
 
+**Note** This option does not work for MkII or for inline snippets
+
 Sometimes it is useful to pass options to a filter. For example, `pandoc`
 converts many different formats to ConTeXt (actually, to many different output
 formats, but that is irrelevant here). Instead of defining a separate
@@ -397,7 +398,6 @@ Thus, the pandoc environment may be defined as
       [filtercommand={pandoc -f \externalfilterparameter{format} -t context 
                        -o \externalfilteroutputfile\space \externalfilterinputfile},
        format=markdown]
-
 
 Macro variant
 -------------
@@ -597,3 +597,6 @@ Version History
     - Added `state=stop` option to skip running external filter.
 - **2011.08.23**
     - Added `bufferbefore` and `bufferafter` options
+- **2011.08.28**
+    - Internal change: Defined own macros for setting attrbutes rather than
+      using built-in ones.
