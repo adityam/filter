@@ -1,15 +1,15 @@
 %D \module
 %D   [     file=t-module-catcodes,
-%D      version=2011.04.02,
+%D      version=2011.08.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Module Catcodes,
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
-%D        email=adityam <at> umich <dot> edu,
+%D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Module Catcodes}
+\writestatus{loading}{ConTeXt User Module / Module Catcodes ver: 2011.08.28}
 
 \startmodule    [module-catcodes]
 % EXPERIMENTAL: Catcode table for internal commands
@@ -63,5 +63,15 @@
 \def\protectmodulecatcodes
     {\popcatcodetable}
 
+
+\ifdefined \activeendoflinetoken \else
+    % from catc-ini.mkiv
+    \bgroup
+        \catcode \tabasciicode       \activecatcode  \gdef\activetabtoken      {^^I}
+                                                     \gdef\outputnewlinechar   {^^J}
+        \catcode \formfeedasciicode  \activecatcode  \gdef\activeformfeedtoken {^^L}
+        \catcode \endoflineasciicode \activecatcode  \gdef\activeendoflinetoken{^^M}
+    \egroup
+\fi
 
 \stopmodule

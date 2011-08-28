@@ -1,15 +1,15 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.08.23,
+%D      version=2011.08.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
-%D        email=adityam <at> umich <dot> edu,
+%D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Filter}
+\writestatus{loading}{ConTeXt User Module / Filter ver: 2011.08.28}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -264,6 +264,20 @@
 \def\externalfilter::get_last_character_aux#1#2%
   {\ifx#2\relax#1\else\@EA\externalfilter::get_last_character_aux\@EA#2\fi}
 
+%D \subsubject {Setting font and color attributes}
+
+
+\starttexdefinition externalfilter::attributes_start #1#2#3
+    % id style color
+    \edef\externalfilter::attributes_style{\getvalue{#1parameter}{#2}}
+    \edef\externalfilter::attributes_color{\getvalue{#1parameter}{#3}}
+
+    \expandafter\startcolor\expandafter[\externalfilter::attributes_color]
+    \expandafter\doconvertfont{\externalfilter::attributes_style}
+\stoptexdefinition
+
+\def\externalfilter::attributes_stop{\stopcolor}
+
 %D \subsubject {Set the name of output directory}
 
 \starttexdefinition externalfilter::set_directory
@@ -347,7 +361,8 @@
                      \externalfilterparameter{\c!buffer\c!after}]
                     [\externalfilter::id]
          \startluacode
-           os.rename("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
+           %% On Windows, os.rename does not overwrite files :(
+           file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
          \stopluacode
      \stopmode
            
@@ -402,11 +417,10 @@
    \externalfilterparameter\c!before
 
    \begingroup
-   \doifmode\s!mkiv
-       {\dosetexternalfilterattributes\c!style\c!color}
-
+   \externalfilter::attributes_start \externalfilter::id \c!style \c!color
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilter::output_file
+   \externalfilter::attributes_stop
    \endgroup
 
    \externalfilterparameter\c!after
