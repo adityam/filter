@@ -1,15 +1,15 @@
 %D \module
 %D   [     file=t-syntax-groups,
-%D      version=2011.08.27,
+%D      version=2011.08.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Syntax highlighting support,
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
-%D        email=adityam <at> umich <dot> edu,
+%D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Syntax Highlighting Support ver: 2011.08.27}
+\writestatus{loading}{ConTeXt User Module / Syntax Highlighting Support ver: 2011.08.28}
 
 % Colors are specified in hex; in MkII the hex mode needs to be activated. 
 \doifmode\s!mkii
@@ -27,6 +27,7 @@
 \def\syntaxgroup::name        {}
 
 \installparameterhandler  \syntaxgroup::namespace \syntaxgroup::id
+\installsetuphandler      \syntaxgroup::namespace \syntaxgroup::id
 
 \def\definesyntaxgroup
     {\dodoubleargument\syntaxgroup::define}
@@ -39,13 +40,13 @@
     \def\syntaxgroup::get_parameters##1%
     {
          \edef\syntaxgroup::name {##1}
-         \getparameters[\syntaxgroup::namespace##1]
-                       [\c!color=,\c!style=,\c!command=,#2]
+         \setupsyntaxgroup[##1]
+                          [\c!color=,\c!style=,\c!command=,#2]
          \doifsomething{\syntaxgroupparameter\c!color}
           {
              \expanded{\definecolor[\syntaxgroup::namespace-##1-color]
                                    [\syntaxgroupparameter\c!color]}
-             \getparameters[\syntaxgroup::namespace##1][\c!color=\syntaxgroup::namespace-##1-color]
+             \setupsyntaxgroup[##1][\c!color=\syntaxgroup::namespace-##1-color]
           }
     }
   }{
@@ -65,7 +66,7 @@
 \starttexdefinition colorscheme::start [#1]
      \pushmacro\colorscheme::name
      \setcolorscheme{#1}
-     \getparameters[\syntaxgroup::namespace][\c!color=,\c!style=,\c!command=]
+     \setupsyntaxgroup[\c!color=,\c!style=,\c!command=]
 \stoptexdefinition
 
 \def\stopcolorscheme
@@ -81,9 +82,9 @@
       \edef\syntaxgroup::name{#1}%
       \syntaxgroupparameter\c!command
       {
-        \dostartattributes{\syntaxgroup::namespace #1}\c!style\c!color
+        \externalfilter::attributes_start\syntaxgroup::id\c!style\c!color
             #2
-        \dostopattributes
+        \externalfilter::attributes_stop
       }
       \endgroup
 \stoptexdefinition

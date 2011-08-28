@@ -1,15 +1,15 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.08.27,
+%D      version=2011.08.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
 %D         date=\currentdate,
 %D    copyright=Aditya Mahajan,
-%D        email=adityam <at> umich <dot> edu,
+%D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{ConTeXt User Module / Code syntax highlighting ver: 2011.08.27}
+\writestatus{loading}{ConTeXt User Module / Code syntax highlighting ver: 2011.08.28}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -63,7 +63,7 @@
   \let\}\textbraceright
 
   \def\tab##1%
-      {\dorecurse{##1}{\space}}%
+      {\dorecurse{##1}{\obeyedspace}}%
   
   \doifmode\s!mkii{\setups{syntaxhighlighting::setup_line_number_mkii}}%
   
@@ -71,6 +71,7 @@
       {\setupwhitespace[\v!none,\v!flexible]}%
   
   \setcatcodetable\externalfilter::minimal_catcodes
+  \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\syntaxhighlighting::namespace\externalfilterparameter\c!space}
 \stopsetups
 
@@ -147,14 +148,7 @@
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting::read_command_aux #1
-    % In the filter module, style=something does not work in MkII. 
-    % So, we explicitly add the global style before reading the file.
-    % 
-    \dostartattributes{\syntaxhighlighting::namespace}\c!style\c!color
-    \dostartattributes{\syntaxhighlighting::namespace\syntaxhighlighting::name}\c!style\c!color
-      \ReadFile{#1}
-    \dostopattributes
-    \dostopattributes
+    \ReadFile{#1}
 \stoptexdefinition
 \stopmode
 
