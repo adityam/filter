@@ -361,7 +361,8 @@
                      \externalfilterparameter{\c!buffer\c!after}]
                     [\externalfilter::id]
          \startluacode
-           os.rename("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
+           -- On Windows, os.rename does not overwrite files :(
+           file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
          \stopluacode
      \stopmode
            
