@@ -88,6 +88,7 @@
 
 \starttexdefinition externalfilter::show_filtercommand
     \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
+    \writestatus\m!externalfilter{state   : \externalfilterparameter\c!state}
 \stoptexdefinition
 
 %D \section {The main user macros}
@@ -383,6 +384,7 @@
 
 \starttexdefinition externalfilter::execute_filter
 
+   \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
    \externalfilter::show_filtercommand
 
    \doifelse{\externalfilterparameter\c!continue}\v!yes

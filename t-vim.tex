@@ -17,11 +17,17 @@
 \usemodule      [syntax-groups]
 \usemodule      [module-catcodes]
 
+\startinterface all
+    \setinterfaceconstant {vimrc}           {vimrc}
+\stopinterface
+
 \unprotectmodulecatcodes
 
 \def\vimtyping::id          {vimtyping}
 \def\vimtyping::namespace   {@@@@\vimtyping::id}
 \def\vimtyping::name        {}
+
+\def\vimrc::id              {vimrc}
 
 \installparameterhandler \vimtyping::namespace \vimtyping::id
 \installsetuphandler     \vimtyping::namespace \vimtyping::id
@@ -43,7 +49,8 @@
   {\def\vimtyping::script_name{kpse:2context.vim}}
 
 \def\vimtyping::filter_command
-  {vim -u NONE % don't read global config file
+  {vim -u \vimrcfilename\space % read global config file
+       --noplugin % dont load plugins
        -e % run in ex mode
        -s % silent
        -C % set compatible
@@ -85,9 +92,11 @@
    % \c!read=\v!yes,
    % \c!readcommand=\syntaxhighlighting::read_command,
    \c!output=\externalfilterbasefile.vimout,
-   % \c!setups=syntaxhighlighting::setup,
+   %\c!setups=syntaxhighlighting::setup,
+   \c!filter\c!setups=vimrc::setup,
    % \c!option=\v!packed, % Could be a list
    \s!parent=\syntaxhighlighting::namespace,
+   \c!vimrc=,
    % % Numbering options
    % \c!numbering=\v!no,
    % \c!number\c!start=1,
@@ -107,6 +116,29 @@
   ]
 
 \def\currentvimtyping  {\vimtyping::name}
+
+\defineexternalfilter
+  [\vimrc::id]
+  [\c!continue=\v!no,
+   \c!read=\v!no,
+   \c!filtercommand=\empty]
+
+\def\vimrcfilename{NONE}
+
+\startsetups vimrc::setup
+  \doifelsenothing{\externalfilterparameter\c!vimrc}
+      {\def\vimrcfilename{NONE}}
+      {\begingroup
+       \expanded{\setupexternalfilter[\vimrc::id][\c!name=\externalfilterparameter\c!vimrc]}
+
+       \edef\externalfilter::name{\vimrc::id}
+       \externalfilter::set_filenames
+      
+       \global\xdef\vimrcfilename{\externalfilter::input_file}
+       \endgroup
+      }
+\stopsetups
+
 
 \startsetups[vim-minor-groups]
     \definesyntaxgroup
