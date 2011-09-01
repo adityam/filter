@@ -33,6 +33,11 @@ else
   let s:lstop = line("$")
 endif
 
+" Set highlight
+if !exists("highlight") 
+  let highlight=[]
+endif
+
 let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
 
 " Find the smallest leading white space
