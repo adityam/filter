@@ -390,6 +390,47 @@ highlighted line will be numbered thrice (with the numbers overprinted on one
 another). This is because, internally, highlighting is implemented using text
 backgrounds and they do not work with line numbering. 
 
+Tuning color schemes
+--------------------
+
+Some vim syntax files have optional features that are turned on or off using
+variables. To enable these optional features, you need to first create a vimrc
+file and then use it.
+
+To create a vimrc file, use
+
+    \startvimrc[name=...]
+    ...
+    \stopvimrc
+
+The `name=...` is necessary. To enable the settings in this vimrc file, use:
+
+     \definevimtyping
+        [...]
+        [...
+         vimrc=...,
+         ...]
+
+The value of `vimrc` key needs to be the same as the value of the `name`
+key in `\startvimrc`. You may set the `vimrc` file for a particular code snippet
+by
+
+    \start<vimtyping>[vimrc=....]
+    ...
+    \stop<vimtyping>
+
+
+To disable loading of vimrc file, use
+
+     \definevimtyping
+        [...]
+        [...
+         vimrc=none,
+         ...]
+    
+
+The default is not to use any vimrc file.
+
 Messages and Tracing
 --------------------
 

@@ -1,0 +1,31 @@
+\usemodule[vim]
+
+\traceexternalfilters
+
+\startvimrc[name=bash]
+let g:is_bash=1
+\stopvimrc
+
+\definevimtyping[SH][syntax=sh]
+\definevimtyping[BASH][syntax=sh, vimrc=bash]
+
+\starttext
+
+\startSH
+  export foo=bar
+\stopSH
+
+\startBASH
+  export foo=bar
+\stopBASH
+
+\startBASH[vimrc=none]
+  export foo=bar
+\stopBASH
+
+\startSH[vimrc=bash]
+  export foo=bar
+\stopSH
+
+\stoptext
+
