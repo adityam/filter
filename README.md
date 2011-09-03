@@ -600,3 +600,5 @@ Version History
 - **2011.08.28**
     - Internal change: Defined own macros for setting attrbutes rather than
       using built-in ones.
+- **2011.09.03**
+    - Added `filtersetups` **TODO** document this feature
