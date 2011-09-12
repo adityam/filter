@@ -111,7 +111,7 @@
     \setvalue {\e!stop#1}{\externalfilter::process_filter}
 
     \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
-    \setvalue{inline#1}{\externalfilter::inline[#1]}
+    \setvalue{inline#1}{\dodoubleargument\externalfilter::inline[#1]}
 
 \stoptexdefinition
 
@@ -155,11 +155,11 @@
     \endgroup
 \stoptexdefinition
    
-\starttexdefinition externalfilter::inline [#1]
+\starttexdefinition externalfilter::inline [#1][#2]
    \edef\externalfilter::name{#1}
 
    \begingroup % to keep assignments local
-   \setupexternalfilter[#1][\c!name=]
+   \setupexternalfilter[#1][\c!name=,#2]
 
    \externalfilter::set_filenames
 
