@@ -31,7 +31,7 @@ the blanks with the appropriate values. And so, the filter module was born.
 Compatibility
 ------------
 
-This module works with both MkII and MkIV
+This module works with both MkII and MkIV.
 
 Installation
 ------------
@@ -505,6 +505,79 @@ Then you can use
 
 to get a chess board.
 
+Dealing with expansion
+----------------------
+
+All the arguments of `filtercommand` must be fully expandable. Sometimes,
+writing an expandable command is tricky.  For example, suppose you want to use
+GNU barcode to draw barcodes. One way to do this is
+
+
+    \defineexternalfilter
+      [barcode]
+      [encoding=code128,
+       output=\externalfilterbasefile.eps,
+       continue=yes,
+       filtercommand=\barcodefiltercommand,
+       readcommand=\barcodereadcommand]
+
+    \def\barcodereadcommand#1%
+      {\externalfigure[#1]}
+
+    \def\barcodefiltercommand
+      {barcode -i \externalfilterinputfile\space -o \externalfilterbasefile.eps\space
+       -E % EPS output
+       -e \externalfilterparameter{encoding}
+
+One of the options that GNU barcode provides is
+
+       -n     ``Numeric'' output: don't print the ASCII form of the code, only
+               the bars.
+
+The ideal way to support this option is to provide a `label=(yes|no)` option,
+and in `\barcodefiltercommand` check the value of
+`\externalfilterparameter{label}`. If this value is `no`, add a `-n` flag. That
+is, redefine `\barcodefiltercommand` as follows:
+
+    \def\barcodefiltercommand
+      {barcode -i \externalfilterinputfile\space -o \externalfilterbasefile.eps\space
+       -E % EPS output
+       -e \externalfilterparameter{encoding}
+       \doif{\externalfilterparameter{label}}{no}{-n} }
+
+This approach does not work. The log says:
+
+    t-filter    > command : barcode -i barcode-temp-barcode-1.tmp -o barcode-temp-barcode-1.eps -E -e code128 \edef {yes}\edef yes{no}
+
+Instead of `-n`, we get `\edef {yes} \edef yes{no}` in the output. This is
+because `\doif` macro is not fully expandable. 
+
+One way to circumvent this limitation is to check for the value of `label`
+outside the `filtercommand`. The filter module provides a `filtersetup` option
+for this. For example, in  the above barcode example, use
+
+    \def\barcodelabeloption{}
+
+    \startsetups barcode:options
+      \doifelse{\externalfilterparameter{label}}{no}
+        {\edef\barcodelabeloption{-n}}
+        {\edef\barcodelabeloption{}}
+    \stopsetups
+
+    \defineexternalfilter
+        [barcode]
+        [....
+         filtersetups={barcode:options},
+         filtercommand=\barcodefiltercommand,
+         ...
+        ]
+
+    \def\barcodefiltercommand
+      {barcode -i \externalfilterinputfile\space -o \externalfilterbasefile.eps\space
+       -E % EPS output
+       -e \externalfilterparameter{encoding}
+       \barcodelabeloption % check for label
+      }
 
 Limitations
 ------------
@@ -601,4 +674,7 @@ Version History
     - Internal change: Defined own macros for setting attrbutes rather than
       using built-in ones.
 - **2011.09.03**
-    - Added `filtersetups` **TODO** document this feature
+    - Added `filtersetups` 
+- **2011.09.14**
+    - `\inline<filter>` now accepts optional arguments.
+    - `before=` and `after=` keys are disabled in `\inline<filter>`
