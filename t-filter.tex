@@ -394,7 +394,7 @@
                {\doifmodeelse{force}
                    {\message{\externalfilterparameter\c!filtercommand}
                     \executesystemcommand
-                      {\externalfilterparameter\c!filtercommand}}
+                      {mtxrun --direct \externalfilterparameter\c!filtercommand}}
                    {\executesystemcommand
                     {mtxrun --ifchanged=\externalfilter::input_file\space 
                         --direct \externalfilterparameter\c!filtercommand}}}}}
