@@ -675,3 +675,6 @@ Version History
       using built-in ones.
 - **2011.09.03**
     - Added `filtersetups` 
+- **2011.09.14**
+    - `\inline<filter>` now accepts optional arguments.
+    - `before=` and `after=` keys are disabled in `\inline<filter>`

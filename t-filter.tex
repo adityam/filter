@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.09.03,
+%D      version=2011.09.14,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.09.03)}
+\writestatus{loading}{Filter (ver: 2011.09.14)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -159,7 +159,7 @@
    \edef\externalfilter::name{#1}
 
    \begingroup % to keep assignments local
-   \setupexternalfilter[#1][\c!name=,#2]
+   \setupexternalfilter[#1][\c!name=,\c!before=,\c!after=,#2]
 
    \externalfilter::set_filenames
 
@@ -362,7 +362,7 @@
                      \externalfilterparameter{\c!buffer\c!after}]
                     [\externalfilter::id]
          \startluacode
-           %% On Windows, os.rename does not overwrite files :(
+           %% -- On Windows, os.rename does not overwrite files :(
            file.copy("\jobname-\externalfilter::id.\f!temporaryextension", "\externalfilter::input_file")
          \stopluacode
      \stopmode
