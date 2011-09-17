@@ -1,0 +1,24 @@
+\usemodule[vim]
+
+\startcolorscheme[pscolor]
+    \definesyntaxgroup
+        [Statement]
+        [color={h=2060a8},
+         after=\postwordbreak]
+\stopcolorscheme
+
+\definevimtyping  [MATLAB]    [syntax=matlab]
+
+\starttext
+
+\startMATLAB
+function [p, mu, sigma, steps] = EMback(data, p, mu, sigma, mult)
+	%% M-step %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	mu    = sum(Pix(:,1:K).*repmat(mult,1,K).*repmat(data,1,K),1)./(Pix_sumc(1:K)+realmin);
+	sigma = sqrt(sum(Pix(:,1:K).*repmat(mult,1,K).*(repmat(data,1,K)-repmat(mu,N,1)).^2,1)./(Pix_sumc(1:K)+realmin));
+	% TODO: optionally freeze theze values
+	p     = Pix_sumc/(Pix_sum+realmin);
+end
+\stopMATLAB
+
+\stoptext
