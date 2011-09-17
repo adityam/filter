@@ -139,6 +139,16 @@
       }
 \stopsetups
 
+\defineframed[vimtodoframed]
+             [
+               \c!location=\v!low,
+               \c!frame=\v!off,
+               \c!background=\v!color,
+               \c!backgroundcolor=vimtodoyellow,
+            ]
+
+\definecolor[vimtodoyellow]
+            [h={E0E090}]
 
 \startsetups[vim-minor-groups]
     \definesyntaxgroup
@@ -215,6 +225,11 @@
         [Underlined]
         [\c!color={h=6a5acd},
          \c!command=\underbar]
+
+    \definesyntaxgroup
+        [Todo]
+        [\c!color={h=800000},
+         \c!command=\vimtodoframed]
 
     \setups{vim-minor-groups}
 
