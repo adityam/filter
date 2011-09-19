@@ -42,14 +42,20 @@ let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
 
 " Find the smallest leading white space
 if exists("strip") && strip && (s:strip != 0)
-  echo "In the loop"
+  echo "Calculating amount of leading whitespace"
   for s:lnum in range(s:lstart, s:lstop)
     let s:line  = getline(s:lnum)
-    let s:space = matchstr(s:line, '^\s*')
-    let s:len   = strlen(s:space)
-    echo s:len
-    let s:strip = min(s:strip, s:len)
+    if (match(s:line, '^\s*$')) == -1 " line is not empty
+      let s:space = matchstr(s:line, '^\s*')
+      let s:len   = strlen(s:space)
+      " echo s:len
+      let s:strip = min([s:strip, s:len])
+      if s:strip == 0
+        break 
+      end
+    end
   endfor
+  " echo "Strip amount:" . s:strip
 else
   let s:strip = 0
 endif
@@ -65,7 +71,7 @@ while s:lnum <= s:lstop
   let s:new  = '' 
 
 " Loop over each character in the line
-  let s:col = 1
+  let s:col = s:strip + 1
   while s:col <= s:len
     let s:startcol = s:col " The start column for processing text
     let s:id       = synID (s:lnum, s:col, 1)
@@ -113,7 +119,7 @@ while s:lnum <= s:lstop
   endwhile
 
 " Remove leading whitespace
-  let s:new = substitute(s:new, '^\s\{' . s:strip . '\}', "", "")
+" let s:new = substitute(s:new, '^\s\{' . s:strip . '\}', "", "")
 
 " Highlight line, if needed.
   if (index(highlight, s:lnum) != -1)
