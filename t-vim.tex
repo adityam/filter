@@ -264,9 +264,11 @@
     \definesyntaxgroup
          [Ignore]
 
-    \definesyntaxgroup 
-        [Todo]      
-        [\c!color={h=800000}]
+    \definesyntaxgroup
+        [Todo]
+        [\c!color={h=800000},
+         \c!command=\vimtodoframed]
+
 
     \definesyntaxgroup 
         [Error] 
@@ -276,11 +278,6 @@
         [Underlined]
         [\c!color={h=6a5acd},
          \c!command=\underbar]
-
-    \definesyntaxgroup
-        [Todo]
-        [\c!color={h=800000},
-         \c!command=\vimtodoframed]
 
     \setups{vim-minor-groups}
 
@@ -331,6 +328,58 @@
         [\c!command=\underbar]
 
     \setups{vim-minor-groups}
+
+\stopcolorscheme
+
+\startcolorscheme[kate]
+    % Temporary definition... will change
+    % . kw dsKeyword
+    % . dt dsDataType
+    % . dv dsDecVal
+    % . bn dsBaseN
+    % . fl dsFloat
+    % . ch dsChar
+    % . st dsString
+    % . co dsComment
+    % . ot dsOthers
+    % . al dsAlert
+    % . fu dsFunction
+    % . re dsRegionMarker
+    % . er dsError
+    \definesyntaxgroup 
+        [kw]  
+        [\c!color={h=007020}, \c!style=bold]
+
+    \definesyntaxgroup 
+        [dt]  
+        [\c!color={h=902000}] 
+
+    \definesyntaxgroup 
+        [dv, bn, fl]  
+        [\c!color={h=40a070}] 
+
+    \definesyntaxgroup 
+        [ch, st]  
+        [\c!color={h=4070a0}] 
+
+    \definesyntaxgroup 
+        [co]  
+        [\c!color={h=60a0b0}, \c!style=italic] 
+
+    \definesyntaxgroup
+        [ot]
+        [\c!color={h=007020}]
+
+    \definesyntaxgroup
+        [al, er]
+        [\c!color=red, \c!style=bold]
+
+    \definesyntaxgroup
+        [fu]
+        [\c!color={h=06287e}]
+
+    \definesyntaxgroup
+        [re]
 
 \stopcolorscheme
 \protectmodulecatcodes
