@@ -2,6 +2,9 @@
 \usemodule[vim]
 
 \definevimtyping  [RUBY]    [syntax=ruby]
+\definevimtyping[C][syntax=c]
+
+\defineexternalfilter[markdown][filter={pandoc -w context -o \externalfilteroutputfile}]
 
 \traceexternalfilters
 
@@ -11,4 +14,7 @@
 
 \inlineRUBY{[1..10].do{|x| puts x}}
 
+bla»\inlineC{void func(void)}«bla
+
+bla»\inlinemarkdown{**bold**}«bla
 \stoptext

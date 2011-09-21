@@ -41,7 +41,58 @@
     \edef\vimtyping::name{#1}
 
     \definesyntaxhighlighting[#1][\s!parent=\vimtyping::namespace#1]
+
+    \setvalue{\e!start raw#1}{\bgroup\obeylines\dodoubleargument\vimtyping::start_raw[#1]}
+    \setvalue{\e!stop  raw#1}{\vimtyping::stop_raw}
+    \setvalue{inlineraw#1}{\dodoubleargument\vimtyping::inline_raw[#1]}
 \stoptexdefinition
+
+\starttexdefinition vimtyping::start_raw [#1][#2]
+    % #1 = filter
+    % #2 = options
+    \egroup %\bgroup in \start#1 
+
+    \edef\vimtyping::name{#1}
+
+    \begingroup % to keep assignments local
+    \setupvimtyping[#1][\c!name=,#2]
+
+    \externalfilterparameter\c!before
+
+    \externalfilter::attributes_start \externalfilter::id \c!style \c!color
+    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
+\stoptexdefinition
+
+\starttexdefinition vimtyping::stop_raw
+
+    \externalfilter::attributes_stop
+    \externalfilterparameter\c!after
+    \endgroup
+
+\stoptexdefinition
+
+\starttexdefinition vimtyping::inline_raw [#1][#2]
+    % #1 = filter
+    % #2 = options
+    
+    \edef\vimtyping::name{#1}
+
+    \begingroup % to keep assignments local
+    \setupvimtyping[#1][\c!name=,\c!before=,\c!after=,#2]
+
+    \externalfilter::attributes_start \externalfilter::id \c!style \c!color
+    % We assume that the setups set minimal_catcodes
+    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
+
+    \vimtyping::inline_raw_aux
+\stoptexdefinition
+
+\starttexdefinition vimtyping::inline_raw_aux #1
+    #1
+    \externalfilter::attributes_stop
+    \endgroup
+\stoptexdefinition
+
 
 % Mode to testing the dev version of 2context script.
 \doifmodeelse{vim-dev}
