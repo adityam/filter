@@ -60,11 +60,14 @@
     \externalfilterparameter\c!before
 
     \externalfilter::attributes_start \externalfilter::id \c!style \c!color
+    \syntaxhighlighting::linenumbering_start
     \processcommacommand[\externalfilterparameter\c!setups]\directsetup
+    \gobbleoneargument % For some reason the next argument is 
 \stoptexdefinition
 
 \starttexdefinition vimtyping::stop_raw
 
+    \syntaxhighlighting::linenumbering_stop
     \externalfilter::attributes_stop
     \externalfilterparameter\c!after
     \endgroup
