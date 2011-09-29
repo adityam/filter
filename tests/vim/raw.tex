@@ -1,0 +1,10 @@
+\usemodule[vim]
+
+\definevimtyping[vimtyping]
+
+\starttext
+\startrawvimtyping
+print \SYN[Special]{"}\SYN[Constant]{Hello }\SYN[Special]{#\{}\SYN[rubyInterpolation]{name}\SYN[Special]{\}}\SYN[Special]{"}
+\stoprawvimtyping
+\inlinerawvimtyping{print \SYN[Special]{"}\SYN[Constant]{Hello% }\SYN[Special]{#\{}\SYN[rubyInterpolation]{name}\SYN[Special]{\}}\SYN[Special]{"}}
+\stoptext
