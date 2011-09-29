@@ -18,6 +18,19 @@
 
 \unprotectmodulecatcodes
 
+%% Temporary bugfix
+
+\startmode[\s!mkii]
+\def\p!doifinsetelse#1#2#3#4%
+  {\donefalse
+   \edef\!!stringa{#3}%
+   \ifx\!!stringa\empty
+   \else
+     \processcommacommand[#4]\p!docheckiteminset
+   \fi
+   \ifdone\expandafter#1\else\expandafter#2\fi}
+\stopmode
+
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax} 
   \setinterfaceconstant {highlight}       {highlight} 
@@ -124,34 +137,34 @@
     \linenumber=\syntaxhighlighting::linenumber}
 \stopsetups
 
-\startmode [\s!mkiv]
 \starttexdefinition syntaxhighlighting::read_command #1
-   \doifinsetelse{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+    \syntaxhighlighting::linenumbering_start
+    \ReadFile{#1}
+    \syntaxhighlighting::linenumbering_stop
+\stoptexdefinition
+
+\startmode [\s!mkiv]
+\starttexdefinition syntaxhighlighting::linenumbering_start
+   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
        {\startlinenumbering
           [\syntaxhighlighting::name]
-          [\c!continue=\externalfilterparameter{\c!number\c!continue}]
-            \ReadFile{#1}
-        \stoplinenumbering}
-       {\ReadFile{#1}}
+          [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
 \stoptexdefinition
 \stopmode
 
 \startmode [\s!mkii]
-\starttexdefinition syntaxhighlighting::read_command #1
-    \doifinsetelse{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
-        {\doifinsetelse{\externalfilterparameter{\c!number\c!continue}}\syntaxhighlighting::yes
+\starttexdefinition syntaxhighlighting::linenumbering_start
+    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+        {\doifelse{\externalfilterparameter{\c!number\c!continue}}\syntaxhighlighting::yes
             {\startlinenumbering[\v!continue]}
-            {\startlinenumbering}
-            \syntaxhighlighting::read_command_aux{#1}
-        \stoplinenumbering}
-        {\syntaxhighlighting::read_command_aux{#1}}
-\stoptexdefinition
-
-\starttexdefinition syntaxhighlighting::read_command_aux #1
-    \ReadFile{#1}
+            {\startlinenumbering}}
 \stoptexdefinition
 \stopmode
 
+\starttexdefinition syntaxhighlighting::linenumbering_stop
+   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+      {\stoplinenumbering}
+\stoptexdefinition
 
 \setupsyntaxhighlighting
   [\c!tab=4,
