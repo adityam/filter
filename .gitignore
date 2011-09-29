@@ -21,4 +21,4 @@ mpgraph.mp
 *.pdf
 
 # Upload files
-t-filter*.zip
+*.zip

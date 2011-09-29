@@ -77,7 +77,7 @@
 \starttexdefinition colorscheme::start [#1]
      \pushmacro\colorscheme::name
      \setcolorscheme{#1}
-     \setupsyntaxgroup[\c!color=,\c!style=,\c!command=]
+     %\setupsyntaxgroup[\c!color=,\c!style=,\c!command=]
 \stoptexdefinition
 
 \def\stopcolorscheme
@@ -89,6 +89,7 @@
 \starttexdefinition syntaxgroup [#1]#2
   % #1 = style
   % #2 = content
+      \syntaxgroupparameter\c!before
       \begingroup
       \edef\syntaxgroup::name{\colorscheme::name#1}%
       \iftracesyntaxgroups
@@ -101,6 +102,7 @@
         \externalfilter::attributes_stop
       }
       \endgroup
+      \syntaxgroupparameter\c!after
 \stoptexdefinition
 
 %D Tracing macros
