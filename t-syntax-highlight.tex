@@ -149,6 +149,13 @@
        {\startlinenumbering
           [\syntaxhighlighting::name]
           [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
+   \dostarttagged\t!sytanxhighlighting\syntaxhighlighting::name
+\stoptexdefinition
+
+\starttexdefinition syntaxhighlighting::linenumbering_stop
+   \dostoptagged
+   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+      {\stoplinenumbering}
 \stoptexdefinition
 \stopmode
 
@@ -159,12 +166,12 @@
             {\startlinenumbering[\v!continue]}
             {\startlinenumbering}}
 \stoptexdefinition
-\stopmode
 
 \starttexdefinition syntaxhighlighting::linenumbering_stop
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
       {\stoplinenumbering}
 \stoptexdefinition
+\stopmode
 
 \setupsyntaxhighlighting
   [\c!tab=4,
