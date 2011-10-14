@@ -18,19 +18,6 @@
 
 \unprotectmodulecatcodes
 
-%% Temporary bugfix
-
-\startmode[\s!mkii]
-\def\p!doifinsetelse#1#2#3#4%
-  {\donefalse
-   \edef\!!stringa{#3}%
-   \ifx\!!stringa\empty
-   \else
-     \processcommacommand[#4]\p!docheckiteminset
-   \fi
-   \ifdone\expandafter#1\else\expandafter#2\fi}
-\stopmode
-
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax} 
   \setinterfaceconstant {highlight}       {highlight} 
@@ -113,7 +100,7 @@
     {\newcount\syntaxhighlighting::linenumber}
 
 \startsetups syntaxhighlighting::setup_line_number_mkii
-\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+\ExpandSecondAfter\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
     {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
      % revert it back.
      \syntaxhighlighting::linenumber=\linenumber
@@ -145,7 +132,7 @@
 
 \startmode [\s!mkiv]
 \starttexdefinition syntaxhighlighting::linenumbering_start
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+   \ExpandSecondAfter\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
        {\startlinenumbering
           [\syntaxhighlighting::name]
           [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
@@ -154,21 +141,21 @@
 
 \starttexdefinition syntaxhighlighting::linenumbering_stop
    \dostoptagged
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+   \ExpandSecondAfter\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
       {\stoplinenumbering}
 \stoptexdefinition
 \stopmode
 
 \startmode [\s!mkii]
 \starttexdefinition syntaxhighlighting::linenumbering_start
-    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+    \ExpandSecondAfter\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
         {\doifelse{\externalfilterparameter{\c!number\c!continue}}\syntaxhighlighting::yes
             {\startlinenumbering[\v!continue]}
             {\startlinenumbering}}
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting::linenumbering_stop
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+   \ExpandSecondAfter\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
       {\stoplinenumbering}
 \stoptexdefinition
 \stopmode
