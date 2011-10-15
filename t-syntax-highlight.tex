@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.09.03,
+%D      version=2011.10.14,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2011.09.03)}
+\writestatus{loading}{Code syntax highlighting (ver: 2011.10.14)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -42,6 +42,8 @@
 \def\syntaxhighlighting::id          {syntaxhighlighting}
 \def\syntaxhighlighting::namespace   {@@@@\syntaxhighlighting::id}
 \def\syntaxhighlighting::name        {}
+
+\edef\t!syntaxhighlighting            {\syntaxhighlighting::id}
 
 \installparameterhandler \syntaxhighlighting::namespace \syntaxhighlighting::id
 \installsetuphandler     \syntaxhighlighting::namespace \syntaxhighlighting::id
@@ -149,7 +151,15 @@
        {\startlinenumbering
           [\syntaxhighlighting::name]
           [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
+   \dostarttagged\t!syntaxhighlighting\colorscheme::name
 \stoptexdefinition
+
+\starttexdefinition syntaxhighlighting::linenumbering_stop
+  \dostoptagged
+   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
+      {\stoplinenumbering}
+\stoptexdefinition
+
 \stopmode
 
 \startmode [\s!mkii]
@@ -159,12 +169,12 @@
             {\startlinenumbering[\v!continue]}
             {\startlinenumbering}}
 \stoptexdefinition
-\stopmode
-
 \starttexdefinition syntaxhighlighting::linenumbering_stop
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting::yes
       {\stoplinenumbering}
 \stoptexdefinition
+
+\stopmode
 
 \setupsyntaxhighlighting
   [\c!tab=4,
