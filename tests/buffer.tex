@@ -1,0 +1,18 @@
+\usemodule[filter]
+\traceexternalfilters
+\defineexternalfilter[markdown][filter={pandoc -t context -o \externalfilteroutputfile}, directory=output]
+
+\starttext
+\startbuffer[test]
+* This is a test
+* Does this work
+\stopbuffer
+
+\processmarkdownbuffer[test]
+
+\footnote{Test
+  \startmarkdown
+    **bold**
+  \stopmarkdown
+  }
+\stoptext
