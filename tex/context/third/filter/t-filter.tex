@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.09.14,
+%D      version=2011.10.22,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.09.14)}
+\writestatus{loading}{Filter (ver: 2011.10.22)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -111,6 +111,7 @@
     \setvalue {\e!stop#1}{\externalfilter::process_filter}
 
     \setvalue{process#1file}{\dodoubleargument\externalfilter::process_file[#1]}
+    \setvalue{process#1buffer}{\dotripleargument\externalfilter::process_buffer[#1]}
     \setvalue{inline#1}{\dodoubleargument\externalfilter::inline[#1]}
 
 \stoptexdefinition
@@ -132,6 +133,9 @@
 \stoptexdefinition
 
 \starttexdefinition externalfilter::process_file [#1][#2]#3
+    % #1 = filter
+    % #2 = options
+    % #3 = filename
     \begingroup
 
     \edef\externalfilter::name{#1}
@@ -153,6 +157,37 @@
     \externalfilter::read_processed_file
 
     \endgroup
+\stoptexdefinition
+
+\starttexdefinition externalfilter::process_buffer [#1][#2][#3]
+    % #1 = filter
+    % #2 = options
+    % #3 = buffer
+    \begingroup
+
+    \edef\externalfilter::name{#1}
+    \ifthirdargument
+      \setupexternalfilter[#1][\c!name=,#2]
+    \fi
+
+    \externalfilter::set_directory
+    
+    \ifthirdargument
+      \edef\externalfilter::temp_file{#3}
+    \else
+      \edef\externalfilter::temp_file{#2}
+    \fi
+      
+    \externalfilter::set_filenames_extras
+    % In MkII, the above function sets the wrong value of
+    % \type{\externalfilter::input_file}. So, we reset that name here.
+    \doifmode\s!mkii
+        {\edef\externalfilter::input_file {\externalfilter::base_file.\f!temporaryextension}}
+
+    \iftraceexternalfilters \externalfilter::show_filenames \fi
+    
+    \externalfilter::process_filter
+      
 \stoptexdefinition
    
 \starttexdefinition externalfilter::inline [#1][#2]
@@ -317,6 +352,13 @@
    \doifsomething{\externalfilterparameter\c!name}
         {\edef\externalfilter::temp_file{\externalfilter::temp_prefix-\externalfilter::name-\externalfilterparameter\c!name}}
 
+
+   \externalfilter::set_filenames_extras
+
+   \iftraceexternalfilters \externalfilter::show_filenames \fi
+\stoptexdefinition
+
+\starttexdefinition externalfilter::set_filenames_extras
    % The following  macros are useful for filter= and filtercommand= options
    % The basename of the external file 
    \edef\externalfilter::base_file  {\jobname-\externalfilter::temp_file}
@@ -337,8 +379,8 @@
 
    % Append directory name to the name of the output file
    \edef\externalfilter::output_file{\externalfilter::get_directory\externalfilterparameter\c!output}
-   \iftraceexternalfilters \externalfilter::show_filenames \fi
 \stoptexdefinition
+
 
 
 %D \subsubject {Process Filter}
