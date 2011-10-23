@@ -14,9 +14,6 @@ agent = Mechanize.new
 login_page = agent.get "http://modules.contextgarden.net/admin/login"
 login_form = login_page.form_with :method => "POST"
 
-# The name of the fields is "user[name]", so we cannot use the 
-# form.field_name function.
-
 username = login_form.field_with :name => "user[name]" 
 password = login_form.field_with :name => "user[password]"
 
@@ -26,24 +23,22 @@ password.value = ask("password: ") { |q| q.echo    = false }
 module_page = login_form.submit()
 
 my_module_page = module_page.link_with(:text => 'my modules').click
-
-module_list = my_module_page.search('//div[@class="content"]/table/tr/td/a')
+module_list    = my_module_page.search('//div[@class="content"]/table/tr/td/a')
 
 say "User modules"
 choose do |menu|
-  menu.prompt = "Choose module to update: "
-  module_list.map do |module_name|
-    menu.choice module_name.content.downcase do
-      say "loading module #{module_name.content.downcase}"
-      module_page = my_module_page.link_with(:text => module_name.content).click
+    menu.prompt = "Choose module to update: "
+    module_list.map do |module_name|
+        menu.choice module_name.attr(:href) do
+            say "loading module #{module_name.content.downcase}"
+            module_page = my_module_page.link_with(:text => module_name.content).click
+        end
     end
-  end
-  menu.first_answer = ARGV[0]
-  menu.select_by = :index_or_name
+    menu.first_answer = ARGV[0]
+    menu.select_by    = :index_or_name
 end
 
-version_page =    module_page.link_with(:text => "add new revison").click
-
+version_page = module_page.link_with(:text => "add new revison").click
 version_form = version_page.form_with :method => "POST"
 
 version  = version_form.field_with       :name => "package[latest_version]" 
@@ -51,10 +46,10 @@ filename = version_form.file_upload_with :name => "package[file]"
 
 version.value       = ask("version") { |q| q.default = version.value }
 filename.file_name  = ask("filename", Pathname) do |q|
-  q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
-  q.responses[:not_valid] = "Please select a zip file"
+    q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
+    q.responses[:not_valid] = "Please select a zip file"
 end
 
-# submission_page = version_form.submit
+submission_page = version_form.submit
 
 puts submission_page.body

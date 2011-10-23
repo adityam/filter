@@ -736,3 +736,5 @@ Version History
 - **2011.09.14**
     - `\inline<filter>` now accepts optional arguments.
     - `before=` and `after=` keys are disabled in `\inline<filter>`
+- **2011.10.22**
+    - Added `\process<filter>buffer`
