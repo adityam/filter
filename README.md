@@ -106,7 +106,7 @@ Using this filter from within ConTeXt is pretty simple:
 Yes, its that easy! The only thing to note is that TeX macros gobble spaces, so
 we have to manually insert a space after `\externalfilteroutputfile`.
 
-This defines three things:
+This defines four things:
 
 1. An environment
 
@@ -130,6 +130,14 @@ This defines three things:
 
    The argument to the macro is a filename, which is processed by `pandoc` and
    the output is included back in ConTeXt.
+
+4. A macro
+    
+        \processmarkdownbuffer[...]
+
+   The argument to the macro is the name of a buffer, which is written to an
+   external file, processesd by `pandoc` and the output included back in
+   ConTeXt.
 
 Dealing with slow filters
 -------------------------
@@ -339,6 +347,12 @@ I can hide the output of a particular R-environment by
     ...
     \stopR
 
+The macros `\processmarkdownfile` and `\processmarkdownbuffer` also accept user
+options. The usage is
+
+    \processmarkdownfile  [.-.=.-.]{filename}
+    \processmarkdownbuffer[...=...][buffer]
+
 
 A setup to control them all
 ---------------------------
@@ -440,6 +454,50 @@ options:
     \process<filter>file[...]{...}
 
 The options in the `[...]` are the same as those for `\defineexternalfilter`.
+
+Processing Existing Buffers
+---------------------------
+
+Like all macros built on top of buffers, the `\start<filter>` ...
+`\stop<filter>` environment does not work well inside the argument of another
+command. The `\process<filter>buffer` macro is handy for such macros.
+
+Suppose you want to write some markdown text in a footnote. Using
+
+    \footnote{ .... 
+       \startmarkdown
+          ...
+       \stopmarkdown}
+
+gives an error message:
+
+    ! File ended while scanning use of \dododowithbuffer.
+
+    system          > tex > error on line 0 in file : File ended while scanning use
+    of \dododowithbuffer ...
+
+    <empty file>
+
+    <inserted text> 
+                    \par 
+
+To avoid this, define a buffer at the outer level 
+
+    \startbuffer[footnote-markdown]
+       ...
+    \stopbuffer
+
+and then use
+
+    \footnote{... \processmarkdownbuffer[footnote-markdown]}
+
+The `\process<filter>buffer` macro also takes an optional argument for setup
+options:
+
+    \process<filter>buffer[...][...]
+
+The options in the first `[...]` are the same as those for `\defineexternalfilter`.
+
 
 Prepend and append text
 -----------------------
@@ -678,3 +736,5 @@ Version History
 - **2011.09.14**
     - `\inline<filter>` now accepts optional arguments.
     - `before=` and `after=` keys are disabled in `\inline<filter>`
+- **2011.10.22**
+    - Added `\process<filter>buffer`

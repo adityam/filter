@@ -1,0 +1,19 @@
+\usemodule[vim]
+
+\setupbackend[export=yes]
+\definevimtyping[java][syntax=java]
+
+\starttext
+\startjava
+  public static void main(String args) {
+          System.out.println("Hello World") ;
+  }
+\stopjava
+
+\startTEX
+  \def\main#1%
+      {%
+      Hello #1
+      }
+\stopTEX
+\stoptext
