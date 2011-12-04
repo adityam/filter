@@ -1,5 +1,9 @@
 \usemodule[filter]
 
+\startmode[mkiv]
+  \setupexternalfilters[continue=yes]
+\stopmode
+
 \defineexternalfilter
   [textile]
   [filtercommand={redcloth \externalfilterinputfile | pandoc -r html -w context -o \externalfilteroutputfile}]
