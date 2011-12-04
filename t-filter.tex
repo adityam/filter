@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.10.22,
+%D      version=2011.12.04,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.10.22)}
+\writestatus{loading}{Filter (ver: 2011.12.04)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -63,6 +63,7 @@
 \setinterfacemessage\m!externalfilter{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
 \setinterfacemessage\m!externalfilter{slash}     {Appending / to directory -- }
 \setinterfacemessage\m!externalfilter{reuse}     {\c!state=\v!stop : Not running filter on file --}
+\setinterfacemessage\m!externalfilter{force}     {mode 'force' enabled: Forcing running of filters}
 
 % For backward compatibility
 \let\setupexternalfilters \setupexternalfilter
@@ -71,7 +72,9 @@
 
 \newif\iftraceexternalfilters
 
-\let\traceexternalfilters\traceexternalfilterstrue
+\def\traceexternalfilters
+    {\traceexternalfilterstrue
+     \doifmode\s!mkiv{\enabletrackers[graphic.runfile]}}
 
 \starttexdefinition externalfilter::show_filenames
     \writestatus\m!externalfilter{current filter : \externalfilter::name}
@@ -424,7 +427,7 @@
 
 %D \subsubject {Execute Filter}   
 
-\starttexdefinition externalfilter::execute_filter
+\starttexdefinition externalfilter::execute_filter_mkii
 
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
    \externalfilter::show_filtercommand
@@ -434,15 +437,41 @@
             {\showmessage\m!externalfilter{reuse}\externalfilter::input_file}
             {\doifmode{*first}
                {\doifmodeelse{force}
-                   {\message{\externalfilterparameter\c!filtercommand}
+                   {\showmessage\m!externalfilter{force}
                     \executesystemcommand
                       {mtxrun --direct \externalfilterparameter\c!filtercommand}}
                    {\executesystemcommand
-                    {mtxrun --ifchanged=\externalfilter::input_file\space 
-                        --direct \externalfilterparameter\c!filtercommand}}}}}
+                            {mtxrun --ifchanged=\externalfilter::input_file\space 
+                                --direct \externalfilterparameter\c!filtercommand}}}}}
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
 \stoptexdefinition
+
+% In MkIV, we use job.files.run to check if a file has changed. This function
+% writes the md5 sum to the tuc file rather than to an external file. So, we
+% must not check for the \type{*first} mode (otherwise the md5 sum is overridden
+% in the next run.
+\starttexdefinition externalfilter::execute_filter_mkiv
+
+   \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
+   \externalfilter::show_filtercommand
+
+   \doifelse{\externalfilterparameter\c!continue}\v!yes
+       {\doifelse{\externalfilterparameter\c!state}\v!stop
+            {\showmessage\m!externalfilter{reuse}\externalfilter::input_file}
+            {\doifmodeelse{force}
+            {\showmessage\m!externalfilter{force}
+                    \executesystemcommand
+                      {\externalfilterparameter\c!filtercommand}}
+                   {\ctxlua{job.files.run(\!!bs\externalfilter::input_file\!!es,
+                                \!!bs\externalfilterparameter\c!filtercommand\!!es)}}}}
+       {\executesystemcommand
+          {\externalfilterparameter\c!filtercommand}}
+\stoptexdefinition
+
+\doifmodeelse\s!mkiv
+    {\let\externalfilter::execute_filter\externalfilter::execute_filter_mkiv}
+    {\let\externalfilter::execute_filter\externalfilter::execute_filter_mkii}
 
 %D \subsubject {Read output}
 

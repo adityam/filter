@@ -4,9 +4,9 @@ The vim module
 This module highlights code snippets using vim as a syntax
 highlighter. Such a task may appear pointless at first glance. After all,
 ConTeXt provides excellent syntax highlighting features for TeX, Metapost, XML,
-and a few other langauges. And in MkIV, you can specify the grammer to parse a
+and a few other languages. And in MkIV, you can specify the grammar to parse a
 language, and get syntax highlighting for a new language. But writing such
-grammers is difficult. More importantly, why reinvent the wheel? Most
+grammars is difficult. More importantly, why reinvent the wheel? Most
 editors, and many other syntax highlighting programs, already syntax highlight
 many programming languages. Why not just leverage these external programs to
 generate syntax highlighting? This module does exactly that.
@@ -200,7 +200,7 @@ The default color scheme is `pscolor`.
 Line numbering
 ---------------
 
-To eanble line numbering for a particular snippet, use:
+To enable line numbering for a particular snippet, use:
 
     \start<vimtyping>[numbering=yes]
       ...
