@@ -753,3 +753,5 @@ Version History
     - `before=` and `after=` keys are disabled in `\inline<filter>`
 - **2011.10.22**
     - Added `\process<filter>buffer`
+- **2011.12.04**
+    - Use `job.files.run` instead of `mtxrun --ifchanged` in MkIV.
