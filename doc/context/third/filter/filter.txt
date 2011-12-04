@@ -640,18 +640,25 @@ for this. For example, in  the above barcode example, use
 Limitations
 ------------
 
-- The option `continue=yes` does not work correctly with filters that have a
+- In MkII, the option `continue=yes` does not work correctly with filters that have a
   pipe `|` in their definition. This is because internally `continue=yes` calls
 
-      mtxrun --ifchanged=filename --direct filtercommand
+          mtxrun --ifchanged=filename --direct filtercommand
 
-  and this produces
+    and this produces
   
-      MTXrun |
-      MTXrun | executing: filtercommand
-      MTXrun |
-      MTXrun |
+          MTXrun |
+          MTXrun | executing: filtercommand
+          MTXrun |
+          MTXrun |
 
+    In MkIV, `continue=yes` calls
+
+          \ctxlua{job.files.run("filename", "filtercommand")}
+
+    so filters with a `|` work correctly.
+
+  
 
 Messages and Tracing
 -------------------
@@ -686,6 +693,14 @@ information add
     \traceexternalfilters
 
 in your tex file. This shows the name of the filters when they are defined.
+In MkIV, `\traceexternalfilters` also enables the trackers for `graphic.run`, so
+when `continue=yes` is used, message like
+
+    graphics        > run > processing file, no changes in '<filename>-temp-<filtername>-<n>.tmp', not processed
+
+are shown.
+
+
 
 
 Version History
@@ -736,3 +751,7 @@ Version History
 - **2011.09.14**
     - `\inline<filter>` now accepts optional arguments.
     - `before=` and `after=` keys are disabled in `\inline<filter>`
+- **2011.10.22**
+    - Added `\process<filter>buffer`
+- **2011.12.04**
+    - Use `job.files.run` instead of `mtxrun --ifchanged` in MkIV.
