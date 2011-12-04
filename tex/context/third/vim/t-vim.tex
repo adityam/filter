@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.09.03,
+%D      version=2011.12.04,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2011.09.03)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.04)}
 
 \startmodule    [vim]
 \usemodule      [filter]
@@ -100,7 +100,9 @@
 % Mode to testing the dev version of 2context script.
 \doifmodeelse{vim-dev}
   {\def\vimtyping::script_name{2context.vim}}
-  {\def\vimtyping::script_name{kpse:2context.vim}}
+  {\doifmode\s!mkiv
+      {\ctxlua{context.setvalue("vimtyping::script_name",resolvers.resolve("full:2context.vim"))}}
+      {\def\vimtyping::script_name{kpse:2context.vim}}}
 
 \def\vimtyping::filter_command
   {vim -u \vimrcfilename\space % read global config file
