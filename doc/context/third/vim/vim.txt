@@ -390,6 +390,37 @@ highlighted line will be numbered thrice (with the numbers overprinted on one
 another). This is because, internally, highlighting is implemented using text
 backgrounds and they do not work with line numbering. 
 
+Using TeX code in Comments
+--------------------------
+
+Sometimes one wants to use TeX code in comments, especially for math. To
+enable this use
+
+    \definevimtyping
+        [...]
+        [...
+         escape=on,
+        ]
+      
+When `escape=on`, the `2context.vim` script passes the `Comment` syntax
+region (as identified by `vim`) verbatim to TeX. So, we may use TeX
+commands inside the comment region and they will be interpretted by TeX.
+For example
+
+    \definevimtyping[C][syntax=c, escape=on]
+
+    \startC
+    /* The following function computers the roots of \m{ax^2+bx+c=0}
+     * using the determinant \m{\Delta=\frac{-b\pm\sqrt{b^2-2ac}}{2a}} 
+     */
+        double root (double a, double b, double c) {....}
+    \stopC
+
+**Note** that only `\ { }` have their usual meaning inside the `Comment`
+region when `escape=on` is set. Thus, to enter a math expression, use
+`\m{...}` instead of `$...$`. Moreover, spaces are active inside the
+math mode, so, as in the above example, avoid spaces in the math expressions.
+
 Tuning color schemes
 --------------------
 
