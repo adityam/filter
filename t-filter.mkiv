@@ -381,7 +381,7 @@
        {\doifelse{\externalfilterparameter\c!state}\v!stop
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
             {\doifmodeelse{force}
-                  {\showmessage\m!externalfilter{force}
+                  {\showmessage\m!externalfilter{force}\empty
                     \executesystemcommand
                       {\externalfilterparameter\c!filtercommand}}
                    {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,

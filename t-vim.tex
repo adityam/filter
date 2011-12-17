@@ -114,6 +114,7 @@
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let contextstopline=\externalfilterparameter\c!stop" %
        -c "let strip=\getvalue{\vimtyping@id-\c!strip-\externalfilterparameter\c!strip}" %
+       -c "let escapecomments=\getvalue{\vimtyping@id-\c!escape-\externalfilterparameter\c!escape}" %
        -c "let highlight=[\externalfilterparameter\c!highlight]" %
        -c "source \vimtyping@script_name" %
        -c "qa" %
@@ -123,9 +124,17 @@
 \setvalue{\vimtyping@id-\c!strip-\v!off}{0}
 \setvalue{\vimtyping@id-\c!strip-\v!on}{1}
 
+\setvalue{\vimtyping@id-\c!escape-\v!off}{0}
+\setvalue{\vimtyping@id-\c!escape-\v!on}{1}
+
+
 % Undocumented ... but useful if the user makes a mistake
 \setvalue{\vimtyping@id-\c!strip-\v!no}{0}
 \setvalue{\vimtyping@id-\c!strip-\v!yes}{1}
+
+\setvalue{\vimtyping@id-\c!escape-\v!no}{0}
+\setvalue{\vimtyping@id-\c!escape-\v!yes}{1}
+
 
 \setupvimtyping
   [% \c!tab=4,
@@ -138,6 +147,7 @@
    % \c!style=\tttf,
    % \c!color=,
    \c!strip=\v!off, 
+   \c!escape=\v!off,
    \c!highlight=,
    \c!highlightcolor=lightgray,
    \c!filtercommand=\vimtyping@filter_command,
