@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-module-catcodes,
-%D      version=2011.09.03,
+%D      version=2011.12.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Module Catcodes,
 %D       author=Aditya Mahajan,
@@ -8,15 +8,18 @@
 %D    copyright=Aditya Mahajan,
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
+%D
+%D  MkII and MkIV use different names and values for commonly used catcode
+%D  tables. So, I define a private copy of the catcode tables that are needed
+%D  by the filter and vim modules.
 
-\writestatus{loading}{Module Catcodes (ver: 2011.09.03)}
+
+\writestatus{loading}{Module Catcodes (ver: 2011.12.17)}
 
 \startmodule    [module-catcodes]
-% EXPERIMENTAL: Catcode table for internal commands
 
-\newcatcodetable \modulecatcodes
-
-\startcatcodetable \modulecatcodes
+\newcatcodetable   \modulecatcodes
+\startcatcodetable \modulecatcodes % same as \prtcatcodes
     \catcode\tabasciicode       \spacecatcode
     \catcode\endoflineasciicode \endoflinecatcode
     \catcode\formfeedasciicode  \endoflinecatcode
@@ -37,24 +40,7 @@
     \catcode`\?                 \lettercatcode
     \catcode\tildeasciicode     \activecatcode
     \catcode\barasciicode       \activecatcode
-    \catcode`\:                 \lettercatcode
 \stopcatcodetable
-
-% IDEA:
-% Instead of using \externalfilter::command we can also define:
-%
-% \startmoduledefinition command #1
-% ...
-% \stopmoduledefinition
-%
-% which will be equivalent to
-%
-% \starttexdefinition externalfilter::command
-% ...
-% \stoptexdefinition
-%
-% and \modulevalue{command} => \getvalue{externalfilter::command}
-
 
 \def\unprotectmodulecatcodes
     {\pushcatcodetable 
@@ -62,6 +48,43 @@
 
 \def\protectmodulecatcodes
     {\popcatcodetable}
+
+\unprotectmodulecatcodes
+
+%D The following catcode tables are used for reading
+%D and writing to files
+
+\newcatcodetable \externalfilter@read_catcodes
+\newcatcodetable \externalfilter@minimal_catcodes
+\newcatcodetable \externalfilter@verb_catcodes
+
+\startcatcodetable \externalfilter@read_catcodes % same as typcatcodesa
+    \catcode\tabasciicode        = \othercatcode
+    \catcode\endoflineasciicode  = \othercatcode
+    \catcode\formfeedasciicode   = \othercatcode
+    \catcode\spaceasciicode      = \othercatcode
+    \catcode\endoffileasciicode  = \othercatcode
+    \catcode\leftbraceasciicode  = \begingroupcatcode
+    \catcode\rightbraceasciicode = \endgroupcatcode
+\stopcatcodetable
+
+\startcatcodetable \externalfilter@minimal_catcodes % for reading t-vim output
+    \catcode\backslashasciicode  = \escapecatcode
+    \catcode\leftbraceasciicode  = \begingroupcatcode  
+    \catcode\rightbraceasciicode = \endgroupcatcode
+    \catcode\endoflineasciicode  = \activecatcode
+    \catcode\formfeedasciicode   = \activecatcode
+    \catcode\spaceasciicode      = \activecatcode
+\stopcatcodetable 
+
+\startcatcodetable \externalfilter@verb_catcodes % same as vrbcatcodes
+    \catcode\tabasciicode       = \othercatcode
+    \catcode\endoflineasciicode = \othercatcode
+    \catcode\formfeedasciicode  = \othercatcode
+    \catcode\spaceasciicode     = \othercatcode
+    \catcode\endoffileasciicode = \othercatcode
+\stopcatcodetable
+
 
 
 \ifdefined \activeendoflinetoken \else
@@ -74,4 +97,5 @@
     \egroup
 \fi
 
+\protectmodulecatcodes
 \stopmodule
