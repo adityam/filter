@@ -44,7 +44,7 @@ standalone, you can install the module using
 Depending on your TeX distribution, you may already have the module.
 To verify, check if
 
-    kpsewhich t-filter.tex
+    kpsewhich t-filter.mkii
 
 returns a meaningful path. If not, you have to manually install the module.
 
@@ -61,7 +61,7 @@ and
 to refresh the TeX file database (for MkII and MkIV, respectively). If
 everything went well
 
-    kpsewhich t-filter
+    kpsewhich t-filter.mkii
 
 will return the path where you stored the file.
 
