@@ -19,7 +19,7 @@
     \setinterfaceconstant {vimrc}           {vimrc}
 \stopinterface
 
-\pushcatcodetable   \setcatcodetable\modulecatcodes
+\unprotectmodulecatcodes
 
 \def\vimtyping@id          {vimtyping}
 \def\vimtyping@namespace   {@@@@\vimtyping@id}
@@ -399,7 +399,7 @@
         [re]
 
 \stopcolorscheme
-\popcatcodetable
+\protectmodulecatcodes
 
 \stopmodule
 
