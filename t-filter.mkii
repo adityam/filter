@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.12.04,
+%D      version=2011.12.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,84 +9,14 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.12.04)}
+\writestatus{loading}{Filter (ver: 2011.12.17)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
-\startmodule    [filter]
+\startmodule [filter]
+\usemodule   [module-catcodes]
 
-%D \subject {Catcode tables}
-%D 
-%D Just to be sure, I define all catcode tables that are needed within the
-%D module. Some of these are repetition of what is defined in ConTeXt, but the
-%D internal names keep on changing which is a  maintenance nightmare and some
-%D catcode tables are defined differently in MkII and MkIV.
-
-\newcatcodetable \modulecatcodes
-
-\startcatcodetable \modulecatcodes % same as \prtcatcodes
-    \catcode\tabasciicode       \spacecatcode
-    \catcode\endoflineasciicode \endoflinecatcode
-    \catcode\formfeedasciicode  \endoflinecatcode
-    \catcode\spaceasciicode     \spacecatcode
-    \catcode\endoffileasciicode \ignorecatcode
-    \catcode\circumflexasciicode\superscriptcatcode
-%   \catcode\underscoreasciicode\subscriptcatcode
-    \catcode\underscoreasciicode\lettercatcode
-    \catcode\ampersandasciicode \alignmentcatcode
-    \catcode\backslashasciicode \escapecatcode
-    \catcode\leftbraceasciicode \begingroupcatcode
-    \catcode\rightbraceasciicode\endgroupcatcode
-    \catcode\dollarasciicode    \mathshiftcatcode
-    \catcode\hashasciicode      \parametercatcode
-    \catcode\commentasciicode   \commentcatcode
-    \catcode`\@                 \lettercatcode
-    \catcode`\!                 \lettercatcode
-    \catcode`\?                 \lettercatcode
-    \catcode\tildeasciicode     \activecatcode
-    \catcode\barasciicode       \activecatcode
-\stopcatcodetable
-
-%D In MkII, \type{\unprotect} does not change the meaning of \type{_}.
-%D So, I explicitly set the catcode table to be the same as the
-%D \type{\prtcatcodes} in MkIV.
-
-\pushcatcodetable   \setcatcodetable\modulecatcodes
-
-%D The following catcode tables are used for reading
-%D and writing to files
-
-\newcatcodetable \externalfilter@read_catcodes
-\newcatcodetable \externalfilter@minimal_catcodes
-\newcatcodetable \externalfilter@verb_catcodes
-
-\startcatcodetable \externalfilter@read_catcodes % same as typcatcodesa
-    \catcode\tabasciicode        = \othercatcode
-    \catcode\endoflineasciicode  = \othercatcode
-    \catcode\formfeedasciicode   = \othercatcode
-    \catcode\spaceasciicode      = \othercatcode
-    \catcode\endoffileasciicode  = \othercatcode
-    \catcode\leftbraceasciicode  = \begingroupcatcode
-    \catcode\rightbraceasciicode = \endgroupcatcode
-\stopcatcodetable
-
-\startcatcodetable \externalfilter@minimal_catcodes % for reading t-vim output
-    \catcode\backslashasciicode  = \escapecatcode
-    \catcode\leftbraceasciicode  = \begingroupcatcode  
-    \catcode\rightbraceasciicode = \endgroupcatcode
-    \catcode\endoflineasciicode  = \activecatcode
-    \catcode\formfeedasciicode   = \activecatcode
-    \catcode\spaceasciicode      = \activecatcode
-\stopcatcodetable 
-
-\startcatcodetable \externalfilter@verb_catcodes % same as vrbcatcodes
-    \catcode\tabasciicode       = \othercatcode
-    \catcode\endoflineasciicode = \othercatcode
-    \catcode\formfeedasciicode  = \othercatcode
-    \catcode\spaceasciicode     = \othercatcode
-    \catcode\endoffileasciicode = \othercatcode
-\stopcatcodetable
-
+\unprotectmodulecatcodes
 
 %D \subject {Interface}
 %D
@@ -123,9 +53,6 @@
 % For backward compatibility
 \let\setupexternalfilters \setupexternalfilter
 
-\doifmode\s!mkiv
-    {\installattributehandler \externalfilter@namespace \externalfilter@id}
-
 %D \subject {Messages}
 
 \def\m!externalfilter{t-filter}
@@ -144,8 +71,7 @@
 \newif\iftraceexternalfilters
 
 \def\traceexternalfilters
-    {\traceexternalfilterstrue
-     \doifmode\s!mkiv{\enabletrackers[graphic.runfile]}}
+    {\traceexternalfilterstrue}
 
 \starttexdefinition externalfilter@show_filenames
     \writestatus\m!externalfilter{current filter : \externalfilter@name}
@@ -255,8 +181,7 @@
     \externalfilter@set_filenames_extras
     % In MkII, the above function sets the wrong value of
     % \type{\externalfilter@input_file}. So, we reset that name here.
-    \doifmode\s!mkii
-        {\edef\externalfilter@input_file {\externalfilter@base_file.\f!temporaryextension}}
+    \edef\externalfilter@input_file {\externalfilter@base_file.\f!temporaryextension}
 
     \iftraceexternalfilters \externalfilter@show_filenames \fi
     
@@ -405,8 +330,7 @@
    %        \def\TEXbufferfile   #1{\bufferprefix#1.\f!temporaryextension}
    %
    % We redefine bufferprefix to include the directory name.
-   \doifmode{\s!mkii}
-        {\edef\bufferprefix{\externalfilter@get_directory\jobname-}}
+   \edef\bufferprefix{\externalfilter@get_directory\jobname-}
 
    % In MkIV, we do not need to do such jugglary, because we can specify the
    % name of the file where the buffer has to be saved. This file is
@@ -424,28 +348,6 @@
 %D Execute filter, read the output and do book-keeping if needed.
 
 \starttexdefinition externalfilter@process_filter
-     % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     % To imitate the behavior of MkII, we need 
-     %
-     %      \doifmode\s!mkiv{\savebuffer[\externalfilter@buffer_name][\externalfilter@input_file]}
-     %
-     % However, in MkIV, we can save a list of buffers to a file. The empty
-     % elements of the list are ignored. So, instead we use the following
-     %\doifmode\s!mkiv
-         %{\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter@buffer_name,\externalfilterparameter{\c!buffer\c!after}]
-         %            [\externalfilter@input_file]}
-     \startmode[\s!mkiv]
-         \savebuffer[\externalfilterparameter{\c!buffer\c!before},
-                     \externalfilter@buffer_name,
-                     \externalfilterparameter{\c!buffer\c!after}]
-                    [\externalfilter@id]
-         \startluacode
-           %% -- On Windows, os.rename does not overwrite files :(
-           file.copy("\jobname-\externalfilter@id.\f!temporaryextension", "\externalfilter@input_file")
-         \stopluacode
-     \stopmode
-           
-
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
      \endgroup 
@@ -460,7 +362,7 @@
 
 %D \subsubject {Execute Filter}   
 
-\starttexdefinition externalfilter@execute_filter_mkii
+\starttexdefinition externalfilter@execute_filter
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
    \externalfilter@show_filtercommand
 
@@ -478,32 +380,6 @@
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
 \stoptexdefinition
-
-% In MkIV, we use job.files.run to check if a file has changed. This function
-% writes the md5 sum to the tuc file rather than to an external file. So, we
-% must not check for the \type{*first} mode (otherwise the md5 sum is overridden
-% in the next run.
-\starttexdefinition externalfilter@execute_filter_mkiv
-
-   \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
-   \externalfilter@show_filtercommand
-
-   \doifelse{\externalfilterparameter\c!continue}\v!yes
-       {\doifelse{\externalfilterparameter\c!state}\v!stop
-            {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
-            {\doifmodeelse{force}
-            {\showmessage\m!externalfilter{force}
-                    \executesystemcommand
-                      {\externalfilterparameter\c!filtercommand}}
-                   {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,
-                                \!!bs\externalfilterparameter\c!filtercommand\!!es)}}}}
-       {\executesystemcommand
-          {\externalfilterparameter\c!filtercommand}}
-\stoptexdefinition
-
-\doifmodeelse\s!mkiv
-    {\let\externalfilter@execute_filter\externalfilter@execute_filter_mkiv}
-    {\let\externalfilter@execute_filter\externalfilter@execute_filter_mkii}
 
 %D \subsubject {Read output}
 
@@ -565,5 +441,5 @@
 \def\externalfilter@input_file {}
 \def\externalfilter@output_file{}
    
-\popcatcodetable
+\protectmodulecatcodes
 \stopmodule
