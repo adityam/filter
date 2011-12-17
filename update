@@ -48,7 +48,7 @@ version.value       = ask("version") { |q| q.default = version.value }
 filename.file_name  = ask("filename", Pathname) do |q|
     q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
     q.responses[:not_valid] = "Please select a zip file"
-end
+end.to_s
 
 submission_page = version_form.submit
 
