@@ -17,19 +17,6 @@
 
 \unprotectmodulecatcodes
 
-%% Temporary bugfix
-
-\startmode[\s!mkii]
-\def\p!doifinsetelse#1#2#3#4%
-  {\donefalse
-   \edef\!!stringa{#3}%
-   \ifx\!!stringa\empty
-   \else
-     \processcommacommand[#4]\p!docheckiteminset
-   \fi
-   \ifdone\expandafter#1\else\expandafter#2\fi}
-\stopmode
-
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax} 
   \setinterfaceconstant {highlight}       {highlight} 
@@ -58,9 +45,10 @@
     \setupsyntaxhighlighting[#1][\s!parent=\syntaxhighlighting@namespace,#2]
 
     \edef\syntaxhighlighting@name{#1}
-    \doifmode\s!mkiv{\setups{syntaxhighlighting@setup_line_number_mkiv}}
-
     \defineexternalfilter[#1][\s!parent=\syntaxhighlighting@namespace#1]
+
+    \setups{syntaxhighlighting@setup_line_number_mkiv}
+
     \setvalue{type#1file}{\getvalue{process#1file}}
 
 \stoptexdefinition
@@ -76,10 +64,10 @@
   \let\{\textbraceleft
   \let\}\textbraceright
 
+  \setupbar[syntaxhighlightline][color=\externalfilterparameter\c!highlightcolor]
+
   \def\tab##1%
       {\dorecurse{##1}{\obeyedspace}}%
-  
-  \doifmode\s!mkii{\setups{syntaxhighlighting@setup_line_number_mkii}}%
   
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
@@ -90,10 +78,10 @@
 \stopsetups
 
 \startsetups syntaxhighlighting@setup_line_number_mkiv
- \definelinenumbering [#1]
+\definelinenumbering [#1]
 
- \setuplinenumbering
-   [\syntaxhighlighting@name]
+\setuplinenumbering
+   [#1]
    [\c!conversion=\externalfilterparameter\c!numberconversion,
         \c!start=\externalfilterparameter{\c!number\c!start},
          \c!step=\externalfilterparameter{\c!number\c!step},
@@ -110,41 +98,12 @@
    ]
 \stopsetups
 
-\doifmode\s!mkii
-    {\newcount\syntaxhighlighting@linenumber}
-
-\startsetups syntaxhighlighting@setup_line_number_mkii
-\doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
-    {% setuplinenumbering resets \linenumber. So we save the value of linenumber and
-     % revert it back.
-     \syntaxhighlighting@linenumber=\linenumber
-
-     \setuplinenumbering
-       [\c!conversion=\externalfilterparameter\c!numberconversion,
-            \c!start=\externalfilterparameter{\c!number\c!start},
-             \c!step=\externalfilterparameter{\c!number\c!step},
-            \c!method=\externalfilterparameter{\c!number\c!method},
-          \c!location=\externalfilterparameter{\c!number\c!location},
-             \c!style=\externalfilterparameter\c!numberstyle,
-             \c!color=\externalfilterparameter\c!numbercolor,
-             \c!width=\externalfilterparameter{\c!number\c!width},
-              \c!left=\externalfilterparameter{\c!number\c!left},
-             \c!right=\externalfilterparameter{\c!number\c!right},
-           \c!command=\externalfilterparameter\c!numbercommand,
-          \c!distance=\externalfilterparameter{\c!number\c!distance},
-             \c!align=\externalfilterparameter{\c!number\c!align},
-       ]
-
-    \linenumber=\syntaxhighlighting@linenumber}
-\stopsetups
-
 \starttexdefinition syntaxhighlighting@read_command #1
     \syntaxhighlighting@linenumbering_start
     \ReadFile{#1}
     \syntaxhighlighting@linenumbering_stop
 \stoptexdefinition
 
-\startmode [\s!mkiv]
 \starttexdefinition syntaxhighlighting@linenumbering_start
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
        {\startlinenumbering
@@ -159,21 +118,6 @@
       {\stoplinenumbering}
 \stoptexdefinition
 
-\stopmode
-
-\startmode [\s!mkii]
-\starttexdefinition syntaxhighlighting@linenumbering_start
-    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
-        {\doifelse{\externalfilterparameter{\c!number\c!continue}}\syntaxhighlighting@yes
-            {\startlinenumbering[\v!continue]}
-            {\startlinenumbering}}
-\stoptexdefinition
-\starttexdefinition syntaxhighlighting@linenumbering_stop
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
-      {\stoplinenumbering}
-\stoptexdefinition
-
-\stopmode
 
 \setupsyntaxhighlighting
   [\c!tab=4,
@@ -248,27 +192,15 @@
   {\activatespacehandler {\syntaxhighlighting@namespace\v!off}}
 
 % Line highlighting
-% For MkIV, we can use the new bar mechanism to highlight a line. 
-% For consistency, we use text background, which is slower but works for both
-% MkII and MkIV.
 
-% \startmode[*mkiv]
-% \definebar[syntaxhighlightline]
-%           [\c!order=\v!background,
-%    \c!rulethickness=2.5,
-%           \c!offset=1.25,
-%         \c!continue=\v!yes,
-%            \c!color=\externalfilterparameter\c!highlightcolor,
-%           ]
-% \stopmode
-
-\definetextbackground[syntaxhighlightline] 
-                     [\c!location=\v!paragraph,
-                   \c!alternative=0,
-                         \c!frame=\v!off,
-                    \c!background=\v!color,
-               \c!backgroundcolor=\externalfilterparameter\c!highlightcolor,
-                     ]
+\definebar[syntaxhighlightline]
+          [\c!order=\v!background,
+   \c!rulethickness=2.5,
+           \c!method=0,
+          \c!offset=1.375,
+        \c!continue=\v!yes,
+           \c!color=\externalfilterparameter\c!highlightcolor,
+          ]
 
 
 \protectmodulecatcodes

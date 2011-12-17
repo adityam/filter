@@ -265,7 +265,7 @@
 
 \starttexdefinition externalfilter@attributes_start #1#2#3
     % id style color
-    \useexternalfilterstyleandcolor{#2}{#3}
+    \getvalue{use#1styleandcolor}{#2}{#3}
 \stoptexdefinition
 
 \def\externalfilter@attributes_stop{}
@@ -338,14 +338,12 @@
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
      % To imitate the behavior of MkII, we need 
      %
-     %      \doifmode\s!mkiv{\savebuffer[\externalfilter@buffer_name][\externalfilter@input_file]}
+     %      \savebuffer[\externalfilter@buffer_name][\externalfilter@input_file]
      %
      % However, in MkIV, we can save a list of buffers to a file. The empty
      % elements of the list are ignored. So, instead we use the following
-     %\doifmode\s!mkiv
-         %{\savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter@buffer_name,\externalfilterparameter{\c!buffer\c!after}]
-         %            [\externalfilter@input_file]}
-     \startmode[\s!mkiv]
+     %    \savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter@buffer_name,\externalfilterparameter{\c!buffer\c!after}]
+     %               [\externalfilter@input_file]}
          \savebuffer[\externalfilterparameter{\c!buffer\c!before},
                      \externalfilter@buffer_name,
                      \externalfilterparameter{\c!buffer\c!after}]
@@ -354,7 +352,6 @@
            %% -- On Windows, os.rename does not overwrite files :(
            file.copy("\jobname-\externalfilter@id.\f!temporaryextension", "\externalfilter@input_file")
          \stopluacode
-     \stopmode
            
 
      \externalfilter@execute_filter
@@ -384,7 +381,7 @@
        {\doifelse{\externalfilterparameter\c!state}\v!stop
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
             {\doifmodeelse{force}
-            {\showmessage\m!externalfilter{force}
+                  {\showmessage\m!externalfilter{force}
                     \executesystemcommand
                       {\externalfilterparameter\c!filtercommand}}
                    {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,
