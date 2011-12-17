@@ -29,7 +29,7 @@ say "User modules"
 choose do |menu|
     menu.prompt = "Choose module to update: "
     module_list.map do |module_name|
-        menu.choice module_name.attr(:href) do
+        menu.choice module_name.attr(:href)[1..-1] do
             say "loading module #{module_name.content.downcase}"
             module_page = my_module_page.link_with(:text => module_name.content).click
         end
@@ -44,8 +44,8 @@ version_form = version_page.form_with :method => "POST"
 version  = version_form.field_with       :name => "package[latest_version]" 
 filename = version_form.file_upload_with :name => "package[file]"
 
-version.value       = ask("version") { |q| q.default = version.value }
-filename.file_name  = ask("filename", Pathname) do |q|
+version.value       = ask("version: ") { |q| q.default = version.value }
+filename.file_name  = ask("filename: ", Pathname) do |q|
     q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
     q.responses[:not_valid] = "Please select a zip file"
 end.to_s
