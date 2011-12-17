@@ -38,6 +38,11 @@ if !exists("highlight")
   let highlight=[]
 endif
 
+" Set escapecomments
+if !exsists("escapecomments")
+  let escapecomments=0
+endif
+
 let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
 
 " Find the smallest leading white space
@@ -92,7 +97,9 @@ while s:lnum <= s:lstop
 " we don't need to print in in that case
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
-      let s:temp = escape( s:temp, '\{}')
+      if !(escapecomments && s:id_name == "Comment")
+        let s:temp = escape( s:temp, '\{}')
+      endif
       if !empty(s:id_name)
         let s:temp = '\SYN[' . s:id_name . ']{' . s:temp .  '}'
       endif

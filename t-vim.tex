@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.12.04,
+%D      version=2011.12.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,102 +9,99 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.04)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.17)}
 
-\startmodule    [vim]
-\usemodule      [filter]
-\usemodule      [syntax-highlight]  
-\usemodule      [syntax-groups]
-\usemodule      [module-catcodes]
+\startmodule [vim]
+\usemodule   [filter]           % loads module catcodes
+\usemodule   [syntax-highlight] % loads syntax-groups and filter module
 
 \startinterface all
     \setinterfaceconstant {vimrc}           {vimrc}
 \stopinterface
 
-\unprotectmodulecatcodes
+\pushcatcodetable   \setcatcodetable\modulecatcodes
 
-\def\vimtyping::id          {vimtyping}
-\def\vimtyping::namespace   {@@@@\vimtyping::id}
-\def\vimtyping::name        {}
+\def\vimtyping@id          {vimtyping}
+\def\vimtyping@namespace   {@@@@\vimtyping@id}
+\def\vimtyping@name        {}
 
-\def\vimrc::id              {vimrc}
+\def\vimrc@id              {vimrc}
 
-\installparameterhandler \vimtyping::namespace \vimtyping::id
-\installsetuphandler     \vimtyping::namespace \vimtyping::id
+\installparameterhandler \vimtyping@namespace \vimtyping@id
+\installsetuphandler     \vimtyping@namespace \vimtyping@id
 
 \def\definevimtyping
-  {\dodoubleargument\vimtyping::define}
+  {\dodoubleargument\vimtyping@define}
 
-\starttexdefinition vimtyping::define [#1][#2]
-    \setupvimtyping[#1][\s!parent=\vimtyping::namespace,#2]
+\starttexdefinition vimtyping@define [#1][#2]
+    \setupvimtyping[#1][\s!parent=\vimtyping@namespace,#2]
 
-    \edef\vimtyping::name{#1}
+    \edef\vimtyping@name{#1}
 
-    \definesyntaxhighlighting[#1][\s!parent=\vimtyping::namespace#1]
+    \definesyntaxhighlighting[#1][\s!parent=\vimtyping@namespace#1]
 
-    \setvalue{\e!start raw#1}{\bgroup\obeylines\dodoubleargument\vimtyping::start_raw[#1]}
-    \setvalue{\e!stop  raw#1}{\vimtyping::stop_raw}
-    \setvalue{inlineraw#1}{\dodoubleargument\vimtyping::inline_raw[#1]}
+    \setvalue{\e!start raw#1}{\bgroup\obeylines\dodoubleargument\vimtyping@start_raw[#1]}
+    \setvalue{\e!stop  raw#1}{\vimtyping@stop_raw}
+    \setvalue{inlineraw#1}{\dodoubleargument\vimtyping@inline_raw[#1]}
 \stoptexdefinition
 
-\starttexdefinition vimtyping::start_raw [#1][#2]
+\starttexdefinition vimtyping@start_raw [#1][#2]
     % #1 = filter
     % #2 = options
     \egroup %\bgroup in \start#1 
 
-    \edef\vimtyping::name{#1}
+    \edef\vimtyping@name{#1}
 
     \begingroup % to keep assignments local
     \setupvimtyping[#1][\c!name=,#2]
 
     \externalfilterparameter\c!before
 
-    \externalfilter::attributes_start \externalfilter::id \c!style \c!color
-    \syntaxhighlighting::linenumbering_start
+    \externalfilter@attributes_start \externalfilter@id \c!style \c!color
+    \syntaxhighlighting@linenumbering_start
     \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-    \gobbleoneargument % For some reason the next argument is 
+    \gobbleoneargument % For some reason the next argument is 
 \stoptexdefinition
 
-\starttexdefinition vimtyping::stop_raw
+\starttexdefinition vimtyping@stop_raw
 
-    \syntaxhighlighting::linenumbering_stop
-    \externalfilter::attributes_stop
+    \syntaxhighlighting@linenumbering_stop
+    \externalfilter@attributes_stop
     \externalfilterparameter\c!after
     \endgroup
 
 \stoptexdefinition
 
-\starttexdefinition vimtyping::inline_raw [#1][#2]
+\starttexdefinition vimtyping@inline_raw [#1][#2]
     % #1 = filter
     % #2 = options
     
-    \edef\vimtyping::name{#1}
+    \edef\vimtyping@name{#1}
 
     \begingroup % to keep assignments local
     \setupvimtyping[#1][\c!name=,\c!before=,\c!after=,#2]
 
-    \externalfilter::attributes_start \externalfilter::id \c!style \c!color
+    \externalfilter@attributes_start \externalfilter@id \c!style \c!color
     % We assume that the setups set minimal_catcodes
     \processcommacommand[\externalfilterparameter\c!setups]\directsetup
 
-    \vimtyping::inline_raw_aux
+    \vimtyping@inline_raw_indeed
 \stoptexdefinition
 
-\starttexdefinition vimtyping::inline_raw_aux #1
+\starttexdefinition vimtyping@inline_raw_indeed #1
     #1
-    \externalfilter::attributes_stop
+    \externalfilter@attributes_stop
     \endgroup
 \stoptexdefinition
 
-
 % Mode to testing the dev version of 2context script.
 \doifmodeelse{vim-dev}
-  {\def\vimtyping::script_name{2context.vim}}
-  {\doifmode\s!mkiv
-      {\ctxlua{context.setvalue("vimtyping::script_name",resolvers.resolve("full:2context.vim"))}}
-      {\def\vimtyping::script_name{kpse:2context.vim}}}
+  {\def\vimtyping@script_name{2context.vim}}
+  {\doifmodeelse\s!mkiv
+      {\ctxlua{context.setvalue("vimtyping@script_name",resolvers.resolve("full:2context.vim"))}}
+      {\def\vimtyping@script_name{kpse:2context.vim}}}
 
-\def\vimtyping::filter_command
+\def\vimtyping@filter_command
   {vim -u \vimrcfilename\space % read global config file
        --noplugin % dont load plugins
        -e % run in ex mode
@@ -116,19 +113,28 @@
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let contextstopline=\externalfilterparameter\c!stop" %
-       -c "let strip=\getvalue{\vimtyping::id-\c!strip-\externalfilterparameter\c!strip}" %
+       -c "let strip=\getvalue{\vimtyping@id-\c!strip-\externalfilterparameter\c!strip}" %
+       -c "let escapecomments=\getvalue{\vimtyping@id-\c!escape-\externalfilterparameter\c!escape}" %
        -c "let highlight=[\externalfilterparameter\c!highlight]" %
-       -c "source \vimtyping::script_name" %
+       -c "source \vimtyping@script_name" %
        -c "qa" %
        \externalfilterinputfile\space
        \externalfilteroutputfile}
 
-\setvalue{\vimtyping::id-\c!strip-\v!off}{0}
-\setvalue{\vimtyping::id-\c!strip-\v!on}{1}
+\setvalue{\vimtyping@id-\c!strip-\v!off}{0}
+\setvalue{\vimtyping@id-\c!strip-\v!on}{1}
+
+\setvalue{\vimtyping@id-\c!escape-\v!off}{0}
+\setvalue{\vimtyping@id-\c!escape-\v!on}{1}
+
 
 % Undocumented ... but useful if the user makes a mistake
-\setvalue{\vimtyping::id-\c!strip-\v!no}{0}
-\setvalue{\vimtyping::id-\c!strip-\v!yes}{1}
+\setvalue{\vimtyping@id-\c!strip-\v!no}{0}
+\setvalue{\vimtyping@id-\c!strip-\v!yes}{1}
+
+\setvalue{\vimtyping@id-\c!escape-\v!no}{0}
+\setvalue{\vimtyping@id-\c!escape-\v!yes}{1}
+
 
 \setupvimtyping
   [% \c!tab=4,
@@ -141,17 +147,18 @@
    % \c!style=\tttf,
    % \c!color=,
    \c!strip=\v!off, 
+   \c!escape=\v!off,
    \c!highlight=,
    \c!highlightcolor=lightgray,
-   \c!filtercommand=\vimtyping::filter_command,
+   \c!filtercommand=\vimtyping@filter_command,
    % \c!continue=yes,
    % \c!read=\v!yes,
-   % \c!readcommand=\syntaxhighlighting::read_command,
+   % \c!readcommand=\syntaxhighlighting@read_command,
    \c!output=\externalfilterbasefile.vimout,
-   %\c!setups=syntaxhighlighting::setup,
-   \c!filter\c!setups=vimrc::setup,
+   %\c!setups=syntaxhighlighting@setup,
+   \c!filter\c!setups=vimrc@setup,
    % \c!option=\v!packed, % Could be a list
-   \s!parent=\syntaxhighlighting::namespace,
+   \s!parent=\syntaxhighlighting@namespace,
    \c!vimrc=,
    % % Numbering options
    % \c!numbering=\v!no,
@@ -171,26 +178,26 @@
    % \c!number\c!align=\v!flushright,
   ]
 
-\def\currentvimtyping  {\vimtyping::name}
+\def\currentvimtyping  {\vimtyping@name}
 
 \defineexternalfilter
-  [\vimrc::id]
+  [\vimrc@id]
   [\c!continue=\v!no,
    \c!read=\v!no,
    \c!filtercommand=\empty]
 
 \def\vimrcfilename{NONE}
 
-\startsetups vimrc::setup
+\startsetups vimrc@setup
   \doifelsenothing{\externalfilterparameter\c!vimrc}
       {\def\vimrcfilename{NONE}}
       {\begingroup
-       \expanded{\setupexternalfilter[\vimrc::id][\c!name=\externalfilterparameter\c!vimrc]}
+       \expanded{\setupexternalfilter[\vimrc@id][\c!name=\externalfilterparameter\c!vimrc]}
 
-       \edef\externalfilter::name{\vimrc::id}
-       \externalfilter::set_filenames
+       \edef\externalfilter@name{\vimrc@id}
+       \externalfilter@set_filenames
       
-       \global\xdef\vimrcfilename{\externalfilter::input_file}
+       \global\xdef\vimrcfilename{\externalfilter@input_file}
        \endgroup
       }
 \stopsetups
@@ -392,7 +399,7 @@
         [re]
 
 \stopcolorscheme
-\protectmodulecatcodes
+\popcatcodetable
 
 \stopmodule
 

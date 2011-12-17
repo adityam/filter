@@ -1,0 +1,21 @@
+\usemodule[vim]
+
+\definevimtyping[C][syntax=c, escape=on]
+
+\starttext
+\startC
+/* The following function computers the roots of \m{ax^2+bx+c=0}
+ * using the determinant \m{\Delta=(-b\pm\sqrt{b^2-2ac})/2a}
+ */
+    double root (double a, double b, double c) {....}
+\stopC
+
+\definevimtyping[python][syntax=python, escape=on]
+
+\startpython
+# Returns \m{\sum_{i=1}^{n}i}
+def sum_upto(n)
+    r = range(1, n+1)
+    return sum(r)
+\stoppython
+\stoptext

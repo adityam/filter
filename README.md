@@ -755,3 +755,5 @@ Version History
     - Added `\process<filter>buffer`
 - **2011.12.04**
     - Use `job.files.run` instead of `mtxrun --ifchanged` in MkIV.
+- **2011.12.17**
+    - Split into `.mkii` and `.mkiv` versions
