@@ -139,6 +139,9 @@ This defines four things:
    external file, processesd by `pandoc` and the output included back in
    ConTeXt.
 
+The [wiki](https://github.com/adityam/filter/wiki) page on Github gives the
+setup for common usecases (pandoc, R, etc.)
+
 Dealing with slow filters
 -------------------------
 
