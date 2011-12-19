@@ -114,30 +114,30 @@ This defines four things:
           ...
         \stopmarkdown
 
-   The contents of the environment are processed by `pandoc` and the output is
-   included back in ConTeXt.
+     The contents of the environment are processed by `pandoc` and the output is
+     included back in ConTeXt.
 
 2. A macro
 
         \inlinemarkdown{...}
 
-   The argument of the macro is processed by `pandoc` and the output is included
-   back in ConTeXt.
+     The argument of the macro is processed by `pandoc` and the output is included
+     back in ConTeXt.
 
 3. A macro
 
         \processmarkdownfile{...}
 
-   The argument to the macro is a filename, which is processed by `pandoc` and
-   the output is included back in ConTeXt.
+     The argument to the macro is a filename, which is processed by `pandoc` and
+     the output is included back in ConTeXt.
 
 4. A macro
     
         \processmarkdownbuffer[...]
 
-   The argument to the macro is the name of a buffer, which is written to an
-   external file, processesd by `pandoc` and the output included back in
-   ConTeXt.
+     The argument to the macro is the name of a buffer, which is written to an
+     external file, processesd by `pandoc` and the output included back in
+     ConTeXt.
 
 The [wiki](https://github.com/adityam/filter/wiki) page on Github gives the
 setup for common usecases (pandoc, R, etc.)
