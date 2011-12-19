@@ -31,6 +31,7 @@
     \setinterfaceconstant {output}           {output} 
     \setinterfaceconstant {read}             {read} 
     \setinterfaceconstant {readcommand}      {readcommand} 
+    \setinterfaceconstant {taglabel}         {taglabel} 
 \stopinterface
 
 
@@ -52,7 +53,6 @@
 
 % For backward compatibility
 \let\setupexternalfilters \setupexternalfilter
-
 
 %D \subject {Messages}
 
@@ -90,7 +90,7 @@
 
 \starttexdefinition externalfilter@show_filtercommand
     \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
-    \writestatus\m!externalfilter{state   : \externalfilterparameter\c!state}
+    \iftraceexternalfilters \writestatus\m!externalfilter{state   : \externalfilterparameter\c!state} \fi
 \stoptexdefinition
 
 %D \section {The main user macros}
@@ -286,7 +286,7 @@
          \normalend}
 
     \doifnot{\externalfilter@get_last_character\externalfilter@get_directory}{/}
-        {\showmessage\m!externalfilter{slash}\externalfilter@get_directory
+        {\iftraceexternalfilters \showmessage\m!externalfilter{slash}\externalfilter@get_directory \fi
          \edef\externalfilter@get_directory{\externalfilter@get_directory/}}
 \stoptexdefinition
   
@@ -407,10 +407,12 @@
    \externalfilterparameter\c!before
 
    \begingroup
+   \dostarttagged{\externalfilterparameter\c!taglabel}\externalfilter@name
    \externalfilter@attributes_start \externalfilter@id \c!style \c!color
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilter@output_file
    \externalfilter@attributes_stop
+   \dostoptagged
    \endgroup
 
    \externalfilterparameter\c!after
@@ -435,6 +437,7 @@
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilter@input_file},
    \c!buffer\c!before=,
    \c!buffer\c!after=,
+   \c!taglabel=\externalfilter@id,
  ]
 
 \doifmodeelse{reuse}
