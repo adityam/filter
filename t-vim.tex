@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.12.17,
+%D      version=2011.12.18,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.17)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.18)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -60,7 +60,7 @@
     \externalfilter@attributes_start \externalfilter@id \c!style \c!color
     \syntaxhighlighting@linenumbering_start
     \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-    \gobbleoneargument % For some reason the next argument is 
+    \gobbleoneargument % For some reason the next argument is \type{^M}
 \stoptexdefinition
 
 \starttexdefinition vimtyping@stop_raw

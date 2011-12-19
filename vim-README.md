@@ -200,6 +200,9 @@ The default color scheme is `pscolor`.
 Line numbering
 ---------------
 
+**Note**: Currently only works in MkIV. In principle, it should also
+work in MkII, but for some reasons it does not. 
+
 To enable line numbering for a particular snippet, use:
 
     \start<vimtyping>[numbering=yes]
@@ -529,7 +532,3 @@ Around June 2010, I decided to completely rewrite the module from scratch. The
 new version of `t-vim` relies on `t-filter` for all the bookkeeping. As a
 result, the module is smaller and more robust.
 
-TODO
-----
-
-- Fix line highlighting with highlight={list}
