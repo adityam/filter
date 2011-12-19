@@ -25,11 +25,14 @@ module_page = login_form.submit()
 my_module_page = module_page.link_with(:text => 'my modules').click
 module_list    = my_module_page.search('//div[@class="content"]/table/tr/td/a')
 
+current_module = ""
+
 say "User modules"
 choose do |menu|
     menu.prompt = "Choose module to update: "
     module_list.map do |module_name|
-        menu.choice module_name.attr(:href)[1..-1] do
+        menu.choice module_name.attr(:href)[1..-1] do |name|
+            current_module = name
             say "loading module #{module_name.content.downcase}"
             module_page = my_module_page.link_with(:text => module_name.content).click
         end
@@ -44,10 +47,11 @@ version_form = version_page.form_with :method => "POST"
 version  = version_form.field_with       :name => "package[latest_version]" 
 filename = version_form.file_upload_with :name => "package[file]"
 
-version.value       = ask("version: ") { |q| q.default = version.value }
+version.value       = ask("version (old=#{version.value}): ") { |q| q.default = Time.now.strftime("%Y.%m.%d") }
 filename.file_name  = ask("filename: ", Pathname) do |q|
     q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
     q.responses[:not_valid] = "Please select a zip file"
+    q.default = current_module + ".zip"
 end.to_s
 
 submission_page = version_form.submit
