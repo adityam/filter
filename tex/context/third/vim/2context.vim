@@ -1,5 +1,5 @@
 " Author    : Aditya Mahajan <adityam [at] umich [dot] edu> 
-" version   : 2011.02.05
+" version   : 2011.12.23
 " license   : Simplified BSD License
 
 " This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
@@ -39,7 +39,7 @@ if !exists("highlight")
 endif
 
 " Set escapecomments
-if !exsists("escapecomments")
+if !exists("escapecomments")
   let escapecomments=0
 endif
 
