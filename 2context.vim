@@ -39,7 +39,7 @@ if !exists("highlight")
 endif
 
 " Set escapecomments
-if !exsists("escapecomments")
+if !exists("escapecomments")
   let escapecomments=0
 endif
 
