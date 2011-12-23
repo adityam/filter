@@ -1,7 +1,10 @@
 \usemodule[vim]
 
-\setupbackend[export=yes]
 \definevimtyping[java][syntax=java]
+\appendtoks
+    \unexpanded\def\doverbatimspace{\char32\relax}% will be done permanently
+\to \everyenableelements
+\setupbackend[export=yes]
 
 \starttext
 \startjava

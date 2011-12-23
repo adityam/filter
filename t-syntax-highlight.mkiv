@@ -45,7 +45,7 @@
     \setupsyntaxhighlighting[#1][\s!parent=\syntaxhighlighting@namespace,#2]
 
     \edef\syntaxhighlighting@name{#1}
-    \defineexternalfilter[#1][\s!parent=\syntaxhighlighting@namespace#1]
+    \defineexternalfilter[#1][\s!parent=\syntaxhighlighting@namespace#1,\c!taglabel=\vimtyping@id]
 
     \setups{syntaxhighlighting@setup_line_number_mkiv}
 
