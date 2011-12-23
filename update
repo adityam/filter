@@ -31,7 +31,8 @@ say "User modules"
 choose do |menu|
     menu.prompt = "Choose module to update: "
     module_list.map do |module_name|
-        menu.choice module_name.attr(:href)[1..-1] do |name|
+        name = module_name.attr(:href)[1..-1]
+        menu.choice name do 
             current_module = name
             say "loading module #{module_name.content.downcase}"
             module_page = my_module_page.link_with(:text => module_name.content).click
@@ -55,5 +56,9 @@ filename.file_name  = ask("filename: ", Pathname) do |q|
 end.to_s
 
 submission_page = version_form.submit
+# puts submission_page.body
 
-puts submission_page.body
+result = submission_page.search('//div[@id="description"]/div[@class="content"]/div[@id="notice"]')
+puts result
+
+
