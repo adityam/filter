@@ -388,10 +388,23 @@ highlight color use
 
 where `<color>` is any valid ConTeXt color.
 
-**Note**: Currently, if you use `highlight` with `numbering=on`, each
-highlighted line will be numbered thrice (with the numbers overprinted on one
-another). This is because, internally, highlighting is implemented using text
-backgrounds and they do not work with line numbering. 
+When you pass a comma list to `highlight`, the `2context.vim` script
+wraps **each** of those line around `\HGL{....}` macro. The `\HGL` is, in turn, set to the
+value of `highlightcommand` key. So, if you want to change the way highlighting
+works, change the `highlightcommand`:
+
+    \definevimtyping
+        [...]
+        [...
+         highlightcommand=<command>,
+         ...]
+
+where `<command>` is any valid ConTeXt command. The default value is
+`highlightcommand` is `\syntaxhighlightline`; in MkIV, `\syntaxhighlightline` is
+defined as a bar; in MkII, `\syntaxhighlightline` is defined as a text
+background. The bar mechanism is more efficient but both mechanisms behave
+differently. The text background starts from the left edge of the line, while
+the bar starts from the first non-blank character. 
 
 Using TeX code in Comments
 --------------------------
