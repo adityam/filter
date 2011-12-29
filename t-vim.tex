@@ -36,8 +36,6 @@
 \starttexdefinition vimtyping@define [#1][#2]
     \setupvimtyping[#1][\s!parent=\vimtyping@namespace,#2]
 
-    \edef\vimtyping@name{#1}
-
     \definesyntaxhighlighting[#1][\s!parent=\vimtyping@namespace#1]
 
     \setvalue{\e!start raw#1}{\bgroup\obeylines\dodoubleargument\vimtyping@start_raw[#1]}
@@ -51,6 +49,7 @@
     \egroup %\bgroup in \start#1 
 
     \edef\vimtyping@name{#1}
+    \edef\externalfilter@name{#1}
 
     \begingroup % to keep assignments local
     \setupvimtyping[#1][\c!name=,#2]
@@ -64,7 +63,13 @@
 \stoptexdefinition
 
 \starttexdefinition vimtyping@stop_raw
+    % The last argument of the environment is \type{^M},
+    % so we explicitly backup one line.
+    \nobreak
+    \vskip-\dimexpr\lineheight+\parskip\relax
+    \nobreak
 
+    \removeunwantedspaces
     \syntaxhighlighting@linenumbering_stop
     \externalfilter@attributes_stop
     \externalfilterparameter\c!after
@@ -77,6 +82,7 @@
     % #2 = options
     
     \edef\vimtyping@name{#1}
+    \edef\externalfilter@name{#1}
 
     \begingroup % to keep assignments local
     \setupvimtyping[#1][\c!name=,\c!before=,\c!after=,#2]
