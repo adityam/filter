@@ -46,7 +46,7 @@
 \starttexdefinition vimtyping@start_raw [#1][#2]
     % #1 = filter
     % #2 = options
-    \egroup %\bgroup in \start#1 
+    \egroup %\bgroup in \start#1
 
     \edef\vimtyping@name{#1}
     \edef\externalfilter@name{#1}
@@ -80,7 +80,7 @@
 \starttexdefinition vimtyping@inline_raw [#1][#2]
     % #1 = filter
     % #2 = options
-    
+
     \edef\vimtyping@name{#1}
     \edef\externalfilter@name{#1}
 
@@ -152,7 +152,7 @@
    % \c!after=,
    % \c!style=\tttf,
    % \c!color=,
-   \c!strip=\v!off, 
+   \c!strip=\v!off,
    \c!escape=\v!off,
    % \c!highlight=,
    % \c!highlightcolor=lightgray,
@@ -202,7 +202,7 @@
 
        \edef\externalfilter@name{\vimrc@id}
        \externalfilter@set_filenames
-      
+
        \global\xdef\vimrcfilename{\externalfilter@input_file}
        \endgroup
       }
@@ -251,31 +251,31 @@
 
 \startcolorscheme[pscolor]
     % Vim Preferred groups
-    \definesyntaxgroup 
-        [Constant]  
+    \definesyntaxgroup
+        [Constant]
         [\c!color={h=007068}]
 
     \definesyntaxgroup
         [Identifier]
         [\c!color={h=a030a0}]
 
-    \definesyntaxgroup 
-        [Statement] 
+    \definesyntaxgroup
+        [Statement]
         [\c!color={h=2060a8}]
 
-    \definesyntaxgroup 
-        [PreProc] 
+    \definesyntaxgroup
+        [PreProc]
         [\c!color={h=009030}]
 
-    \definesyntaxgroup 
-        [Type]      
+    \definesyntaxgroup
+        [Type]
         [\c!color={h=0850a0}]
 
-    \definesyntaxgroup 
-        [Special] 
+    \definesyntaxgroup
+        [Special]
         [\c!color={h=907000}]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Comment]
         [\c!color={h=606000}]
 
@@ -288,11 +288,11 @@
          \c!command=\vimtodoframed]
 
 
-    \definesyntaxgroup 
-        [Error] 
+    \definesyntaxgroup
+        [Error]
         [\c!color={h=c03000}]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Underlined]
         [\c!color={h=6a5acd},
          \c!command=\underbar]
@@ -310,43 +310,43 @@
 \stopcolorscheme
 
 \startcolorscheme[blackandwhite]
-    \definesyntaxgroup 
-        [Constant]  
+    \definesyntaxgroup
+        [Constant]
 
     \definesyntaxgroup
         [Identifier]
 
-    \definesyntaxgroup 
-        [Statement] 
+    \definesyntaxgroup
+        [Statement]
         [\c!style=bold]
 
-    \definesyntaxgroup 
-        [PreProc] 
+    \definesyntaxgroup
+        [PreProc]
         [\c!style=bold]
 
-    \definesyntaxgroup 
-        [Type]      
+    \definesyntaxgroup
+        [Type]
         [\c!style=bold]
 
-    \definesyntaxgroup 
-        [Special] 
+    \definesyntaxgroup
+        [Special]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Comment]
         [\c!style=italic]
 
     \definesyntaxgroup
          [Ignore]
 
-    \definesyntaxgroup 
-        [Todo]      
+    \definesyntaxgroup
+        [Todo]
         [\c!command=\inframed]
 
-    \definesyntaxgroup 
-        [Error] 
+    \definesyntaxgroup
+        [Error]
         [\c!command=\overstrike]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Underlined]
         [\c!command=\underbar]
 
@@ -369,25 +369,25 @@
     % . fu dsFunction
     % . re dsRegionMarker
     % . er dsError
-    \definesyntaxgroup 
-        [kw]  
+    \definesyntaxgroup
+        [kw]
         [\c!color={h=007020}, \c!style=bold]
 
-    \definesyntaxgroup 
-        [dt]  
-        [\c!color={h=902000}] 
+    \definesyntaxgroup
+        [dt]
+        [\c!color={h=902000}]
 
-    \definesyntaxgroup 
-        [dv, bn, fl]  
-        [\c!color={h=40a070}] 
+    \definesyntaxgroup
+        [dv, bn, fl]
+        [\c!color={h=40a070}]
 
-    \definesyntaxgroup 
-        [ch, st]  
-        [\c!color={h=4070a0}] 
+    \definesyntaxgroup
+        [ch, st]
+        [\c!color={h=4070a0}]
 
-    \definesyntaxgroup 
-        [co]  
-        [\c!color={h=60a0b0}, \c!style=italic] 
+    \definesyntaxgroup
+        [co]
+        [\c!color={h=60a0b0}, \c!style=italic]
 
     \definesyntaxgroup
         [ot]

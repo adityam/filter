@@ -18,9 +18,9 @@
 \unprotectmodulecatcodes
 
 \startinterface all
-  \setinterfaceconstant {syntax}          {syntax} 
-  \setinterfaceconstant {highlight}       {highlight} 
-  \setinterfaceconstant {highlightcolor}  {highlightcolor} 
+  \setinterfaceconstant {syntax}          {syntax}
+  \setinterfaceconstant {highlight}       {highlight}
+  \setinterfaceconstant {highlightcolor}  {highlightcolor}
 \stopinterface
 
 %D Name space
@@ -57,7 +57,7 @@
 
   \edef\syntaxhighlighting@name{\currentexternalfilter}
   \edef\colorscheme@name{\externalfilterparameter\c!alternative}
-  
+
   \let\SYN\syntaxgroup
   \edef\HGL{\externalfilterparameter{\c!highlight\c!command}}
   \let\\\textbackslash
@@ -68,10 +68,10 @@
 
   \def\tab##1%
       {\dorecurse{##1}{\obeyedspace}}%
-  
+
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
-  
+
   \setcatcodetable\externalfilter@minimal_catcodes
   \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\syntaxhighlighting@namespace\externalfilterparameter\c!space}
