@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.12.17,
+%D      version=2011.12.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2011.12.17)}
+\writestatus{loading}{Code syntax highlighting (ver: 2011.12.28)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -18,9 +18,9 @@
 \unprotectmodulecatcodes
 
 \startinterface all
-  \setinterfaceconstant {syntax}          {syntax} 
-  \setinterfaceconstant {highlight}       {highlight} 
-  \setinterfaceconstant {highlightcolor}  {highlightcolor} 
+  \setinterfaceconstant {syntax}          {syntax}
+  \setinterfaceconstant {highlight}       {highlight}
+  \setinterfaceconstant {highlightcolor}  {highlightcolor}
 \stopinterface
 
 %D Name space
@@ -57,9 +57,9 @@
 
   \edef\syntaxhighlighting@name{\currentexternalfilter}
   \edef\colorscheme@name{\externalfilterparameter\c!alternative}
-  
+
   \let\SYN\syntaxgroup
-  \let\HGL\syntaxhighlightline
+  \edef\HGL{\externalfilterparameter{\c!highlight\c!command}}
   \let\\\textbackslash
   \let\{\textbraceleft
   \let\}\textbraceright
@@ -68,10 +68,10 @@
 
   \def\tab##1%
       {\dorecurse{##1}{\obeyedspace}}%
-  
+
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
-  
+
   \setcatcodetable\externalfilter@minimal_catcodes
   \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\syntaxhighlighting@namespace\externalfilterparameter\c!space}
@@ -152,9 +152,13 @@
    \c!number\c!width=2em,
    \c!number\c!left=,
    \c!number\c!right=,
-   \c!number\c!command=,
+   \c!numbercommand=,
    \c!number\c!distance=0.5em,
    \c!number\c!align=\v!flushright,
+   %Highlight options
+   \c!highlight=,
+   \c!highlightcolor=lightgray,
+   \c!highlight\c!command=\syntaxhighlightline,
   ]
 
 \def\currentsyntaxhighlighting  {\syntaxhighlighting@name}

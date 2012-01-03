@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.12.27,
+%D      version=2011.12.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.12.27)}
+\writestatus{loading}{Filter (ver: 2011.12.28)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -23,15 +23,15 @@
 %D the module definition, and thereby reduces the risk of a typo.
 %D Currently, only English names are provided. If someone wants a
 %D multi-lingual interface, let me know and I will add other language
-%D names as well, 
+%D names as well,
 
 \startinterface all
     \setinterfaceconstant {filter}           {filter}
     \setinterfaceconstant {filtercommand}    {filtercommand}
-    \setinterfaceconstant {output}           {output} 
-    \setinterfaceconstant {read}             {read} 
-    \setinterfaceconstant {readcommand}      {readcommand} 
-    \setinterfaceconstant {taglabel}         {taglabel} 
+    \setinterfaceconstant {output}           {output}
+    \setinterfaceconstant {read}             {read}
+    \setinterfaceconstant {readcommand}      {readcommand}
+    \setinterfaceconstant {taglabel}         {taglabel}
 \stopinterface
 
 
@@ -90,7 +90,7 @@
 
 \starttexdefinition externalfilter@show_filtercommand
     \writestatus\m!externalfilter{command : \externalfilterparameter\c!filtercommand}
-    \iftraceexternalfilters \writestatus\m!externalfilter{state   : \externalfilterparameter\c!state} \fi
+    \writestatus\m!externalfilter{state   : \externalfilterparameter\c!state}
 \stoptexdefinition
 
 %D \section {The main user macros}
@@ -118,10 +118,10 @@
 
 \stoptexdefinition
 
-\starttexdefinition externalfilter@start [#1][#2] 
+\starttexdefinition externalfilter@start [#1][#2]
     % #1 = filter
     % #2 = options
-    \egroup %\bgroup in \start#1 
+    \egroup %\bgroup in \start#1
 
     \edef\externalfilter@name{#1}
 
@@ -144,13 +144,13 @@
     \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter@set_directory
-    
+
     \edef\externalfilter@input_file{#3}
     \splitfilename{#3}
     %NOTE: \edef doesn not work because \splitoffname is not expandable
     \def\externalfilter@base_file   {\splitoffname}
 
-    % The output is always in the directory specified by 
+    % The output is always in the directory specified by
     % \c!directory; even if the input is from some other directory
     \def\externalfilter@output_file{\externalfilter@get_directory\externalfilterparameter\c!output}
 
@@ -173,21 +173,21 @@
     \fi
 
     \externalfilter@set_directory
-    
+
     \ifthirdargument
       \edef\externalfilter@buffer_name{#3}
     \else
       \edef\externalfilter@buffer_name{#2}
     \fi
-      
+
     \externalfilter@set_filenames_extras
 
     \iftraceexternalfilters \externalfilter@show_filenames \fi
-    
+
     \externalfilter@process_filter
-      
+
 \stoptexdefinition
-   
+
 \starttexdefinition externalfilter@inline [#1][#2]
    \edef\externalfilter@name{#1}
 
@@ -276,7 +276,7 @@
     \edef\externalfilter@get_directory{\externalfilterparameter\c!directory}
     \doifsomething{\externalfilter@get_directory}\externalfilter@set_directory_indeed
 \stoptexdefinition
-   
+
 \starttexdefinition externalfilter@set_directory_indeed
     \doif{\externalfilter@get_first_character\externalfilter@get_directory}{/}
         {\writeline
@@ -289,7 +289,7 @@
         {\iftraceexternalfilters \showmessage\m!externalfilter{slash}\externalfilter@get_directory \fi
          \edef\externalfilter@get_directory{\externalfilter@get_directory/}}
 \stoptexdefinition
-  
+
 
 
 %D \subsubject {Set file names}
@@ -316,7 +316,7 @@
 
 \starttexdefinition externalfilter@set_filenames_extras
    % The following  macros are useful for filter= and filtercommand= options
-   % The basename of the external file 
+   % The basename of the external file
    \edef\externalfilter@base_file  {\jobname-\externalfilter@buffer_name}
 
    % In MkIV, we can specify the name of the file where the buffer has
@@ -336,7 +336,7 @@
 
 \starttexdefinition externalfilter@process_filter
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     % To imitate the behavior of MkII, we need 
+     % To imitate the behavior of MkII, we need
      %
      %      \savebuffer[\externalfilter@buffer_name][\externalfilter@input_file]
      %
@@ -349,14 +349,15 @@
                      \externalfilterparameter{\c!buffer\c!after}]
                     [\externalfilter@id]
          \startluacode
-           %% -- On Windows, os.rename does not overwrite files :(
+           %% -- On Windows, os.rename does not overwrite files :( So we copy and delete files
            file.copy("\jobname-\externalfilter@id.\f!temporaryextension", "\externalfilter@input_file")
+           os.remove("\jobname-\externalfilter@id.\f!temporaryextension")
          \stopluacode
-           
+
 
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
-     \endgroup 
+     \endgroup
 
      % Finalization
      \doif{\externalfilterparameter\c!continue}\v!yes
@@ -366,7 +367,7 @@
      \dorechecknextindentation
 \stoptexdefinition
 
-%D \subsubject {Execute Filter}   
+%D \subsubject {Execute Filter}
 
 % In MkIV, we use job.files.run to check if a file has changed. This function
 % writes the md5 sum to the tuc file rather than to an external file. So, we
@@ -375,7 +376,7 @@
 \starttexdefinition externalfilter@execute_filter
 
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
-   \externalfilter@show_filtercommand
+   \iftraceexternalfilters \externalfilter@show_filtercommand \fi
 
    \doifelse{\externalfilterparameter\c!continue}\v!yes
        {\doifelse{\externalfilterparameter\c!state}\v!stop
@@ -396,7 +397,7 @@
     \doif{\externalfilterparameter\c!read}\v!yes
        {\doiffileelse{\externalfilter@output_file}
            {\externalfilter@read_processed_file_indeed}
-           {\showmessage\m!externalfilter{notfound}\externalfilter@output_file 
+           {\showmessage\m!externalfilter{notfound}\externalfilter@output_file
             \externalfilter@show_filenames
             \blank
               {\tttf [[\getmessage\m!externalfilter{missing}]]}
@@ -452,6 +453,6 @@
 % Default value
 \def\externalfilter@input_file {}
 \def\externalfilter@output_file{}
-   
+
 \protectmodulecatcodes
 \stopmodule

@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2011.12.18,
+%D      version=2011.12.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.18)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2011.12.28)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -36,8 +36,6 @@
 \starttexdefinition vimtyping@define [#1][#2]
     \setupvimtyping[#1][\s!parent=\vimtyping@namespace,#2]
 
-    \edef\vimtyping@name{#1}
-
     \definesyntaxhighlighting[#1][\s!parent=\vimtyping@namespace#1]
 
     \setvalue{\e!start raw#1}{\bgroup\obeylines\dodoubleargument\vimtyping@start_raw[#1]}
@@ -48,9 +46,10 @@
 \starttexdefinition vimtyping@start_raw [#1][#2]
     % #1 = filter
     % #2 = options
-    \egroup %\bgroup in \start#1 
+    \egroup %\bgroup in \start#1
 
     \edef\vimtyping@name{#1}
+    \edef\externalfilter@name{#1}
 
     \begingroup % to keep assignments local
     \setupvimtyping[#1][\c!name=,#2]
@@ -64,7 +63,13 @@
 \stoptexdefinition
 
 \starttexdefinition vimtyping@stop_raw
+    % The last argument of the environment is \type{^M},
+    % so we explicitly backup one line.
+    \nobreak
+    \vskip-\dimexpr\lineheight+\parskip\relax
+    \nobreak
 
+    \removeunwantedspaces
     \syntaxhighlighting@linenumbering_stop
     \externalfilter@attributes_stop
     \externalfilterparameter\c!after
@@ -75,8 +80,9 @@
 \starttexdefinition vimtyping@inline_raw [#1][#2]
     % #1 = filter
     % #2 = options
-    
+
     \edef\vimtyping@name{#1}
+    \edef\externalfilter@name{#1}
 
     \begingroup % to keep assignments local
     \setupvimtyping[#1][\c!name=,\c!before=,\c!after=,#2]
@@ -146,10 +152,10 @@
    % \c!after=,
    % \c!style=\tttf,
    % \c!color=,
-   \c!strip=\v!off, 
+   \c!strip=\v!off,
    \c!escape=\v!off,
-   \c!highlight=,
-   \c!highlightcolor=lightgray,
+   % \c!highlight=,
+   % \c!highlightcolor=lightgray,
    \c!filtercommand=\vimtyping@filter_command,
    % \c!continue=yes,
    % \c!read=\v!yes,
@@ -196,7 +202,7 @@
 
        \edef\externalfilter@name{\vimrc@id}
        \externalfilter@set_filenames
-      
+
        \global\xdef\vimrcfilename{\externalfilter@input_file}
        \endgroup
       }
@@ -245,31 +251,31 @@
 
 \startcolorscheme[pscolor]
     % Vim Preferred groups
-    \definesyntaxgroup 
-        [Constant]  
+    \definesyntaxgroup
+        [Constant]
         [\c!color={h=007068}]
 
     \definesyntaxgroup
         [Identifier]
         [\c!color={h=a030a0}]
 
-    \definesyntaxgroup 
-        [Statement] 
+    \definesyntaxgroup
+        [Statement]
         [\c!color={h=2060a8}]
 
-    \definesyntaxgroup 
-        [PreProc] 
+    \definesyntaxgroup
+        [PreProc]
         [\c!color={h=009030}]
 
-    \definesyntaxgroup 
-        [Type]      
+    \definesyntaxgroup
+        [Type]
         [\c!color={h=0850a0}]
 
-    \definesyntaxgroup 
-        [Special] 
+    \definesyntaxgroup
+        [Special]
         [\c!color={h=907000}]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Comment]
         [\c!color={h=606000}]
 
@@ -282,11 +288,11 @@
          \c!command=\vimtodoframed]
 
 
-    \definesyntaxgroup 
-        [Error] 
+    \definesyntaxgroup
+        [Error]
         [\c!color={h=c03000}]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Underlined]
         [\c!color={h=6a5acd},
          \c!command=\underbar]
@@ -304,43 +310,43 @@
 \stopcolorscheme
 
 \startcolorscheme[blackandwhite]
-    \definesyntaxgroup 
-        [Constant]  
+    \definesyntaxgroup
+        [Constant]
 
     \definesyntaxgroup
         [Identifier]
 
-    \definesyntaxgroup 
-        [Statement] 
+    \definesyntaxgroup
+        [Statement]
         [\c!style=bold]
 
-    \definesyntaxgroup 
-        [PreProc] 
+    \definesyntaxgroup
+        [PreProc]
         [\c!style=bold]
 
-    \definesyntaxgroup 
-        [Type]      
+    \definesyntaxgroup
+        [Type]
         [\c!style=bold]
 
-    \definesyntaxgroup 
-        [Special] 
+    \definesyntaxgroup
+        [Special]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Comment]
         [\c!style=italic]
 
     \definesyntaxgroup
          [Ignore]
 
-    \definesyntaxgroup 
-        [Todo]      
+    \definesyntaxgroup
+        [Todo]
         [\c!command=\inframed]
 
-    \definesyntaxgroup 
-        [Error] 
+    \definesyntaxgroup
+        [Error]
         [\c!command=\overstrike]
 
-    \definesyntaxgroup 
+    \definesyntaxgroup
         [Underlined]
         [\c!command=\underbar]
 
@@ -363,25 +369,25 @@
     % . fu dsFunction
     % . re dsRegionMarker
     % . er dsError
-    \definesyntaxgroup 
-        [kw]  
+    \definesyntaxgroup
+        [kw]
         [\c!color={h=007020}, \c!style=bold]
 
-    \definesyntaxgroup 
-        [dt]  
-        [\c!color={h=902000}] 
+    \definesyntaxgroup
+        [dt]
+        [\c!color={h=902000}]
 
-    \definesyntaxgroup 
-        [dv, bn, fl]  
-        [\c!color={h=40a070}] 
+    \definesyntaxgroup
+        [dv, bn, fl]
+        [\c!color={h=40a070}]
 
-    \definesyntaxgroup 
-        [ch, st]  
-        [\c!color={h=4070a0}] 
+    \definesyntaxgroup
+        [ch, st]
+        [\c!color={h=4070a0}]
 
-    \definesyntaxgroup 
-        [co]  
-        [\c!color={h=60a0b0}, \c!style=italic] 
+    \definesyntaxgroup
+        [co]
+        [\c!color={h=60a0b0}, \c!style=italic]
 
     \definesyntaxgroup
         [ot]
