@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-groups,
-%D      version=2011.12.17,
+%D      version=2012.01.03,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Syntax highlighting support,
 %D       author=Aditya Mahajan,
@@ -9,18 +9,17 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Syntax highlighting groups (ver: 2011.12.17)}
-
-\tracingmacros=1
-
-% Colors are specified in hex; in MkII the hex mode needs to be activated.
-\doifmode\s!mkii
-    {\setupcolor[hex]}
+\writestatus{loading}{Syntax highlighting groups (ver: 2012.01.03)}
 
 \startmodule [syntax-group]
 \usemodule   [module-catcodes]
 
 \unprotectmodulecatcodes
+
+% Colors are specified in hex; in MkII the hex mode needs to be activated.
+\doifmode\s!mkii
+    {\setupcolor[hex]}
+
 
 \def\colorscheme@name {}
 
