@@ -1,0 +1,18 @@
+%T Testing style and color
+
+\usemodule[filter]
+
+\setupcolors[state=start]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   color=red,
+   style={\switchtobodyfont[8pt]\setupinterlinespace}]
+
+\starttext
+\startmarkdown
+This should be red and in small font.
+\stopmarkdown
+\stoptext
+

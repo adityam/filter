@@ -1,0 +1,28 @@
+%T Test two different filters
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdownA]
+  [filter={pandoc -w context -o \externalfilteroutputfile }, continue=yes]
+
+\defineexternalfilter 
+  [markdownB]
+  [filter={pandoc -w context -o \externalfilteroutputfile }, continue=yes]
+
+
+\traceexternalfilters
+
+\starttext
+
+\startmarkdownA
+  **First** markdown filter
+\stopmarkdownA
+
+\startmarkdownA
+  **Second** markdown filter
+\stopmarkdownA
+
+\stoptext
+\endinput
+

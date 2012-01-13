@@ -1,0 +1,15 @@
+%T Testing basic functionality of the module
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\startmarkdown
+Does **markdown** _work_?
+\stopmarkdown
+\stoptext
+\endinput
+

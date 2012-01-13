@@ -1,28 +1,18 @@
+%T Testing continue=yes option
+
 \usemodule[filter]
-
-\startbuffer[start]
-
----
-
-\stopbuffer
-
-\startbuffer[before]
-# A Markdown buffer
-
-\stopbuffer
-
-\startbuffer[after]
-
----
-\stopbuffer
 
 \defineexternalfilter 
   [markdown]
-  [filter={pandoc -w context -o \externalfilteroutputfile },
-   bufferbefore={before,start},
-   bufferafter=after]
+  [filter={pandoc -w context -o \externalfilteroutputfile }, continue=yes]
 
 \starttext
+\startmarkdown
+  Testing `continue=yes` option.
+\stopmarkdown
+
+\page
+
 \startmarkdown
 ## Lists ##
 

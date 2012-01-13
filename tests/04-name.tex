@@ -1,0 +1,15 @@
+%T Testing name=... option
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\startmarkdown[name=namedbuffer]
+  Testing `name=something` option.
+\stopmarkdown
+\stoptext
+\endinput
+

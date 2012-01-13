@@ -1,0 +1,19 @@
+%T Testing two calls to the same filter
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\startmarkdown
+  **First** call to markdown environment
+\stopmarkdown
+
+\startmarkdown
+  **Second call** to markdown environment.
+\stopmarkdown
+\stoptext
+\endinput
+

@@ -1,0 +1,13 @@
+%T Testing output redirection
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdownfilter]
+  [filtercommand={pandoc -w context \externalfilterinputfile > \externalfilteroutputfile }]
+
+\starttext
+\startmarkdownfilter
+  Does **markdown** work when output is **redirected**?
+\stopmarkdownfilter
+\stoptext

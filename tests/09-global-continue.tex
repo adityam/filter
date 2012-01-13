@@ -1,4 +1,8 @@
+%T Testing global `continue=yes` option
+
 \usemodule[filter]
+
+\setupexternalfilters[continue=yes]
 
 \defineexternalfilter 
   [markdown]
@@ -6,26 +10,7 @@
 
 \starttext
 \startmarkdown
-## Lists ##
-
-Unordered list
-
-*   Candy.
-*   Gum.
-*   Booze.
-
-\stopmarkdown
-
-\startmarkdown
-## Lists ##
-
-Ordered list
-
-#. Candy.
-#. Gum.
-#. Booze.
-
+  Testing global `continue=yes` option
 \stopmarkdown
 \stoptext
-\endinput
 
