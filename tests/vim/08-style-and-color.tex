@@ -1,0 +1,14 @@
+%T Test style and color
+
+\usemodule[vim]
+
+\definevimtyping[RUBY]
+                [style={\switchtobodyfont[8pt]\setupinterlinespace},
+                 color=green]
+
+\starttext
+\startRUBY
+  print("Hello world")
+  print("Again")
+\stopRUBY
+\stoptext

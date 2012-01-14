@@ -1,9 +1,12 @@
+%T Test lines and split option
+
 \usemodule  [vim]
 
 \definevimtyping [HASKELL] [syntax=haskell]
 
 \starttext
 
+\subject{space=off, lines=fixed}
 \startHASKELL[space=off, lines=fixed]
 main :: IO()
 main = do
@@ -12,6 +15,7 @@ main = do
     putStringLn "A very very very very very very very very very very very very very long line"
 \stopHASKELL
 
+\subject{space=on, lines=fixed}
 \startHASKELL[space=on, lines=fixed]
 main :: IO()
 main = do
@@ -20,6 +24,7 @@ main = do
     putStringLn "A very very very very very very very very very very very very very long line"
 \stopHASKELL
 
+\subject{space=off, lines=split}
 \startHASKELL[space=off, lines=split]
 main :: IO()
 main = do
@@ -28,6 +33,7 @@ main = do
     putStringLn "A very very very very very very very very very very very very very long line"
 \stopHASKELL
 
+\subject{space=on, lines=split}
 \startHASKELL[space=on, lines=split]
 main :: IO()
 main = do

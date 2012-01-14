@@ -1,0 +1,35 @@
+%T Test line numbering continue
+
+\setupcolors[state=start]
+\usemodule  [vim]
+
+\definevimtyping  
+  [LUA]  
+  [syntax=lua,
+   numbering=yes,
+   numbercolor=blue,
+  ]
+
+\startmode[mkii]
+  \usetypescript[modern][texnansi]
+  \setupbodyfont[modern]
+\stopmode
+
+
+\starttext
+\startLUA
+-- version   : 1.0.0 - 07/2005
+-- author    : Hans Hagen - PRAGMA ADE - www.pragma-ade.com
+-- copyright : public domain or whatever suits
+-- remark    : part of the context distribution
+\stopLUA
+
+\startLUA[continue=yes]
+-- TODO: name space for local functions
+
+-- loading: scite-ctx.properties
+
+-- generic functions
+\stopLUA
+\stoptext
+\stoptext

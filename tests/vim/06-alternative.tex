@@ -1,10 +1,12 @@
+%T Test changing alternative
+
 \setupcolors[state=start]
 \usemodule [vim]
 
-\definevimtyping  [MATLAB]  [syntax=matlab,directory=output]
+\definevimtyping  [MATLAB]  [syntax=matlab]
 
 \starttext
-\startMATLAB
+\startMATLAB[alternative=blackandwhite]
 function russell_demo()
 % Do the example in ch 17 (p501) of Russell and Norvig
 % (1,1) is top left corner.

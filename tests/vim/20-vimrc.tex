@@ -1,6 +1,6 @@
-\usemodule[vim]
+%T Test local vimrc
 
-\traceexternalfilters
+\usemodule[vim]
 
 \startvimrc[name=bash]
 let g:is_bash=1
@@ -11,18 +11,22 @@ let g:is_bash=1
 
 \starttext
 
+\subject{SH default}
 \startSH
   export foo=bar
 \stopSH
 
+\subject{BASH default} 
 \startBASH
   export foo=bar
 \stopBASH
 
+\subject{BASH vimrc=none}
 \startBASH[vimrc=none]
   export foo=bar
 \stopBASH
 
+\subject{SH vimrc=bash}
 \startSH[vimrc=bash]
   export foo=bar
 \stopSH

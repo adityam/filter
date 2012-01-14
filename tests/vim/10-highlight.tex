@@ -1,3 +1,5 @@
+%T Test highlight option
+
 \usemodule[vim]
 
 \definevimtyping[python][syntax=python]
@@ -16,12 +18,9 @@ def sum_upto(n)
     return sum(r)
 \stoppython
 
-There is a bug with line numbering!
 \startpython[highlight={1,3}, numbering=yes]
 def sum_upto(n)
     r = range(1, n+1)
     return sum(r)
 \stoppython
-
-
 \stoptext
