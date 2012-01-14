@@ -33,14 +33,21 @@ FILTER_TEX  = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.tex]
 FILTER_DOC  = "README.md"
 FILTER_TEST = FileList['tests/[0-9][0-9]-*.tex']
 
-VIM_TEX = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv]
-VIM_DOC = "vim-README.md"
+VIM_TEX  = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv]
+VIM_DOC  = "vim-README.md"
+VIM_TEST = FileList['tests/vim/[0-9][0-9]-*.tex']
 
 
 desc "Run tests for filter module"
 task :test_filter => FILTER_TEST do
   run_tests FILTER_TEST
 end
+
+desc "Run tests for vim module"
+task :test_vim => VIM_TEST do
+  run_tests VIM_TEST
+end
+
 
 task :clean_vim do
   sh "rm -rf vim"
