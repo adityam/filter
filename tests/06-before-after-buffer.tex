@@ -1,0 +1,29 @@
+%T Test beforebuffer and afterbuffer
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   bufferbefore={before,start},
+   bufferafter=after]
+
+\startbuffer[before]
+- Before
+\stopbuffer
+
+\startbuffer[start]
+- Start
+\stopbuffer
+
+\startbuffer[after]
+- After
+\stopbuffer
+
+\starttext
+\startmarkdown
+- Main
+\stopmarkdown
+\stoptext
+\endinput
+

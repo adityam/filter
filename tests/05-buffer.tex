@@ -1,0 +1,23 @@
+%T Testing buffer feature
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\startbuffer[test]
+* This is a test
+* Does this work
+\stopbuffer
+
+Random text{\footnote{Markdown content \processmarkdownbuffer[test]}.
+
+\stoptext
+
+\footnote{Test
+  \startmarkdown
+    **bold**
+  \stopmarkdown
+  }

@@ -1,8 +1,12 @@
+%T Testing indentnext
+
 \usemodule[filter]
 
 \defineexternalfilter 
   [markdown]
   [filter={pandoc -w context -o \externalfilteroutputfile },
+   before=\blank,
+   after=\blank,
    indentnext=yes]
 
 \setupindenting[big,yes]
@@ -33,5 +37,4 @@ test **indenting**
 
 this should not be indented.
 \stoptext
-\endinput
 

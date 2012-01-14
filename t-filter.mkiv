@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.12.28,
+%D      version=2012.01.14,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.12.28)}
+\writestatus{loading}{Filter (ver: 2012.01.14)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -131,7 +131,7 @@
     \externalfilter@set_filenames
 
     % Capture the contents of the buffer
-    \dostartbuffer[\externalfilter@buffer_name][\e!start#1][\e!stop#1]
+    \grabbufferdata[\externalfilter@buffer_name][\e!start#1][\e!stop#1]
 \stoptexdefinition
 
 \starttexdefinition externalfilter@process_file [#1][#2]#3

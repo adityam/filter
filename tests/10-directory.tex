@@ -1,0 +1,36 @@
+%T Testing `output=something` 
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdownA]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   directory=output/] % Trailing /
+
+\defineexternalfilter 
+  [markdownB]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   directory=output] % No trailing /
+
+\defineexternalfilter 
+  [markdownC]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   directory=../output] % parent directory
+
+\starttext
+
+\startmarkdownA
+  Output **with** trailing slash
+\stopmarkdownA
+
+\startmarkdownB
+  Output **without** trailing slash
+\stopmarkdownB
+
+\startmarkdownC
+  Output in parent directory.
+\stopmarkdownC
+
+\stoptext
+\endinput
+

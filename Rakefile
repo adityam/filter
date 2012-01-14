@@ -20,11 +20,27 @@ def make_zip name
   sh "cd #{name} && zip -r ../#{name} ./ && cd ../"
 end
 
-FILTER_TEX = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.tex]
-FILTER_DOC = "README.md"
+def run_tests tests
+  FileUtils.mkdir_p "output"
+  FileUtils.mkdir_p "../output"
+  tests.each do |file|
+    sh "context --noconsole --purgeall --purgeresult #{file}"
+  end
+  sh "context --purgeall"
+end
+
+FILTER_TEX  = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.tex]
+FILTER_DOC  = "README.md"
+FILTER_TEST = FileList['tests/[0-9][0-9]-*.tex']
 
 VIM_TEX = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv]
 VIM_DOC = "vim-README.md"
+
+
+desc "Run tests for filter module"
+task :test_filter => FILTER_TEST do
+  run_tests FILTER_TEST
+end
 
 task :clean_vim do
   sh "rm -rf vim"
