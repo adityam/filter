@@ -1,4 +1,4 @@
-%T Testing display environments
+%T Testing inline snippets
 
 \usemodule[filter]
 
@@ -7,9 +7,7 @@
   [filter={pandoc -w context -o \externalfilteroutputfile }]
 
 \starttext
-\startmarkdown
-Does **markdown** _work_?
-\stopmarkdown
+Does \inlinemarkdown+**markdown**+\inlinemarkdown{_work_}\inlinemarkdown{**correctly**}?
 \stoptext
 \endinput
 
