@@ -37,7 +37,7 @@
 \appendtoks
     \defineexternalfilter[\currentsyntaxhighlighting]
                          [\s!parent=\????syntaxhighlighting\currentexternalfilter,\c!taglabel=\vimtyping@id]%
-    \setups{syntaxhighlighting@setup_line_number}%
+    \definelinenumbering [\currentsyntaxhighlighting]%
     \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
 \to\everydefinesyntaxhighlighting
 
@@ -72,27 +72,6 @@
   \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space}
 \stopsetups
 
-\startsetups syntaxhighlighting@setup_line_number
-\definelinenumbering [\currentsyntaxhighlighting]
-
-\setuplinenumbering
-   [currentsyntaxhighlighting]
-   [\c!conversion=\externalfilterparameter\c!numberconversion,
-        \c!start=\externalfilterparameter{\c!number\c!start},
-         \c!step=\externalfilterparameter{\c!number\c!step},
-        \c!method=\externalfilterparameter{\c!number\c!method},
-      \c!location=\externalfilterparameter{\c!number\c!location},
-         \c!style=\externalfilterparameter\c!numberstyle,
-         \c!color=\externalfilterparameter\c!numbercolor,
-         \c!width=\externalfilterparameter{\c!number\c!width},
-          \c!left=\externalfilterparameter{\c!number\c!left},
-         \c!right=\externalfilterparameter{\c!number\c!right},
-       \c!command=\externalfilterparameter\c!numbercommand,
-      \c!distance=\externalfilterparameter{\c!number\c!distance},
-         \c!align=\externalfilterparameter{\c!number\c!align},
-   ]
-\stopsetups
-
 \starttexdefinition syntaxhighlighting@read_command #1
     \syntaxhighlighting@linenumbering_start
     \ReadFile{#1}
@@ -103,7 +82,21 @@
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
        {\startlinenumbering
           [\currentsyntaxhighlighting]
-          [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
+          [\c!conversion=\externalfilterparameter\c!numberconversion,
+               \c!start=\externalfilterparameter{\c!number\c!start},
+                \c!step=\externalfilterparameter{\c!number\c!step},
+               \c!method=\externalfilterparameter{\c!number\c!method},
+             \c!location=\externalfilterparameter{\c!number\c!location},
+                \c!style=\externalfilterparameter\c!numberstyle,
+                \c!color=\externalfilterparameter\c!numbercolor,
+                \c!width=\externalfilterparameter{\c!number\c!width},
+                 \c!left=\externalfilterparameter{\c!number\c!left},
+                \c!right=\externalfilterparameter{\c!number\c!right},
+              \c!command=\externalfilterparameter\c!numbercommand,
+             \c!distance=\externalfilterparameter{\c!number\c!distance},
+                \c!align=\externalfilterparameter{\c!number\c!align},
+             \c!continue=\externalfilterparameter{\c!number\c!continue},
+          ]}
    \dostarttagged\t!syntaxhighlighting\colorscheme@name
 \stoptexdefinition
 
