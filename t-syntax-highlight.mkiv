@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2011.12.28,
+%D      version=2012.01.14,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2011.12.28)}
+\writestatus{loading}{Code syntax highlighting (ver: 2012.01.14)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -178,7 +178,7 @@
     {\getvalue{\syntaxhighlighting@namespace::\c!lines::\externalfilterparameter\c!lines}}
 
 % Visible space
-\installspacehandler {\syntaxhighlighting@namespace\v!on}
+\installspacemethod {\syntaxhighlighting@namespace\v!on}
   {\obeyspaces
    \unexpanded\def\obeyedspace
       {\syntaxhighlighting@split\zeropoint\relax
@@ -186,13 +186,13 @@
        \syntaxhighlighting@split\zeropoint\relax}}%
 
 % Invisible space
-\installspacehandler {\syntaxhighlighting@namespace\v!off}
+\installspacemethod {\syntaxhighlighting@namespace\v!off}
   {\obeyspaces
    \unexpanded\def\obeyedspace
       {\syntaxhighlighting@split\interwordspace\relax}}
 
 % Default
-\installspacehandler {\syntaxhighlighting@namespace}
+\installspacemethod {\syntaxhighlighting@namespace}
   {\activatespacehandler {\syntaxhighlighting@namespace\v!off}}
 
 % Line highlighting
