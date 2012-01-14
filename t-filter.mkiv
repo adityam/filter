@@ -11,11 +11,12 @@
 
 \writestatus{loading}{Filter (ver: 2012.01.14)}
 
-\ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
+% For backward compatibility
+\ifx\grabbufferdata\undefined \let\grabbufferdata \dostartbuffer \fi
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
-\unprotectmodulecatcodes
+\unprotect
 
 %D \subject {Interface}
 %D
@@ -454,5 +455,5 @@
 \def\externalfilter@input_file {}
 \def\externalfilter@output_file{}
 
-\protectmodulecatcodes
+\protect
 \stopmodule
