@@ -15,7 +15,7 @@
 \usemodule      [syntax-groups]
 \usemodule      [filter] % loads module-catcodes
 
-\unprotectmodulecatcodes
+\unprotect
 
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax}
@@ -25,37 +25,32 @@
 
 %D Name space
 
-\def\syntaxhighlighting@id          {syntaxhighlighting}
-\def\syntaxhighlighting@namespace   {@@@@\syntaxhighlighting@id}
-\def\syntaxhighlighting@name        {}
+\definenamespace
+    [syntaxhighlighting]
+    [\c!type=module,
+     \c!name=syntaxhighlighting,
+     \c!command=\v!yes,
+     setup=\v!list,
+     \c!style=\v!no,
+     \s!parent=syntaxhighlighting]
 
-\edef\t!syntaxhighlighting            {\syntaxhighlighting@id}
+\appendtoks
+    \defineexternalfilter[\currentsyntaxhighlighting]
+                         [\s!parent=\????syntaxhighlighting\currentexternalfilter,\c!taglabel=\vimtyping@id]%
+    \setups{syntaxhighlighting@setup_line_number}%
+    \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
+\to\everydefinesyntaxhighlighting
 
-\installparameterhandler \syntaxhighlighting@namespace \syntaxhighlighting@id
-\installsetuphandler     \syntaxhighlighting@namespace \syntaxhighlighting@id
+\def\syntaxhighlighting@id {syntaxhighlighting}
+\edef\t!syntaxhighlighting {\syntaxhighlighting@id}
 
 %D Helper macro
 
 \def\syntaxhighlighting@yes{\v!yes,\v!on}
 
-\def\definesyntaxhighlighting
-  {\dodoubleargument\syntaxhighlighting@define}
-
-\starttexdefinition syntaxhighlighting@define [#1][#2]
-    \setupsyntaxhighlighting[#1][\s!parent=\syntaxhighlighting@namespace,#2]
-
-    \edef\syntaxhighlighting@name{#1}
-    \defineexternalfilter[#1][\s!parent=\syntaxhighlighting@namespace#1,\c!taglabel=\vimtyping@id]
-
-    \setups{syntaxhighlighting@setup_line_number_mkiv}
-
-    \setvalue{type#1file}{\getvalue{process#1file}}
-
-\stoptexdefinition
-
 \startsetups syntaxhighlighting@setup
 
-  \edef\syntaxhighlighting@name{\currentexternalfilter}
+  \edef\currentsyntaxhighlighting{\currentexternalfilter}
   \edef\colorscheme@name{\externalfilterparameter\c!alternative}
 
   \let\SYN\syntaxgroup
@@ -74,14 +69,14 @@
 
   \setcatcodetable\externalfilter@minimal_catcodes
   \expandafter\def\activeendoflinetoken{\strut\par}
-  \activatespacehandler{\syntaxhighlighting@namespace\externalfilterparameter\c!space}
+  \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space}
 \stopsetups
 
-\startsetups syntaxhighlighting@setup_line_number_mkiv
-\definelinenumbering [#1]
+\startsetups syntaxhighlighting@setup_line_number
+\definelinenumbering [\currentsyntaxhighlighting]
 
 \setuplinenumbering
-   [#1]
+   [currentsyntaxhighlighting]
    [\c!conversion=\externalfilterparameter\c!numberconversion,
         \c!start=\externalfilterparameter{\c!number\c!start},
          \c!step=\externalfilterparameter{\c!number\c!step},
@@ -107,7 +102,7 @@
 \starttexdefinition syntaxhighlighting@linenumbering_start
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
        {\startlinenumbering
-          [\syntaxhighlighting@name]
+          [\currentsyntaxhighlighting]
           [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
    \dostarttagged\t!syntaxhighlighting\colorscheme@name
 \stoptexdefinition
@@ -138,7 +133,7 @@
    \c!output=\externalfilterinputfile, % placeholder
    \c!setups=syntaxhighlighting@setup,
    \c!option=\v!packed, % Could be a list
-   \s!parent=\externalfilter@namespace,
+   \s!parent=\????externalfilter,
    % Numbering options
    \c!numbering=\v!no,
    \c!number\c!start=1,
@@ -161,24 +156,22 @@
    \c!highlight\c!command=\syntaxhighlightline,
   ]
 
-\def\currentsyntaxhighlighting  {\syntaxhighlighting@name}
-
 % Space handler
 %
 % The space handing code for MkII and MkIV is not consistent. So, we provide our
 % own versions.
 
-\setvalue{\syntaxhighlighting@namespace::\c!lines::\v!split}{\hskip}
-\setvalue {\syntaxhighlighting@namespace::\c!lines::\v!fixed}{\dontleavehmode\kern}
+\setvalue{\????syntaxhighlighting::\c!lines::\v!split}{\hskip}
+\setvalue{\????syntaxhighlighting::\c!lines::\v!fixed}{\dontleavehmode\kern}
 
 % default
-\setvalue{\syntaxhighlighting@namespace::\c!lines::}{\hskip}
+\setvalue{\????syntaxhighlighting::\c!lines::}{\hskip}
 
 \def\syntaxhighlighting@split%
-    {\getvalue{\syntaxhighlighting@namespace::\c!lines::\externalfilterparameter\c!lines}}
+    {\getvalue{\????syntaxhighlighting::\c!lines::\externalfilterparameter\c!lines}}
 
 % Visible space
-\installspacemethod {\syntaxhighlighting@namespace\v!on}
+\installspacemethod {\????syntaxhighlighting\v!on}
   {\obeyspaces
    \unexpanded\def\obeyedspace
       {\syntaxhighlighting@split\zeropoint\relax
@@ -186,14 +179,14 @@
        \syntaxhighlighting@split\zeropoint\relax}}%
 
 % Invisible space
-\installspacemethod {\syntaxhighlighting@namespace\v!off}
+\installspacemethod {\????syntaxhighlighting\v!off}
   {\obeyspaces
    \unexpanded\def\obeyedspace
       {\syntaxhighlighting@split\interwordspace\relax}}
 
 % Default
-\installspacemethod {\syntaxhighlighting@namespace}
-  {\activatespacehandler {\syntaxhighlighting@namespace\v!off}}
+\installspacemethod {\????syntaxhighlighting}
+  {\activatespacehandler {\????syntaxhighlighting\v!off}}
 
 % Line highlighting
 
@@ -206,8 +199,11 @@
            \c!color=\externalfilterparameter\c!highlightcolor,
           ]
 
+% For backward compatibility
+\def\syntaxhighlighting@namespace {\????syntaxhighlighting}
+\def\syntaxhighlighting@name      {\currentsyntaxhighlighting}
 
-\protectmodulecatcodes
+\protect
 
 \stopmodule
 

@@ -55,7 +55,14 @@
    \s!parent=externalfilter]
 
 \appendtoks
-  \externalfilter@define_indeed\currentexternalfilter
+    \externalfilter@show_status{defining filter : \currentexternalfilter}%
+    \doif{\externalfilterparameter\c!continue}\v!yes
+         {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
+    \setevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
+    \setvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
+    \setevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
+    \setevalue{process\currentexternalfilter buffer}{\externalfilter@process_buffer[\currentexternalfilter]}%
+    \setevalue{inline\currentexternalfilter}{\externalfilter@inline[\currentexternalfilter]}%
 \to \everydefineexternalfilter
 
 % For backward compatibility
@@ -101,22 +108,6 @@
 \stoptexdefinition
 
 %D \section {The main user macros}
-
-%D \subsubject {Define a new filter}
-
-\starttexdefinition unexpanded externalfilter@define_indeed #1
-    \externalfilter@show_status{defining filter : #1}
-
-    \doif{\externalfilterparameter\c!continue}\v!yes
-         {\expandafter\newcounter\csname\externalfilter@count\endcsname}
-
-    \setevalue{\e!start#1}{\externalfilter@start[\currentexternalfilter]}
-    \setvalue {\e!stop#1}{\externalfilter@process_filter}
-
-    \setevalue{process#1file}{\externalfilter@process_file[\currentexternalfilter]}
-    \setevalue{process#1buffer}{\externalfilter@process_buffer[\currentexternalfilter]}
-    \setevalue{inline#1}{\externalfilter@inline[\currentexternalfilter]}
-\stoptexdefinition
 
 \unexpanded\def\externalfilter@start
     {\bgroup\obeylines\dodoubleargument\externalfilter@start_indeed}
