@@ -56,7 +56,7 @@
 
 \appendtoks
     \externalfilter@show_status{defining filter : \currentexternalfilter}%
-    \doif{\externalfilterparameter\c!continue}\v!yes
+    \doif{\externalfilterparameter\c!cache}\v!yes
          {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
     \setevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
     \setvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
@@ -242,7 +242,7 @@
     \externalfilter@read_processed_file
 
     % Finalization
-    \doif{\externalfilterparameter\c!continue}\v!yes
+    \doif{\externalfilterparameter\c!cache}\v!yes
          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
     \endgroup
 \stoptexdefinition
@@ -298,14 +298,14 @@
 %D \subsubject {Set file names}
 %D
 %D \type{\externalfilter@base_file} is the name of the temporary file without
-%D extension. Its actual value depends on the state of \type{continue} key as
+%D extension. Its actual value depends on the state of \type{cache} key as
 %D well as the value of \type{name} key.
 
 \starttexdefinition externalfilter@set_filenames
    \externalfilter@set_directory
 
    % Set the name of temp file for the filter
-   \doifelse{\externalfilterparameter\c!continue}\v!yes
+   \doifelse{\externalfilterparameter\c!cache}\v!yes
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\csname\externalfilter@count\endcsname}}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
@@ -363,7 +363,7 @@
      \endgroup
 
      % Finalization
-     \doif{\externalfilterparameter\c!continue}\v!yes
+     \doif{\externalfilterparameter\c!cache}\v!yes
           {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
 
      \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
@@ -381,7 +381,7 @@
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
    \iftraceexternalfilters \externalfilter@show_filtercommand \fi
 
-   \doifelse{\externalfilterparameter\c!continue}\v!yes
+   \doifelse{\externalfilterparameter\c!cache}\v!yes
        {\doifelse{\externalfilterparameter\c!state}\v!stop
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
             {\doifmodeelse{force}
@@ -433,6 +433,7 @@
    \c!indentnext=\v!auto,
    \c!setups=,
    \c!continue=\v!no,
+   \c!cache=\externalfilterparameter\c!continue, % for backward compatibility
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
    \c!directory=,

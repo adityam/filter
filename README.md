@@ -49,7 +49,7 @@ To verify, check if
 returns a meaningful path. If not, you have to manually install the module.
 
 Download the latest version of the module from
-[http://github.com/adityam/filter/downloads](http://github.com/adityam/filter/downloads)
+[http://modules.contextgarden.net/filter](http://modules.contextgarden.net/filter)
 and unzip it either `$TEXMFHOME` or `$TEXMFLOCAL`. Run
 
     mktexlsr
@@ -67,8 +67,7 @@ will return the path where you stored the file.
 
 Unfortunately, that is not enough. For the module to work, TeX must be able to
 call an external program. This feature is a potential security risk and is
-disabled by default on most TeX distributions. To enable this feature, you must
-set
+disabled by default on most TeX distributions. To enable this feature, set
 
     shell_escape=t
 
@@ -104,9 +103,9 @@ Using this filter from within ConTeXt is pretty simple:
         [filtercommand={pandoc -t context -o \externalfilteroutputfile\space \externalfilterinputfile}]
 
 Yes, its that easy! The only thing to note is that TeX macros gobble spaces, so
-we have to manually insert a space after `\externalfilteroutputfile`.
+I inserted a manual space after `\externalfilteroutputfile`.
 
-This defines four things:
+The above `\defineexternalfilter` macro defines:
 
 1. An environment
 
@@ -148,11 +147,11 @@ Dealing with slow filters
 The above definition of a markdown filter creates two additional files: an
 "input" file and an "output" file, *irrespective of the
 number of times the environment is called*. For each markdown environment,
-ConTeXt overwrites the input file and pandoc overwrites the output file. This
-behavior is the default as I do not want to clutter the current directory with
-temporary files. The trade off is that for each document run, the filter is
+ConTeXt overwrites the input file and pandoc overwrites the output
+file; as a result, the current directory is not cluttered with temporary files.
+The trade off is that for each document run, the filter is
 invoked as many times as the number of markdown environments. Since getting
-cross-referencing right normally takes two or three runs, effectively the filter
+cross-referencing right normally takes two to three runs, effectively the filter
 is run two or three times more than required. A filter like `pandoc` is fairly
 fast, so these extra runs are not noticeable. But some filters, like the
 R-programming language for which simply startup and exit takes about 0.3
@@ -160,16 +159,16 @@ seconds, are slow. In such cases, the additional runs start adding up. A better
 trade off is to store the contents of each environment in a separate file and
 invoke the filter only if a file *changes in between successive runes*.
 
-The second behavior is achieved by adding `continue=yes` option to the
+The second behavior is achieved by adding `cache=yes` option to the
 definition:
 
     \defineexternalfilter
         [...]
         [...
-         continue=yes,
+         cache=yes,
          ...]
 
-Sometimes you want to force a rerun of all filters, even when `continue=yes` is
+Sometimes you want to force a rerun of all filters, even when `cache=yes` is
 set. This could be because the filters depend on an external script that might
 have changed. To force a rerun of all filters, enable the
 [mode](http://wiki.contextgarden.net/Modes) `force` either by adding
@@ -213,10 +212,10 @@ Names of temporary files
 ------------------------
 
 By default, `\externalfilterinputfile` is set to `\jobname-temp-<filter>.tmp`, where
-`<filter>` is the first argument of `\defineexternalfilter`. When `continue=yes`
+`<filter>` is the first argument of `\defineexternalfilter`. When `cache=yes`
 is set, `\externalfilterinputfile` equals `\jobname-temp-<filter>-<n>.tmp`, where
-`<n>` is the number of filter environments that have appeared so far. In this
-case,  a `\jobname-temp-<filter>-<n>.tmp.md5` file, which stores the `md5` sum of the
+`<n>` is the number of filter environments that have appeared so far. In MkII,
+a `\jobname-temp-<filter>-<n>.tmp.md5` file, which stores the `md5` sum of the
 input file is also created.
 
 A macro `\externalfilterbasefile` stores the name of the input file without the
@@ -231,15 +230,7 @@ key. For example
         [filtercommand={...},
          output={\externalfilterbasefile.png}]
 
-changes the output extension to `.png`. We also need to either set
-
-    \defineexternalfilter
-      [...]
-      [....
-       read=no,
-       ...]
-
-or set 
+changes the output extension to `.png`. To read the generated PNG file, set:
 
     \defineexternalfilter
       [...]
@@ -255,7 +246,7 @@ Output Directory
 ----------------
 
 This module creates a lot of temporary files that clutter the current directory.
-If you prefer the temporary files to be created in another directory, specify
+If you prefer the temporary files to be created in another directory, use
 the `directory` option, e.g.,
 
     \defineexternalfilter
@@ -289,7 +280,7 @@ Disabling filters
 Adding `state=stop` option disables the filters. The
 `\externalfilterinputfile` is still written, but the filter is not run.
 
-When used in conjunction with `continue=yes` and `directory=...`, this
+When used in conjunction with `cache=yes` and `directory=...`, this
 is useful for sharing your files with others who do not have the
 external program that you are using. 
 
@@ -317,7 +308,7 @@ Standard options
 - `before` and `after`: to set the spacing of the environment or enclose the
   output in a frame, etc. 
 - `style` and `color`: to set the color and style of the output.
-- `indentnext`: Should the next line be indented?
+- `indentnext`: specify if the next line is indented
 - `setups`: specify a list of setups (defined using `\startsetups`). These
   setups may be used to define commands that are needed inside the environment.
 
@@ -342,7 +333,7 @@ R-code
       [R]
       [filtercommand={R CMD BATCH -q  \externalfilterinputfile\space \externalfilteroutputfile},
        output=\externalfilterbasefile.out,
-       continue=yes]
+       cache=yes]
 
 I can hide the output of a particular R-environment by
 
@@ -368,7 +359,7 @@ of all options. The current defaults are
       [before=,
        after=,
        setups=,
-       continue=no,
+       cache=no,
        read=yes,
        readcommand=\ReadFile,
        output=\externalfilterbasefile.tex,
@@ -519,8 +510,8 @@ such snippets. Define the boilerplate code in ConTeXt buffers and then use
          bufferafter={...list of buffers...},
         ]
 
-For example, suppose you want to generate images using a latex package that does
-not work well with ConTeXt, say shak. One way to use this is as follows: first
+For example, suppose you want to generate images using a LaTeX package that does
+not work well with ConTeXt, say `shak`. One way to use this is as follows: first
 define a file that processes its content using `latex`.
 
         \defineexternalfilter
@@ -578,7 +569,7 @@ GNU barcode to draw barcodes. One way to do this is
       [barcode]
       [encoding=code128,
        output=\externalfilterbasefile.eps,
-       continue=yes,
+       cache=yes,
        filtercommand=\barcodefiltercommand,
        readcommand=\barcodereadcommand]
 
@@ -643,8 +634,8 @@ for this. For example, in  the above barcode example, use
 Limitations
 ------------
 
-- In MkII, the option `continue=yes` does not work correctly with filters that have a
-  pipe `|` in their definition. This is because internally `continue=yes` calls
+- In MkII, the option `cache=yes` does not work correctly with filters that have a
+  pipe `|` in their definition. This is because internally `cache=yes` calls
 
           mtxrun --ifchanged=filename --direct filtercommand
 
@@ -655,7 +646,7 @@ Limitations
           MTXrun |
           MTXrun |
 
-    In MkIV, `continue=yes` calls
+    In MkIV, `cache=yes` calls
 
           \ctxlua{job.files.run("filename", "filtercommand")}
 
@@ -669,9 +660,9 @@ Messages and Tracing
 The filter module outputs some diagnostic information on the console output to
 indicate what is happening. Loading of the module is indicated by:
 
-    loading         : ConTeXt User Module / Filter
+    loading         : ConTeXt User Module / Filter (ver: <date>)
 
-Whenever a filter is executed, the expanded name of the command is displayed.
+Whenever a filter is defined the expanded name of the command is displayed.
 For example, for the markdown filter we get:
 
     t-filter        > command : pandoc -w context -o markdown-temp-markdown.tex markdown-temp-markdown.tmp
@@ -697,14 +688,11 @@ information add
 
 in your tex file. This shows the name of the filters when they are defined.
 In MkIV, `\traceexternalfilters` also enables the trackers for `graphic.run`, so
-when `continue=yes` is used, message like
+when `cache=yes` is used, message like
 
     graphics        > run > processing file, no changes in '<filename>-temp-<filtername>-<n>.tmp', not processed
 
 are shown.
-
-
-
 
 Version History
 --------------
@@ -760,3 +748,5 @@ Version History
     - Use `job.files.run` instead of `mtxrun --ifchanged` in MkIV.
 - **2011.12.17**
     - Split into `.mkii` and `.mkiv` versions
+- **2012.01.25**
+    - Renamed `continue` to `cache`. Using `continue=yes` still works
