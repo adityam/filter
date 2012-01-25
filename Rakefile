@@ -22,7 +22,6 @@ end
 
 def run_tests tests
   FileUtils.mkdir_p "output"
-  FileUtils.mkdir_p "../output"
   tests.each do |file|
     sh "context --noconsole --purgeall --purgeresult #{file}"
   end

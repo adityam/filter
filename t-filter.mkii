@@ -324,21 +324,17 @@
    % The basename of the external file
    \edef\externalfilter@base_file  {\jobname-\externalfilter@buffer_name}
 
-   % In MkII, the buffer output is written to \TEXbufferfile{buffername} where
-   % the macro \TEXbufferfile is defined as
-   %
-   %        \def\TEXbufferfile   #1{\bufferprefix#1.\f!temporaryextension}
-   %
-   % We redefine bufferprefix to include the directory name.
-   \edef\bufferprefix{\externalfilter@get_directory\jobname-}
-
-   % In MkIV, we do not need to do such jugglary, because we can specify the
-   % name of the file where the buffer has to be saved. This file is
-   % \externalfilter@input_file (because it is the input to the filter).
+   % Append directory name to the name of the input file
    \edef\externalfilter@input_file {\externalfilter@get_directory\externalfilter@base_file.\f!temporaryextension}
 
    % Append directory name to the name of the output file
    \edef\externalfilter@output_file{\externalfilter@get_directory\externalfilterparameter\c!output}
+
+   % In MkII, the buffer output is written to \TEXbufferfile{buffername}. So we
+   % redefine \TEXbufferfile to 
+
+   \edef\TEXbufferfile##1{\externalfilter@input_file}
+
 \stoptexdefinition
 
 

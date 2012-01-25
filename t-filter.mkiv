@@ -175,9 +175,9 @@
     \externalfilter@set_directory
 
     \ifthirdargument
-      \edef\externalfilter@buffer_name{#3}
+      \edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-#3}
     \else
-      \edef\externalfilter@buffer_name{#2}
+      \edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-#2}
     \fi
 
     \externalfilter@set_filenames_extras
@@ -322,9 +322,7 @@
    % The basename of the external file
    \edef\externalfilter@base_file  {\jobname-\externalfilter@buffer_name}
 
-   % In MkIV, we can specify the name of the file where the buffer has
-   % to be saved. This file is \externalfilter@input_file (because it is
-   % the input to the filter).
+   % Append directory name to the name of the input file
    \edef\externalfilter@input_file {\externalfilter@get_directory\externalfilter@base_file.\f!temporaryextension}
 
    % Append directory name to the name of the output file
