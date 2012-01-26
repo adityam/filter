@@ -32,7 +32,7 @@ FILTER_TEX  = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.tex]
 FILTER_DOC  = "README.md"
 FILTER_TEST = FileList['tests/[0-9][0-9]-*.tex']
 
-VIM_TEX  = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv]
+VIM_TEX  = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv 2context.vim]
 VIM_DOC  = "vim-README.md"
 VIM_TEST = FileList['tests/vim/[0-9][0-9]-*.tex']
 
