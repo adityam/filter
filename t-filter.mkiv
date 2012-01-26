@@ -390,6 +390,7 @@
                                 \!!bs\externalfilterparameter\c!filtercommand\!!es)}}}}
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
+    \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
 \stoptexdefinition
 
 %D \subsubject {Read output}
