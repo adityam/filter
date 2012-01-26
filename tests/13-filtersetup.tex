@@ -13,28 +13,23 @@
 \defineexternalfilter
   [barcode]
   [encoding=code128,
-   output=\externalfilterbasefile.pdf,
+   output=\externalfilterbasefile.eps,
    label=yes,
    checksum=no,
-   continue=yes,
+   cache=yes,
    filtersetups={barcode:options},
    filtercommand=\barcodefiltercommand,
    readcommand=\barcodereadcommand]
 
 \def\barcodereadcommand#1%
-  {\externalfigure[#1][object=no]}
+  {\externalfigure[#1]}
 
 \unprotected\def\barcodefiltercommand
-  {barcode -i \externalfilterinputfile\space -o \externalfilterbasefile.eps\space
+  {barcode -i \externalfilterinputfile\space -o \externalfilteroutputfile\space
    -E % EPS output
    -e \externalfilterparameter{encoding}
-   %\doif{\externalfilterparameter{checksum}}\v!no{-c}
    \barcodelabeloption\space
-   &&
-   epstopdf \externalfilterbasefile.eps --outfile=\externalfilteroutputfile
    }
-
-\traceexternalfilters
 
 \starttext
 \inlinebarcode!Hello World!
