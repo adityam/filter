@@ -1,0 +1,18 @@
+%T Test before and after keys
+
+\usemodule[vim]
+
+\defineframedtext[filterframe][width=broad,corner=round]
+\definevimtyping[C][syntax=c, before=\startfilterframe, after=\stopfilterframe]
+
+\starttext
+\startC
+#include <stdio.h>
+
+void main ()
+{
+  printf("Hello World\n") ;
+}
+
+\stopC
+\stoptext

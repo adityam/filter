@@ -1,12 +1,12 @@
+%T Test tab=something option
+
 \usemodule  [vim]
 
-\definevimtyping  
-  [PYTHON]  
-  [syntax=python]
-
+\definevimtyping  [PYTHON]  [syntax=python]
 
 \starttext
 
+\subject{Default tab settings}
 \startPYTHON
 parents, babies = (1, 1)
 while babies < 100:
@@ -14,6 +14,7 @@ while babies < 100:
 	parents, babies = (babies, parents + babies)
 \stopPYTHON
 
+\subject{tab=8}
 \startPYTHON[tab=8]
 parents, babies = (1, 1)
 while babies < 100:

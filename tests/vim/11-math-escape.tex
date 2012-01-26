@@ -1,3 +1,5 @@
+%T Test math-escape
+
 \usemodule[vim]
 
 \definevimtyping[C][syntax=c, escape=on]
@@ -9,13 +11,4 @@
  */
     double root (double a, double b, double c) {....}
 \stopC
-
-\definevimtyping[python][syntax=python, escape=on]
-
-\startpython
-# Returns \m{\sum_{i=1}^{n}i}
-def sum_upto(n)
-    r = range(1, n+1)
-    return sum(r)
-\stoppython
 \stoptext

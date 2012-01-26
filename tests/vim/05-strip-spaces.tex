@@ -1,0 +1,21 @@
+%T Test functionality to strip leading spaces
+
+\usemodule[vim]
+
+\definevimtyping[python][syntax=python, space=on]
+
+\starttext
+\subject{strip=on}
+\startpython[strip=on]
+    def sum_upto(n)
+        r = range(1, n+1)
+        return sum(r)
+\stoppython
+
+\subject{strip=off}
+\startpython[strip=off]
+    def sum_upto(n)
+        r = range(1, n+1)
+        return sum(r)
+\stoppython
+\stoptext

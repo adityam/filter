@@ -1,0 +1,14 @@
+%T Testing cache=yes option
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }, cache=yes]
+
+\starttext
+\startmarkdown
+  Testing `cache=yes` option.
+\stopmarkdown
+\stoptext
+

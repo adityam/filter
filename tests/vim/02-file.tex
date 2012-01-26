@@ -1,0 +1,10 @@
+%T Test processing of external file
+
+\setupcolors[state=start]
+\usemodule[vim]
+
+\definevimtyping[TEX][syntax=context,directory=output]
+
+\starttext
+\typeTEXfile{t-module-catcodes.tex}
+\stoptext

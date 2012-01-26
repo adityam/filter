@@ -1,3 +1,5 @@
+%T Testing raw typing
+
 \usemodule[vim]
 
 \definevimtyping[vimtyping]
@@ -6,5 +8,6 @@
 \startrawvimtyping
 print \SYN[Special]{"}\SYN[Constant]{Hello }\SYN[Special]{#\{}\SYN[rubyInterpolation]{name}\SYN[Special]{\}}\SYN[Special]{"}
 \stoprawvimtyping
+
 \inlinerawvimtyping{print \SYN[Special]{"}\SYN[Constant]{Hello% }\SYN[Special]{#\{}\SYN[rubyInterpolation]{name}\SYN[Special]{\}}\SYN[Special]{"}}
 \stoptext

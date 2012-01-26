@@ -1,0 +1,10 @@
+%T Test processing  of part of external file
+
+\setupcolors[state=start]
+\usemodule[vim]
+
+\definevimtyping[TEX][syntax=context,directory=output]
+
+\starttext
+\typeTEXfile[start=10, stop=25]{t-vim.tex}
+\stoptext
