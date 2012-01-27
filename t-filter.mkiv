@@ -87,7 +87,7 @@
 
 \def\traceexternalfilters
     {\traceexternalfilterstrue
-     \doifmode\s!mkiv{\enabletrackers[graphic.runfile]}}
+     \enabletrackers[graphic.runfile]}
 
 \starttexdefinition externalfilter@show_filenames
     \writestatus\m!externalfilter{current filter : \currentexternalfilter}
@@ -115,7 +115,7 @@
 \starttexdefinition externalfilter@start_indeed [#1][#2]
     % #1 = filter
     % #2 = options
-    \egroup %\bgroup in \start#1
+    \egroup %\bgroup in \externalfilter@start
 
     \edef\currentexternalfilter{#1}
 
@@ -337,14 +337,19 @@
 
 \starttexdefinition externalfilter@process_filter
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     % To imitate the behavior of MkII, we need
      %
      %      \savebuffer[\externalfilter@buffer_name][\externalfilter@input_file]
      %
-     % However, in MkIV, we can save a list of buffers to a file. The empty
+     % We can also save a list of buffers to a file. The empty
      % elements of the list are ignored. So, instead we use the following
-     %    \savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter@buffer_name,\externalfilterparameter{\c!buffer\c!after}]
+     %
+     %    \savebuffer[\externalfilterparameter{\c!buffer\c!before},
+     %                \externalfilter@buffer_name,
+     %                \externalfilterparameter{\c!buffer\c!after}]
      %               [\externalfilter@input_file]}
+     %
+     % but using this method we cannot save the file in another directory. 
+     % So, we simply write the file in the current directory and then move it.
          \savebuffer[\externalfilterparameter{\c!buffer\c!before},
                      \externalfilter@buffer_name,
                      \externalfilterparameter{\c!buffer\c!after}]
