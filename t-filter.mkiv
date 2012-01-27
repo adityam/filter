@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.01.14,
+%D      version=2012.01.26,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.01.14)}
+\writestatus{loading}{Filter (ver: 2012.01.26)}
 
 % For backward compatibility
 \ifx\grabbufferdata\undefined \let\grabbufferdata \dostartbuffer \fi
@@ -56,7 +56,7 @@
 
 \appendtoks
     \externalfilter@show_status{defining filter : \currentexternalfilter}%
-    \doif{\externalfilterparameter\c!cache}\v!yes
+    \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
     \setevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
     \setvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
@@ -78,7 +78,6 @@
 \setinterfacemessage\m!externalfilter{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
 \setinterfacemessage\m!externalfilter{slash}     {Appending / to directory -- }
 \setinterfacemessage\m!externalfilter{reuse}     {\c!state=\v!stop : Not running filter on file --}
-\setinterfacemessage\m!externalfilter{force}     {mode 'force' enabled: Forcing running of filters}
 
 
 %D \subject {Tracing Macros}
@@ -87,7 +86,7 @@
 
 \def\traceexternalfilters
     {\traceexternalfilterstrue
-     \doifmode\s!mkiv{\enabletrackers[graphic.runfile]}}
+     \enabletrackers[graphic.runfile]}
 
 \starttexdefinition externalfilter@show_filenames
     \writestatus\m!externalfilter{current filter : \currentexternalfilter}
@@ -115,7 +114,7 @@
 \starttexdefinition externalfilter@start_indeed [#1][#2]
     % #1 = filter
     % #2 = options
-    \egroup %\bgroup in \start#1
+    \egroup %\bgroup in \externalfilter@start
 
     \edef\currentexternalfilter{#1}
 
@@ -242,7 +241,7 @@
     \externalfilter@read_processed_file
 
     % Finalization
-    \doif{\externalfilterparameter\c!cache}\v!yes
+    \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
     \endgroup
 \stoptexdefinition
@@ -305,7 +304,7 @@
    \externalfilter@set_directory
 
    % Set the name of temp file for the filter
-   \doifelse{\externalfilterparameter\c!cache}\v!yes
+   \doifinsetelse{\externalfilterparameter\c!cache}{\v!yes,\v!force}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\csname\externalfilter@count\endcsname}}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
@@ -337,14 +336,19 @@
 
 \starttexdefinition externalfilter@process_filter
      % By defualt, buffers are in memory in MkIV. So, we save them to disk
-     % To imitate the behavior of MkII, we need
      %
      %      \savebuffer[\externalfilter@buffer_name][\externalfilter@input_file]
      %
-     % However, in MkIV, we can save a list of buffers to a file. The empty
+     % We can also save a list of buffers to a file. The empty
      % elements of the list are ignored. So, instead we use the following
-     %    \savebuffer[\externalfilterparameter{\c!buffer\c!before},\externalfilter@buffer_name,\externalfilterparameter{\c!buffer\c!after}]
+     %
+     %    \savebuffer[\externalfilterparameter{\c!buffer\c!before},
+     %                \externalfilter@buffer_name,
+     %                \externalfilterparameter{\c!buffer\c!after}]
      %               [\externalfilter@input_file]}
+     %
+     % but using this method we cannot save the file in another directory. 
+     % So, we simply write the file in the current directory and then move it.
          \savebuffer[\externalfilterparameter{\c!buffer\c!before},
                      \externalfilter@buffer_name,
                      \externalfilterparameter{\c!buffer\c!after}]
@@ -361,7 +365,7 @@
      \endgroup
 
      % Finalization
-     \doif{\externalfilterparameter\c!cache}\v!yes
+     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
           {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
 
      \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
@@ -382,12 +386,8 @@
    \doifelse{\externalfilterparameter\c!cache}\v!yes
        {\doifelse{\externalfilterparameter\c!state}\v!stop
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
-            {\doifmodeelse{force}
-                  {\showmessage\m!externalfilter{force}\empty
-                    \executesystemcommand
-                      {\externalfilterparameter\c!filtercommand}}
-                   {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,
-                                \!!bs\externalfilterparameter\c!filtercommand\!!es)}}}}
+            {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,
+                          \!!bs\externalfilterparameter\c!filtercommand\!!es)}}}
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
     \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
@@ -443,10 +443,6 @@
    \c!buffer\c!after=,
    \c!taglabel=\externalfilter@id,
  ]
-
-\doifmodeelse{reuse}
-  {\setupexternalfilters[state=stop]}
-  {\setupexternalfilters[state=start]}
 
 \def\externalfilterbasefile  {\externalfilter@base_file}
 \def\externalfilterinputfile {\externalfilter@input_file}

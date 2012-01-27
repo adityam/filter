@@ -17,19 +17,6 @@
 
 \unprotectmodulecatcodes
 
-%% Temporary bugfix
-
-\startmode[\s!mkii]
-\def\p!doifinsetelse#1#2#3#4%
-  {\donefalse
-   \edef\!!stringa{#3}%
-   \ifx\!!stringa\empty
-   \else
-     \processcommacommand[#4]\p!docheckiteminset
-   \fi
-   \ifdone\expandafter#1\else\expandafter#2\fi}
-\stopmode
-
 \startinterface all
   \setinterfaceconstant {syntax}          {syntax}
   \setinterfaceconstant {highlight}       {highlight}
