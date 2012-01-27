@@ -2,6 +2,8 @@
 
 \usemodule[filter]
 
+\traceexternalfilters
+
 \defineexternalfilter 
   [markdown]
   [filter={pandoc -w context -o \externalfilteroutputfile }, cache=yes]
@@ -9,6 +11,10 @@
 \starttext
 \startmarkdown
   Testing `cache=yes` option.
+\stopmarkdown
+
+\startmarkdown[cache=force]
+  Testing `cache=force` option.
 \stopmarkdown
 \stoptext
 

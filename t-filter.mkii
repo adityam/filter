@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2011.12.17,
+%D      version=2012.01.26,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,9 +9,21 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2011.12.17)}
+\writestatus{loading}{Filter (ver: 2012.01.26)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
+
+% Make \doifinset expandable in MkII
+
+\def\p!doifinsetelse#1#2#3#4%
+  {\donefalse
+   \edef\!!stringa{#3}%
+   \ifx\!!stringa\empty
+   \else
+     \processcommacommand[#4]\p!docheckiteminset
+   \fi
+   \ifdone\expandafter#1\else\expandafter#2\fi}
+
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -63,7 +75,6 @@
 \setinterfacemessage\m!externalfilter{forbidden} {Fatal Error: Cannot use absolute path -- as directory}
 \setinterfacemessage\m!externalfilter{slash}     {Appending / to directory -- }
 \setinterfacemessage\m!externalfilter{reuse}     {\c!state=\v!stop : Not running filter on file --}
-\setinterfacemessage\m!externalfilter{force}     {mode 'force' enabled: Forcing running of filters}
 
 
 %D \subject {Tracing Macros}
@@ -104,7 +115,7 @@
     \setupexternalfilter[#1][\s!parent=\externalfilter@namespace,#2]
     \edef\externalfilter@name{#1}
 
-    \doif{\externalfilterparameter\c!cache}\v!yes
+    \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\expandafter\newcounter\csname\externalfilter@count\endcsname}
 
     \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter@start[#1]}
@@ -240,7 +251,7 @@
     \externalfilter@read_processed_file
 
     % Finalization
-    \doif{\externalfilterparameter\c!cache}\v!yes
+    \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
     \endgroup
 \stoptexdefinition
@@ -307,7 +318,7 @@
    \externalfilter@set_directory
 
    % Set the name of temp file for the filter
-   \doifelse{\externalfilterparameter\c!cache}\v!yes
+   \doifinsetelse{\externalfilterparameter\c!cache}{\v!yes,\v!force}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\externalfilter@name-\csname\externalfilter@count\endcsname}}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\externalfilter@name}}
    \doifsomething{\externalfilterparameter\c!name}
@@ -349,7 +360,7 @@
      \endgroup
 
      % Finalization
-     \doif{\externalfilterparameter\c!cache}\v!yes
+     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
           {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
 
      \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
@@ -366,15 +377,15 @@
        {\doifelse{\externalfilterparameter\c!state}\v!stop
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
             {\doifmode{*first}
-               {\doifmodeelse{force}
-                   {\showmessage\m!externalfilter{force}
-                    \executesystemcommand
-                      {mtxrun --direct \externalfilterparameter\c!filtercommand}}
-                   {\executesystemcommand
-                            {mtxrun --ifchanged=\externalfilter@input_file\space
-                                --direct \externalfilterparameter\c!filtercommand}}}}}
-       {\executesystemcommand
-          {\externalfilterparameter\c!filtercommand}}
+                 {\executesystemcommand
+                          {mtxrun --ifchanged=\externalfilter@input_file\space
+                              --direct \externalfilterparameter\c!filtercommand}}}}
+       {\doifelse{\externalfilterparameter\c!cache}\v!force
+            {\doifmode{*first}
+                 {\executesystemcommand
+                          {mtxrun --direct \externalfilterparameter\c!filtercommand}}}
+            {\executesystemcommand
+               {\externalfilterparameter\c!filtercommand}}}
 \stoptexdefinition
 
 %D \subsubject {Read output}

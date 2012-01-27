@@ -168,19 +168,16 @@ definition:
          cache=yes,
          ...]
 
-Sometimes you want to force a rerun of all filters, even when `cache=yes` is
-set. This could be because the filters depend on an external script that might
-have changed. To force a rerun of all filters, enable the
-[mode](http://wiki.contextgarden.net/Modes) `force` either by adding
-`mode=force` to the compiler:
+Sometimes you want to force the rerun of a filter, even if the content of the
+environment has not changed. This could be because the filters depend on an
+external script that might have changed. To force a rerun of a filter use
 
-    context --mode=force filename
 
-or adding
-
-    \enablemode[force]
-
-somewhere near the top of your file.
+    \defineexternalfilter
+        [...]
+        [...
+         cache=force,
+         ...]
 
 Reading the input
 ----------------
@@ -283,9 +280,6 @@ Adding `state=stop` option disables the filters. The
 When used in conjunction with `cache=yes` and `directory=...`, this
 is useful for sharing your files with others who do not have the
 external program that you are using. 
-
-Enabling the `reuse` mode (before the `filter` module is loaded) sets
-`state=stop` as the default value.
 
 Deleting temporary files
 ------------------------
@@ -748,5 +742,7 @@ Version History
     - Use `job.files.run` instead of `mtxrun --ifchanged` in MkIV.
 - **2011.12.17**
     - Split into `.mkii` and `.mkiv` versions
-- **2012.01.25**
+- **2012.01.26**
     - Renamed `continue` to `cache`. Using `continue=yes` still works
+    - Removed `force` and `reuse` modes (too easy to clash with user modes).
+    - Functionality of force mode implemented using `cache=force`. 
