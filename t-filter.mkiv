@@ -240,6 +240,7 @@
     \endlinechar\minusone %to prevent line break after reading file
     \externalfilter@read_processed_file
 
+    \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
@@ -362,11 +363,12 @@
 
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
-     \endgroup
+     \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
           {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+     \endgroup
 
      \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
      \dorechecknextindentation
@@ -390,7 +392,6 @@
                           \!!bs\externalfilterparameter\c!filtercommand\!!es)}}}
        {\executesystemcommand
           {\externalfilterparameter\c!filtercommand}}
-    \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
 \stoptexdefinition
 
 %D \subsubject {Read output}

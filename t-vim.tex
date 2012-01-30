@@ -111,13 +111,16 @@
 
 \def\vimtyping@filter_command
   {vim -u \vimrcfilename\space % read global config file
+       % --startuptime log
+       -X % dont connect to X server
+       -i NONE % dont use viminfo file
        --noplugin % dont load plugins
        -e % run in ex mode
        -s % silent
        -C % set compatible
        -n % no swap file
        -c "set tabstop=\externalfilterparameter\c!tab" %
-       -c "syntax on" %
+       -c "syntax manual" % don't load filetype detection
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "let contextstartline=\externalfilterparameter\c!start" %
        -c "let contextstopline=\externalfilterparameter\c!stop" %
