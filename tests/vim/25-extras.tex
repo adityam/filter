@@ -1,0 +1,17 @@
+% Based on the TeX.sx question 18083
+
+\usemodule[vim]
+
+\startvimrc[name=cpp]
+  syn keyword Type uDouble
+\stopvimrc
+
+\definevimtyping[cpp][syntax=cpp, extras=cpp, cache=force]
+
+\starttext
+\startcpp
+  double x, y, z;
+  uDouble ax, by, cz;
+\stopcpp
+\stoptext
+

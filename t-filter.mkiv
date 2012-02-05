@@ -30,6 +30,7 @@
     \setinterfaceconstant {filter}           {filter}
     \setinterfaceconstant {filtercommand}    {filtercommand}
     \setinterfaceconstant {output}           {output}
+    \setinterfaceconstant {purge}            {purge}
     \setinterfaceconstant {read}             {read}
     \setinterfaceconstant {readcommand}      {readcommand}
     \setinterfaceconstant {taglabel}         {taglabel}
@@ -240,7 +241,10 @@
     \endlinechar\minusone %to prevent line break after reading file
     \externalfilter@read_processed_file
 
-    \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
+     \iftraceexternalfilters \else 
+        \doif{\externalfilterparameter\c!purge}\v!yes
+             {\ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)}}
+     \fi
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
@@ -363,7 +367,10 @@
 
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
-     \iftraceexternalfilters \else \ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)} \fi
+     \iftraceexternalfilters \else 
+        \doif{\externalfilterparameter\c!purge}\v!yes
+             {\ctxlua{os.remove(\!!bs\externalfilter@input_file\!!es)}}
+     \fi
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
@@ -437,6 +444,7 @@
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
    \c!directory=,
+   \c!purge=\v!yes,
    \c!output=\externalfilterbasefile.tex,
    \c!filter=,
    \c!filtercommand={\externalfilterparameter\c!filter\space \externalfilter@input_file},

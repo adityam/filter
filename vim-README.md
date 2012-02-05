@@ -478,6 +478,30 @@ To disable loading of vimrc file, use
 
 The default is not to use any vimrc file.
 
+A vimrc file gets loaded before syntax highlighting is enabled. If you want to
+override the default syntax highlighting scheme, add the appropriate `syn ...`
+commands to a vimrc file, and source that usign
+
+     \definevimtyping
+        [...]
+        [...
+         extras=<name of vimrc file>,
+         ...]
+
+For example, suppose you are using a C++ library that defines `uDouble` as a
+keyword, so you want to highlight it in your code. Use
+
+    \startvimrc[name=cpp_extras]
+    syn keyword Type uDouble
+    \stopvimrc
+
+    \definevimtyping
+      [cpp]
+      [
+        syntax=cpp,
+        extras=cpp_extras,
+      ]
+
 Messages and Tracing
 --------------------
 
