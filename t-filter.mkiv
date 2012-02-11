@@ -175,9 +175,9 @@
     \externalfilter@set_directory
 
     \ifthirdargument
-      \edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-#3}
+      \edef\externalfilter@buffer_name{#3}
     \else
-      \edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-#2}
+      \edef\externalfilter@buffer_name{#2}
     \fi
 
     \externalfilter@set_filenames_extras
