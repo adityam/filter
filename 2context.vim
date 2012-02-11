@@ -65,6 +65,8 @@ else
   let s:strip = 0
 endif
 
+let s:lines = []
+
 " Loop over all lines in the original text.
 let s:buffer_lnum = 1
 let s:lnum = s:lstart
@@ -133,18 +135,16 @@ while s:lnum <= s:lstop
     let s:new = '\HGL{' . s:new . '}'
   endif
 
-" Go back and paste the current line
-  wincmd p
-  call append (s:buffer_lnum-1, s:new)
-  wincmd p
+  call add(s:lines, s:new)
 
 " Increment line numbers
   let s:lnum = s:lnum + 1
   let s:buffer_lnum = s:buffer_lnum + 1
 endwhile
 
+" Go to previous buffer
 wincmd p
-" We have a spurious line in the end. So we remove it.
-$delete
-" Write the file
+echo s:lines
+call setline(1,s:lines)
+unlet s:lines
 write

@@ -110,20 +110,26 @@
       {\def\vimtyping@script_name{kpse:2context.vim}}}
 
 \def\vimtyping@filter_command
-  {vim -u \vimrcfilename\space % read global config file
+  {vim -u \vimrc_filename\space % read global config file
+        % --startuptime log
+        % -V3log
+       -X % dont connect to X server
+       -i NONE % dont use viminfo file
        --noplugin % dont load plugins
        -e % run in ex mode
        -s % silent
        -C % set compatible
        -n % no swap file
-       -c "set tabstop=\externalfilterparameter\c!tab" %
-       -c "syntax on" %
+       -c "syntax manual" % don't load filetype detection
        -c "set syntax=\externalfilterparameter\c!syntax" %
-       -c "let contextstartline=\externalfilterparameter\c!start" %
-       -c "let contextstopline=\externalfilterparameter\c!stop" %
-       -c "let strip=\getvalue{\vimtyping@id-\c!strip-\externalfilterparameter\c!strip}" %
+       -c "set tabstop=\externalfilterparameter\c!tab" %
+       % vim only accepts 10 -c commands, so we combine a few let statements
+       -c "let contextstartline=\externalfilterparameter\c!start | %
+           let contextstopline=\externalfilterparameter\c!stop   | %
+           let strip=\getvalue{\vimtyping@id-\c!strip-\externalfilterparameter\c!strip}" %
        -c "let escapecomments=\getvalue{\vimtyping@id-\c!escape-\externalfilterparameter\c!escape}" %
        -c "let highlight=[\externalfilterparameter\c!highlight]" %
+       \vimrc_extras\space
        -c "source \vimtyping@script_name" %
        -c "qa" %
        \externalfilterinputfile\space
@@ -192,13 +198,15 @@
   [\vimrc@id]
   [\c!continue=\v!no,
    \c!read=\v!no,
+   \c!purge=\v!no,
    \c!filtercommand=\empty]
 
-\def\vimrcfilename{NONE}
+\def\vimrcfile_name{NONE}
+\def\vimrc_extras{}
 
 \startsetups vimrc@setup
   \doifelsenothing{\externalfilterparameter\c!vimrc}
-      {\def\vimrcfilename{NONE}}
+      {\def\vimrc_filename{NONE}}
       {\begingroup
        \expanded{\setupexternalfilter[\vimrc@id][\c!name=\externalfilterparameter\c!vimrc]}
 
@@ -207,7 +215,21 @@
 
        \externalfilter@set_filenames
 
-       \global\xdef\vimrcfilename{\externalfilter@input_file}
+       \global\xdef\vimrc_filename{\externalfilter@input_file}
+       \endgroup
+      }
+
+  \doifelsenothing{\externalfilterparameter\c!extras}
+      {\def\vimrc_extras{}}
+      {\begingroup
+       \expanded{\setupexternalfilter[\vimrc@id][\c!name=\externalfilterparameter\c!extras]}
+
+       \edef\externalfilter@name{\vimrc@id}
+       \edef\currentexternalfilter{\vimrc@id}
+
+       \externalfilter@set_filenames
+
+       \global\xdef\vimrc_extras{-c "source \externalfilter@input_file"}
        \endgroup
       }
 \stopsetups
