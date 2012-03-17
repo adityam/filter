@@ -142,7 +142,7 @@
 
     \externalfilter@set_directory
 
-    \edef\externalfilter@input_file{#3}
+    \edef\externalfilter@input_file{\locfilename{#3}}
     \splitfilename{#3}
     %NOTE: \edef doesn not work because \splitoffname is not expandable
     \def\externalfilter@base_file   {\splitoffname}
