@@ -119,8 +119,11 @@ defines three things:
 
         \typeRUBYfile{...}
 
-    The argument of this macro must a file name. That file is processed by
-    `2context.vim` and the result is read back in ConTeXt.
+    The argument of this macro must a file name or a url (urls work in MkIV
+    only). That file is processed by `2context.vim` and the result is read back
+    in ConTeXt. For controling how frequently a remote file is downloaded when
+    processing a url, see the _Processing remote files_ section of the
+    `t-filter` manual.
 
 In all the three cases, the `t-filter` module takes care of writing to external
 file, processing by `2context.vim`, and reading the contents back to ConTeXt.
