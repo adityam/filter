@@ -1,0 +1,11 @@
+\usemodule[filter]
+\traceexternalfilters
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+
+\starttext
+\processmarkdownfile{https://raw.github.com/adityam/filter/master/README.md}
+\stoptext
