@@ -5,8 +5,8 @@
 \defineexternalfilter 
   [markdown]
   [filter={pandoc -w context -o \externalfilteroutputfile },
-   before=\blank,
-   after=\blank,
+   spacebefore=none,
+   spaceafter=none,
    indentnext=yes]
 
 \setupindenting[big,yes]

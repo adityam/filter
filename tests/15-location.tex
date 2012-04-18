@@ -1,0 +1,21 @@
+%T Testing location
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+One line
+\startmarkdown
+  **Markdown** with default location
+\stopmarkdown
+Second line
+
+One line
+\startmarkdown[location=text]
+  **Markdown** with `location=text`
+\stopmarkdown
+Second line
+\stoptext

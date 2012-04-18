@@ -204,6 +204,49 @@ Sometimes, it is desirable to ignore the output, which is done by
        read=no,
        ...]
 
+Space around the environment
+----------------------------
+
+By default, the `\start<...>` ... `\stop<...>` and the `\type<...>file{...}`
+variant displays the output is _paragraph_ mode (i.e., inserts blanks before and
+after the environment), while the `\inline{...}` variant reads the output in
+_text_ mode (i.e., does not insert blanks before or after the environment).
+
+To change the amount of space inserted before and after the environment, use the
+`spacebefore` and the `spaceafter` keys. For example, if you want big spaces
+around the environment use:
+
+    \defineexternalfilter
+      [...]
+      [....
+       spacebefore=big,
+       spaceafter=big,
+       ...]
+
+The `spacebefore` and `spaceafter` keys accept all values accepted by the
+`\blank[...]` macro.
+
+In the paragraph mode, the next line after `\stop<...>` is indented or not based
+on the value of the `indentnext` key. The default value is `auto` which indents
+the next line if there is an empty line after `\stop<...>`; other options are
+`no`, which never indents the next line and `yes` whcih always indents the next
+line.
+
+If you want the `\start<...>` ... `\stop<...>` and the `\type<...>file{...}`
+variant to behave in _text_ mode, set:
+
+    \defineexternalfilter
+      [...]
+      [....
+       location=text,
+       ...]
+
+(The default value of `location` is `paragraph`). 
+
+**Note** that `locatiion=text` is not equivalent to `\inline{...}`. Inline also
+sets `\endlinechar=\minusone`; therefore no space is inserted when the file is
+read. `location=text` does not change `\endlinechar`. Therefore a space is
+inserted after the file is read. 
 
 Names of temporary files
 ------------------------
@@ -312,21 +355,25 @@ Standard options
 
 `\defineexternalfilter` accepts the following standard options:
 
-- `before` and `after`: to set the spacing of the environment or enclose the
-  output in a frame, etc. 
+- `spacebefore` and `spaceafter` to specify the blank space to be used 
+   before and after the environment. 
+- `before` and `after`: to enclose the output in a frame, etc. 
 - `style` and `color`: to set the color and style of the output.
-- `indentnext`: specify if the next line is indented
+- `indentnext`: specify if the next line is indented (only if `location` is
+  `paragraph`).
 - `setups`: specify a list of setups (defined using `\startsetups`). These
   setups may be used to define commands that are needed inside the environment.
 
 The order in which these options are executed are:
 
-1. `before`
-2. `style` and `color`
-3. `setups`
-4. `readcommand`
-5. `after`
-6. check `indentnext`
+1. `\blank[spacebefore]`
+2. `before`
+3. `style` and `color`
+4. `setups`
+5. `readcommand`
+6. `after`
+7. `\blank[afterspace]`
+8. check `indentnext`
 
 Options to a specific environment
 ---------------------------------
@@ -798,3 +845,5 @@ Version History
     - Added `purge=yes|no` to control if the input file is deleted or not
 - **2012.03.18**
     - Process remote files
+- **2012.04.18**
+    - Added `location`, `spacebefore` and `spaceafter` keys.
