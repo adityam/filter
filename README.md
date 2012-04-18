@@ -376,7 +376,7 @@ of all options. The current defaults are
 Passing options to filters
 --------------------------
 
-**Note** This option does not work for MkII or for inline snippets
+**NOTE** This option does not work for MkII or for inline snippets
 
 Sometimes it is useful to pass options to a filter. For example, `pandoc`
 converts many different formats to ConTeXt (actually, to many different output
@@ -434,7 +434,7 @@ Thus, all the following are valid:
 
 
 
-Processing Existing Files
+Processing existing Files
 -------------------------
 
 A big advantage of a lightweight markup language like markdown is that it is
@@ -445,7 +445,7 @@ file. To use such markdown files in ConTeXt, I can just use
     \processmarkdownfile{filename.md}
 
 The general macro is `\process<filter>file{...}`, which takes the name of a file
-as an argument and uses that file as the input file for the filter. The rest of
+**or a url** as an argument and uses that file as the input file for the filter. The rest of
 the processing is the same as with `\start<filter>` ... `\stop<filter>`
 environment. 
 
@@ -456,7 +456,42 @@ options:
 
 The options in the `[...]` are the same as those for `\defineexternalfilter`.
 
-Processing Existing Buffers
+Processing remote files
+-----------------------
+
+**NOTE** Only works in MkIV
+
+The `\process<filter>file{...}` macro also processes remote files specified
+using urls. For example, to see a typeset version of this manual, use
+
+    \processmarkdownfile{https://raw.github.com/adityam/filter/master/README.md}
+
+This macro downloads the file in the background, and processes the local file using
+`pandoc`. To prevent frequent downloads, the downloaded file is cached and the
+file is re-downloaded only if the cached file is more than 1 day old. You can
+override the default threshold using `schemes.threshold` directive. For example,
+if you want to re-download the file every 5 minutes (= 300 seconds), add
+
+    \enabledirectives[schemes.threshold=300]
+
+somewhere before `\starttext` or use
+
+    context --directives=schemes.threshold=300 <filename>
+
+to compile the file. 
+
+To see where the cached file is stored, add
+
+    \enabletrackers[resolvers.schemes]
+
+or use
+
+    context --trackers=resolvers.schemes <filename>
+
+to compile the file.
+
+
+Processing existing buffers
 ---------------------------
 
 Like all macros built on top of buffers, the `\start<filter>` ...
@@ -761,3 +796,5 @@ Version History
     - Functionality of force mode implemented using `cache=force`. 
 - **2012.02.05**
     - Added `purge=yes|no` to control if the input file is deleted or not
+- **2012.03.18**
+    - Process remote files
