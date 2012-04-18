@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2012.02.11,
+%D      version=2012.04.18,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2012.02.11)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2012.04.18)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -87,7 +87,7 @@
     \edef\currentexternalfilter{#1}
 
     \begingroup % to keep assignments local
-    \setupvimtyping[#1][\c!name=,\c!before=,\c!after=,#2]
+    \setupvimtyping[#1][\c!name=,\c!location=\v!text,#2]
 
     \externalfilter@attributes_start \externalfilter@id \c!style \c!color
     % We assume that the setups set minimal_catcodes
