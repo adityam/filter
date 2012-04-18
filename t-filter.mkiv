@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.03.18,
+%D      version=2012.04.18,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.03.18)}
+\writestatus{loading}{Filter (ver: 2012.04.18)}
 
 % For backward compatibility
 \ifx\grabbufferdata\undefined \let\grabbufferdata \dostartbuffer \fi
@@ -117,9 +117,9 @@
     % #2 = options
     \egroup %\bgroup in \externalfilter@start
 
+    \begingroup % to keep assignments local
     \edef\currentexternalfilter{#1}
 
-    \begingroup % to keep assignments local
     \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter@set_filenames
@@ -192,10 +192,10 @@
     {\dodoubleargument\externalfilter@inline_indeed}
 
 \starttexdefinition externalfilter@inline_indeed [#1][#2]
+   \begingroup % to keep assignments local
    \edef\currentexternalfilter{#1}
 
-   \begingroup % to keep assignments local
-   \setupexternalfilter[#1][\c!numbering=,\c!name=,\c!before=,\c!after=,#2]
+   \setupexternalfilter[#1][\c!numbering=,\c!name=,\c!location=\v!text,#2]
 
    \externalfilter@set_filenames
 
@@ -375,10 +375,11 @@
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
           {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
-     \endgroup
 
-     \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
-     \dorechecknextindentation
+    \doif{\externalfilterparameter\c!location}\v!paragraph
+         {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
+          \dorechecknextindentation}
+     \endgroup
 \stoptexdefinition
 
 %D \subsubject {Execute Filter}
@@ -415,6 +416,8 @@
 \stoptexdefinition
 
 \starttexdefinition externalfilter@read_processed_file_indeed
+   \doif{\externalfilterparameter\c!location}\v!paragraph
+     {\blank[\externalfilterparameter\c!spacebefore]}%
    \externalfilterparameter\c!before
 
    \begingroup
@@ -427,14 +430,19 @@
    \endgroup
 
    \externalfilterparameter\c!after
+   \doif{\externalfilterparameter\c!location}\v!paragraph
+     {\blank[\externalfilterparameter\c!spaceafter]}%
 \stoptexdefinition
 
 %D \section {Default Values}
 
 \setupexternalfilters
   [
+   \c!location=\v!paragraph,
    \c!before=,
    \c!after=,
+   \c!spacebefore=,
+   \c!spaceafter=,
    \c!style=,
    \c!color=,
    \c!indentnext=\v!auto,

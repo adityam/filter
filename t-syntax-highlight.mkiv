@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2012.01.14,
+%D      version=2012.04.18,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2012.01.14)}
+\writestatus{loading}{Code syntax highlighting (ver: 2012.04.18)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -115,8 +115,11 @@
    \c!stop=0,
    % \c!syntax=context,
    \c!alternative=pscolor,
-   \c!before=\blank,
-   \c!after=\blank,
+   \c!before=,
+   \c!after=,
+   \c!spacebefore=\v!none,
+   \c!spaceafter=\v!none,
+   \c!location=\v!paragraph,
    \c!style=\tttf,
    \c!color=,
    \c!filtercommand=echo, % placeholder

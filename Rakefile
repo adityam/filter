@@ -20,10 +20,10 @@ def make_zip name
   sh "cd #{name} && zip -r ../#{name} ./ && cd ../"
 end
 
-def run_tests tests
+def run_tests tests, engine
   FileUtils.mkdir_p "output"
   tests.each do |file|
-    sh "context --noconsole --purgeall --purgeresult #{file}"
+    sh "context --#{engine} --noconsole --purgeall --purgeresult #{file}"
   end
   sh "context --purgeall"
 end
@@ -37,14 +37,24 @@ VIM_DOC  = "vim-README.md"
 VIM_TEST = FileList['tests/vim/[0-9][0-9]-*.tex']
 
 
-desc "Run tests for filter module"
-task :test_filter => FILTER_TEST do
-  run_tests FILTER_TEST
+desc "Run tests for filter module (MkIV)"
+task :test_filter_mkiv => FILTER_TEST do
+  run_tests FILTER_TEST, :luatex
 end
 
-desc "Run tests for vim module"
-task :test_vim => VIM_TEST do
-  run_tests VIM_TEST
+desc "Run tests for filter module (MkII)"
+task :test_filter_mkii => FILTER_TEST do
+  run_tests FILTER_TEST, :pdftex
+end
+
+desc "Run tests for vim module (MkIV)"
+task :test_vim_mkiv => VIM_TEST do
+  run_tests VIM_TEST, :luatex
+end
+
+desc "Run tests for vim module (MkII)"
+task :test_vim_mkii => VIM_TEST do
+  run_tests VIM_TEST, :pdftex
 end
 
 

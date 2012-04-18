@@ -5,6 +5,7 @@
   [markdown]
   [filter={pandoc -w context -o \externalfilteroutputfile }]
 
+\doifmode{*mkii}{\endinput}
 
 \starttext
 \processmarkdownfile{https://raw.github.com/adityam/filter/master/README.md}

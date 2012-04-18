@@ -1,0 +1,45 @@
+%T Testing spacebefore and spaceafter
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+One line
+\startmarkdown
+  **Markdown** with default spacing
+\stopmarkdown
+Second line
+
+One line
+\startmarkdown[spacebefore=none, spaceafter=none]
+  **Markdown** with `none` spacing
+\stopmarkdown
+Second line
+
+One line
+\startmarkdown[spacebefore=small, spaceafter=small]
+  **Markdown** with `small` spacing
+\stopmarkdown
+Second line
+
+One line
+\startmarkdown[spacebefore=medium, spaceafter=medium]
+  **Markdown** with `medium` spacing
+\stopmarkdown
+Second line
+
+One line
+\startmarkdown[spacebefore=big, spaceafter=big]
+  **Markdown** with `big` spacing
+\stopmarkdown
+Second line
+
+One line
+\startmarkdown[spacebefore=1cm, spaceafter=1cm]
+  **Markdown** with `1cm` spacing
+\stopmarkdown
+Second line
+\stoptext

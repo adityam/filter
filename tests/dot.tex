@@ -1,0 +1,28 @@
+\usemodule[filter]
+
+\defineexternalfilter
+  [graphviz]
+  [
+    filter=\externalfilterparameter{layout} -Tpdf -o\externalfilteroutputfile,
+    layout=dot, % neato or twopi
+    cache=yes,
+    output=\externalfilterbasefile.pdf,
+    readcommand=\ReadPDF,
+  ]
+
+\def\ReadPDF#1%
+    {\externalfigure[#1][frame=on]}
+
+\starttext
+
+\startplacefigure[location=right]
+  \startgraphviz
+    digraph G {
+        a_1-> a_2 -> a_3 -> a_1;
+        }
+  \stopgraphviz
+\stopplacefigure
+\input ward
+
+\stoptext
+

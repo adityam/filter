@@ -1,0 +1,28 @@
+%T Testing nested filters
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\usemodule[vim]
+\definevimtyping[typing][syntax=context]
+
+\starttext
+\startmarkdown
+# Basic Usage
+
+Show: \currentexternalfilter
+
+    \usemodule[filter]
+    \defineexternalfilter 
+      [markdown]
+      [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+Show: \currentexternalfilter
+
+\stopmarkdown
+
+Show: \currentexternalfilter
+\stoptext

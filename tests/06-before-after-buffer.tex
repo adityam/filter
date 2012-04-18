@@ -5,24 +5,24 @@
 \defineexternalfilter 
   [markdown]
   [filter={pandoc -w context -o \externalfilteroutputfile },
-   bufferbefore={before,start},
+   bufferbefore={before-1,before-2},
    bufferafter=after]
 
-\startbuffer[before]
-- Before
+\startbuffer[before-1]
+1. Before first
 \stopbuffer
 
-\startbuffer[start]
-- Start
+\startbuffer[before-2]
+1. Before second
 \stopbuffer
 
 \startbuffer[after]
-- After
+1. After
 \stopbuffer
 
 \starttext
 \startmarkdown
-- Main
+1. Main
 \stopmarkdown
 \stoptext
 \endinput
