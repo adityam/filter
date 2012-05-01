@@ -359,6 +359,8 @@ Standard options
    before and after the environment. 
 - `before` and `after`: to enclose the output in a frame, etc. 
 - `style` and `color`: to set the color and style of the output.
+- `align`: to set the alignment of the output (only if
+  `location` is `paragraph`).
 - `indentnext`: specify if the next line is indented (only if `location` is
   `paragraph`).
 - `setups`: specify a list of setups (defined using `\startsetups`). These
@@ -847,3 +849,5 @@ Version History
     - Process remote files
 - **2012.04.18**
     - Added `location`, `spacebefore` and `spaceafter` keys.
+- **2012.05.01**
+    - Added `align` key.

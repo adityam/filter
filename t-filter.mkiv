@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.04.18,
+%D      version=2012.05.01,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.04.18)}
+\writestatus{loading}{Filter (ver: 2012.05.01)}
 
 % For backward compatibility
 \ifx\grabbufferdata\undefined \let\grabbufferdata \dostartbuffer \fi
@@ -417,21 +417,21 @@
 
 \starttexdefinition externalfilter@read_processed_file_indeed
    \doif{\externalfilterparameter\c!location}\v!paragraph
-     {\blank[\externalfilterparameter\c!spacebefore]}%
+     {\blank[\externalfilterparameter\c!spacebefore]
+      \usealignparameter\externalfilterparameter}
    \externalfilterparameter\c!before
 
    \begingroup
    \dostarttagged{\externalfilterparameter\c!taglabel}\currentexternalfilter
-   \externalfilter@attributes_start \externalfilter@id \c!style \c!color
+   \useexternalfilterstyleandcolor\c!style\c!color
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilter@output_file
-   \externalfilter@attributes_stop
    \dostoptagged
    \endgroup
 
    \externalfilterparameter\c!after
    \doif{\externalfilterparameter\c!location}\v!paragraph
-     {\blank[\externalfilterparameter\c!spaceafter]}%
+     {\par\blank[\externalfilterparameter\c!spaceafter]}%
 \stoptexdefinition
 
 %D \section {Default Values}
@@ -446,6 +446,7 @@
    \c!style=,
    \c!color=,
    \c!indentnext=\v!auto,
+   \c!align=,
    \c!setups=,
    \c!continue=\v!no,
    \c!cache=\externalfilterparameter\c!continue, % for backward compatibility

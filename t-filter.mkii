@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.04.18,
+%D      version=2012.05.01,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.04.18)}
+\writestatus{loading}{Filter (ver: 2012.05.01)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -404,7 +404,9 @@
 
 \starttexdefinition externalfilter@read_processed_file_indeed
    \doif{\externalfilterparameter\c!location}\v!paragraph
-     {\blank[\externalfilterparameter\c!spacebefore]}%
+     {\blank[\externalfilterparameter\c!spacebefore]
+      \doifsomething{\externalfilterparameter\c!align}
+          {\setupalign[\externalfilterparameter\c!align]}}
    \externalfilterparameter\c!before
 
    \begingroup
@@ -416,7 +418,7 @@
 
    \externalfilterparameter\c!after
    \doif{\externalfilterparameter\c!location}\v!paragraph
-     {\blank[\externalfilterparameter\c!spaceafter]}%
+     {\par\blank[\externalfilterparameter\c!spaceafter]}%
 \stoptexdefinition
 
 %D \section {Default Values}
