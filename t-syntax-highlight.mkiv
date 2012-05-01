@@ -67,13 +67,9 @@
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
-  \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
-      {\language\minusone}%
-
   \setcatcodetable\externalfilter@minimal_catcodes
   \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space}
-  \raggedright
 \stopsetups
 
 \starttexdefinition syntaxhighlighting@read_command #1
@@ -126,13 +122,14 @@
    \c!location=\v!paragraph,
    \c!style=\tttf,
    \c!color=,
+   \c!align={\v!flushleft,\v!nothyphenated},
    \c!filtercommand=echo, % placeholder
    \c!continue=yes,
    \c!read=\v!yes,
    \c!readcommand=\syntaxhighlighting@read_command,
    \c!output=\externalfilterinputfile, % placeholder
    \c!setups=syntaxhighlighting@setup,
-   \c!option=\v!packed, % \v!hypenated
+   \c!option=\v!packed, % Can be a list,
    \s!parent=\????externalfilter,
    % Numbering options
    \c!numbering=\v!no,
