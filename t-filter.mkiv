@@ -60,7 +60,7 @@
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
     \setuevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
-    \setuevalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
+    \setuvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
     \setuevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
     \setuevalue{process\currentexternalfilter buffer}{\externalfilter@process_buffer[\currentexternalfilter]}%
     \setuevalue{inline\currentexternalfilter}{\externalfilter@inline[\currentexternalfilter]}%
