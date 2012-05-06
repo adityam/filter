@@ -59,11 +59,11 @@
     \externalfilter@show_status{defining filter : \currentexternalfilter}%
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
-    \setevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
-    \setvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
-    \setevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
-    \setevalue{process\currentexternalfilter buffer}{\externalfilter@process_buffer[\currentexternalfilter]}%
-    \setevalue{inline\currentexternalfilter}{\externalfilter@inline[\currentexternalfilter]}%
+    \setuevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
+    \setuevalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
+    \setuevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
+    \setuevalue{process\currentexternalfilter buffer}{\externalfilter@process_buffer[\currentexternalfilter]}%
+    \setuevalue{inline\currentexternalfilter}{\externalfilter@inline[\currentexternalfilter]}%
 \to \everydefineexternalfilter
 
 % For backward compatibility
@@ -85,7 +85,7 @@
 
 \newif\iftraceexternalfilters
 
-\def\traceexternalfilters
+\unexpanded\def\traceexternalfilters
     {\traceexternalfilterstrue
      \enabletrackers[graphic.runfile]}
 
