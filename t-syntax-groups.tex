@@ -49,12 +49,12 @@
     {
          \edef\syntaxgroup@name {\colorscheme@name##1}
          \setupsyntaxgroup[\syntaxgroup@name]
-                          [\c!color=,\c!style=,\c!command=,#2]
+                          [\s!parent=\syntaxgroup@namespace,\c!color=,\c!style=,\c!command=,#2]
          \doifsomething{\syntaxgroupparameter\c!color}
           {
              \expanded{\definecolor[\syntaxgroup@namespace-##1-color]
                                    [\syntaxgroupparameter\c!color]}
-             \setupsyntaxgroup[\syntaxgroup@name][\c!color=\syntaxgroup@namespace-##1-color]
+             \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-##1-color]
           }
     }
   }{
@@ -93,9 +93,9 @@
 \starttexdefinition syntaxgroup [#1]#2
   % #1 = style
   % #2 = content
-      \syntaxgroupparameter\c!before
       \begingroup
       \edef\syntaxgroup@name{\colorscheme@name#1}%
+      \syntaxgroupparameter\c!before
       \iftracesyntaxgroups
           \syntaxgroup@show_values
       \fi
@@ -107,8 +107,8 @@
         \externalfilter@attributes_stop
       }
       \doifmode{\s!mkiv}{\dostoptagged}
-      \endgroup
       \syntaxgroupparameter\c!after
+      \endgroup
 \stoptexdefinition
 
 %D Tracing macros

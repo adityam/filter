@@ -1,0 +1,15 @@
+\usemodule[vim]
+
+\definevimtyping[MATLAB]
+                [syntax=matlab, lines=split, strip=no]
+
+\setupsyntaxgroup[after={\allowbreak}]
+\tracesyntaxgroups
+\showframe
+\starttext
+
+\startMATLAB
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text: %g \n',(x_max-y_max)*z/random)
+\stopMATLAB
+\stoptext 
