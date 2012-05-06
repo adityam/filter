@@ -78,7 +78,7 @@ on the ConTeXt wiki for detailed instructions.
 Basic Usage
 -----------
 
-The steps involved in calling a filter on the contents of an evironment are:
+The steps involved in calling a filter on the contents of an environment are:
 
 1. Write the contents to an external file. This file is the input to the filter,
    and is, therefore, called `\externalfilterinputfile`
@@ -229,7 +229,7 @@ The `spacebefore` and `spaceafter` keys accept all values accepted by the
 In the paragraph mode, the next line after `\stop<...>` is indented or not based
 on the value of the `indentnext` key. The default value is `auto` which indents
 the next line if there is an empty line after `\stop<...>`; other options are
-`no`, which never indents the next line and `yes` whcih always indents the next
+`no`, which never indents the next line and `yes` which always indents the next
 line.
 
 If you want the `\start<...>` ... `\stop<...>` and the `\type<...>file{...}`
@@ -359,6 +359,8 @@ Standard options
    before and after the environment. 
 - `before` and `after`: to enclose the output in a frame, etc. 
 - `style` and `color`: to set the color and style of the output.
+- `align`: to set the alignment of the output (only if
+  `location` is `paragraph`).
 - `indentnext`: specify if the next line is indented (only if `location` is
   `paragraph`).
 - `setups`: specify a list of setups (defined using `\startsetups`). These
@@ -509,7 +511,7 @@ Processing remote files
 **NOTE** Only works in MkIV
 
 The `\process<filter>file{...}` macro also processes remote files specified
-using urls. For example, to see a typeset version of this manual, use
+using URLs. For example, to see a typeset version of this manual, use
 
     \processmarkdownfile{https://raw.github.com/adityam/filter/master/README.md}
 
@@ -800,10 +802,10 @@ Version History
     - Added `directory=...` option to `\defineexternalfilter` and
       `\setupexternalfilters`.
 - **2010.12.04**:
-    - Bugfix in `directory` code. The option `directory=../something` was
+    - Bug fix in `directory` code. The option `directory=../something` was
       handled incorrectly.
 - **2011.01.28**
-    - Bugfix. The filter counter was not incremented inside a group. Made the
+    - Bug fix. The filter counter was not incremented inside a group. Made the
       increment global.
 - **2011.02.21**
     - Added `style` and `color` options.
@@ -824,7 +826,7 @@ Version History
 - **2011.08.23**
     - Added `bufferbefore` and `bufferafter` options
 - **2011.08.28**
-    - Internal change: Defined own macros for setting attrbutes rather than
+    - Internal change: Defined own macros for setting attributes rather than
       using built-in ones.
 - **2011.09.03**
     - Added `filtersetups` 
@@ -847,3 +849,5 @@ Version History
     - Process remote files
 - **2012.04.18**
     - Added `location`, `spacebefore` and `spaceafter` keys.
+- **2012.05.01**
+    - Added `align` key.

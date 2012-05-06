@@ -165,7 +165,7 @@ Running an external file through vim is slow. So, `t-vim` reprocesses a snippet
 or a file only if its contents have changed. To check if the contents have
 changed, it writes each snippet to a different file and stores the md5 sum of
 that snippet. As a result, the working directory gets cluttered with lot of
-temporary files. To avoid this clutter, write the temporary files to an a
+temporary files. To avoid this clutter, write the temporary files to a
 different directory using the `directory` key. For example,
 
     \definevimtyping[...]
@@ -320,7 +320,7 @@ indent the TeX code. For example:
 
 Although, the source code is easy to read, the output will not be. This is
 because, unlike regular TeX,  `\start<vimtyping>` ... `\stop<vimtyping>`
-environment does not ignore whote space. So, the output is the same as 
+environment does not ignore white space. So, the output is the same as 
 
     \startitemize
     \item A hello world example in C
@@ -423,7 +423,7 @@ enable this use
       
 When `escape=on`, the `2context.vim` script passes the `Comment` syntax
 region (as identified by `vim`) verbatim to TeX. So, we may use TeX
-commands inside the comment region and they will be interpretted by TeX.
+commands inside the comment region and they will be interpreted by TeX.
 For example
 
     \definevimtyping[C][syntax=c, escape=on]
@@ -444,16 +444,16 @@ Tuning color schemes
 --------------------
 
 Some vim syntax files have optional features that are turned on or off using
-variables. To enable these optional features, you need to first create a vimrc
+variables. To enable these optional features, you need to first create a `vimrc`
 file and then use it.
 
-To create a vimrc file, use
+To create a `vimrc` file, use
 
     \startvimrc[name=...]
     ...
     \stopvimrc
 
-The `name=...` is necessary. To enable the settings in this vimrc file, use:
+The `name=...` is necessary. To enable the settings in this `vimrc` file, use:
 
      \definevimtyping
         [...]
@@ -466,11 +466,11 @@ key in `\startvimrc`. You may set the `vimrc` file for a particular code snippet
 by
 
     \start<vimtyping>[vimrc=....]
-    ...
+    ..
     \stop<vimtyping>
 
 
-To disable loading of vimrc file, use
+To disable loading of `vimrc` file, use
 
      \definevimtyping
         [...]
@@ -479,11 +479,11 @@ To disable loading of vimrc file, use
          ...]
     
 
-The default is not to use any vimrc file.
+The default is not to use any `vimrc` file.
 
-A vimrc file gets loaded before syntax highlighting is enabled. If you want to
+A `vimrc` file gets loaded before syntax highlighting is enabled. If you want to
 override the default syntax highlighting scheme, add the appropriate `syn ...`
-commands to a vimrc file, and source that usign
+commands to a `vimrc` file, and source that using
 
      \definevimtyping
         [...]
@@ -528,7 +528,7 @@ is displayed in the console. At the same time, the string
     [[output file missing]]
 
 is displayed in the PDF output. This data, along with the filter command, is
-useful for debugging what whenwrong.
+useful for debugging what whet wrong.
 
 Yes, on, whatever
 -----------------

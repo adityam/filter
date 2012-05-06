@@ -1,0 +1,18 @@
+%T Testing align parameter
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile },
+   align=flushright]
+
+\starttext
+\input knuth
+\startmarkdown
+Does **`align=fushright`** _work_?
+\stopmarkdown
+\input knuth
+\stoptext
+\endinput
+
