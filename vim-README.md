@@ -255,6 +255,10 @@ If you want every fifth line to be numbered, use
 Standard options for line numbering
 -----------------------------------
 
+**Note**: These options can only be set using `\definevimtyping[...][...]` or
+`\setupvimtyping[...][...]`. They do not work when used with
+`\start<vimtyping>`.
+
 - To change the color or style of the numbers, use the `numbercolor=...` and
   `numberstyle=...` options. By default `numbercolor` is not set, while
   `numberstyle` is set to `\ttx`.
