@@ -126,8 +126,8 @@
        -c "set syntax=\externalfilterparameter\c!syntax" %
        -c "set tabstop=\externalfilterparameter\c!tab" %
        % vim only accepts 10 -c commands, so we combine a few let statements
-       -c "let contextstartline=\externalfilterparameter\c!start | %
-           let contextstopline=\externalfilterparameter\c!stop   | %
+       -c "let contextstartline=\externalfilterparameter\c!start \letterbar\space %
+           let contextstopline=\externalfilterparameter\c!stop   \letterbar\space %
            let strip=\getvalue{\vimtyping@id-\c!strip-\externalfilterparameter\c!strip}" %
        -c "let escapecomments=\getvalue{\vimtyping@id-\c!escape-\externalfilterparameter\c!escape}" %
        -c "let highlight=[\externalfilterparameter\c!highlight]" %
