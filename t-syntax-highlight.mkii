@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2012.05.01,
+%D      version=2012.05.28,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2012.05.01)}
+\writestatus{loading}{Code syntax highlighting (ver: 2012.05.28)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -69,6 +69,7 @@
 
   \doifmode\s!mkii{\setups{syntaxhighlighting@setup_line_number_mkii}}%
 
+  \forgetall
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
@@ -178,14 +179,13 @@
    \c!location=\v!paragraph,
    \c!style=\tttf,
    \c!color=,
-   \c!align={\v!flushleft,\v!nothyphenated},
    \c!filtercommand=echo, % placeholder
    \c!continue=yes,
    \c!read=\v!yes,
    \c!readcommand=\syntaxhighlighting@read_command,
    \c!output=\externalfilterinputfile, % placeholder
    \c!setups=syntaxhighlighting@setup,
-   \c!option=\v!packed, % Can be a list,
+   \c!option=\v!packed, % Could be a list
    \s!parent=\externalfilter@namespace,
    % Numbering options
    \c!numbering=\v!no,
