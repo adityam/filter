@@ -67,15 +67,19 @@
   \def\tab##1%
       {\dorecurse{##1}{\obeyedspace}}%
 
-  \doifmode\s!mkii{\setups{syntaxhighlighting@setup_line_number_mkii}}%
+  \setups{syntaxhighlighting@setup_line_number_mkii}%
 
   \forgetall
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
+  \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
+      {\language\minusone}%
+
   \setcatcodetable\externalfilter@minimal_catcodes
   \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\syntaxhighlighting@namespace\externalfilterparameter\c!space}
+  \raggedright
 \stopsetups
 
 \startsetups syntaxhighlighting@setup_line_number_mkiv
@@ -133,14 +137,6 @@
     \syntaxhighlighting@linenumbering_stop
 \stoptexdefinition
 
-\startmode [\s!mkiv]
-\starttexdefinition syntaxhighlighting@linenumbering_start
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
-       {\startlinenumbering
-          [\syntaxhighlighting@name]
-          [\c!continue=\externalfilterparameter{\c!number\c!continue}]}
-   \dostarttagged\t!syntaxhighlighting\colorscheme@name
-\stoptexdefinition
 
 \starttexdefinition syntaxhighlighting@linenumbering_stop
   \dostoptagged
@@ -148,9 +144,6 @@
       {\stoplinenumbering}
 \stoptexdefinition
 
-\stopmode
-
-\startmode [\s!mkii]
 \starttexdefinition syntaxhighlighting@linenumbering_start
     \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
         {\doifelse{\externalfilterparameter{\c!number\c!continue}}\syntaxhighlighting@yes
@@ -162,7 +155,6 @@
       {\stoplinenumbering}
 \stoptexdefinition
 
-\stopmode
 
 \setupsyntaxhighlighting
   [\c!tab=4,
@@ -179,13 +171,14 @@
    \c!location=\v!paragraph,
    \c!style=\tttf,
    \c!color=,
+   \c!align={\v!flushleft,\v!nothyphenated}, %Does not work due to \forgetall
    \c!filtercommand=echo, % placeholder
    \c!continue=yes,
    \c!read=\v!yes,
    \c!readcommand=\syntaxhighlighting@read_command,
    \c!output=\externalfilterinputfile, % placeholder
    \c!setups=syntaxhighlighting@setup,
-   \c!option=\v!packed, % Could be a list
+   \c!option=\v!packed, % \v!hyphenated
    \s!parent=\externalfilter@namespace,
    % Numbering options
    \c!numbering=\v!no,
