@@ -37,7 +37,7 @@
 \appendtoks
     \defineexternalfilter[\currentsyntaxhighlighting]
                          [\s!parent=\????syntaxhighlighting\currentexternalfilter,\c!taglabel=\vimtyping@id]%
-    \definelinenumbering [\currentsyntaxhighlighting]%
+    \normalexpanded{\definelinenumbering [\currentsyntaxhighlighting]}%
     \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
 \to\everydefinesyntaxhighlighting
 
@@ -77,6 +77,8 @@
   \let\\\textbackslash
   \let\{\textbraceleft
   \let\}\textbraceright
+  \let\SYNBOL\donothing
+  \let\SYNEOL\donothing
 
   \setupbar[syntaxhighlightline][color=\externalfilterparameter\c!highlightcolor]
 
@@ -104,9 +106,12 @@
 
 \starttexdefinition syntaxhighlighting@linenumbering_start
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
-       {\startlinenumbering
+       {\let\SYNBOL=\syntaxhighlighting_begin_number_lines
+        \let\SYNEOL=\syntaxhighlighting_end_number_lines
+        \startlinenumbering
           [\currentsyntaxhighlighting]
           [
+              \c!method=\v!type,
                \c!start=\externalfilterparameter{\c!number\c!start},
                 \c!step=\externalfilterparameter{\c!number\c!step},
              \c!continue=\externalfilterparameter{\c!number\c!continue},
@@ -118,6 +123,17 @@
   \dostoptagged
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
       {\stoplinenumbering}
+\stoptexdefinition
+
+\newcount\nofsyntaxhighlightinglines
+
+\starttexdefinition syntaxhighlighting_begin_number_lines
+  \global\advance\nofsyntaxhighlightinglines\plusone
+  \attribute\verbatimlineattribute\nofsyntaxhighlightinglines
+\stoptexdefinition
+
+\starttexdefinition syntaxhighlighting_end_number_lines
+   \attribute\verbatimlineattribute\attributeunsetvalue
 \stoptexdefinition
 
 
@@ -151,7 +167,7 @@
    \c!number\c!step=1,
    \c!number\c!continue=\v!no,
    \c!numberconversion=\v!numbers,
-   \c!number\c!method=\v!first,
+   \c!number\c!method=\v!type, Not used
    \c!number\c!location=\v!left,
    \c!numberstyle=\ttx,
    \c!numbercolor=,

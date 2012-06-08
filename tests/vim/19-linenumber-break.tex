@@ -1,0 +1,33 @@
+\usemodule[vim]
+\definevimtyping[MATLAB][syntax=matlab, lines=split, numbering=yes, escape=on,
+cache=force]
+
+\showframe
+
+\starttext
+\startMATLAB
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+\stopMATLAB
+
+\starttyping[lines=yes, numbering=line]
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+\stoptyping
+
+\startMATLAB[numbercontinue=yes]
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+\stopMATLAB
+
+\starttyping[lines=yes, numbering=line, continue=yes]
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+fprintf('random text random text random text random text random text random text= %f.\n', x)
+\stoptyping
+
+
+\stoptext 

@@ -135,6 +135,9 @@ while s:lnum <= s:lstop
     let s:new = '\HGL{' . s:new . '}'
   endif
 
+  " Add begin and end line markers 
+  let s:new = "\\SYNBOL{}" . s:new . "\\SYNEOL{}"
+
   call add(s:lines, s:new)
 
 " Increment line numbers
