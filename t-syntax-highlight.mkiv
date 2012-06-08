@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2012.05.28,
+%D      version=2012.06.07,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2012.05.28)}
+\writestatus{loading}{Code syntax highlighting (ver: 2012.06.07)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -41,6 +41,25 @@
     \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
 \to\everydefinesyntaxhighlighting
 
+\appendtoks
+    % \externalfitlterparameter does not work, so it is better to use
+    % \syntaxhighlighting parameter.
+    \normalexpanded{\setuplinenumbering[\currentsyntaxhighlighting]
+         [
+               \c!method=\syntaxhighlightingparameter{\c!number\c!method},
+           \c!conversion=\syntaxhighlightingparameter\c!numberconversion,
+             \c!location=\syntaxhighlightingparameter{\c!number\c!location},
+                \c!style=\syntaxhighlightingparameter\c!numberstyle,
+                \c!color=\syntaxhighlightingparameter\c!numbercolor,
+                \c!width=\syntaxhighlightingparameter{\c!number\c!width},
+                 \c!left=\syntaxhighlightingparameter{\c!number\c!left},
+                \c!right=\syntaxhighlightingparameter{\c!number\c!right},
+              \c!command=\syntaxhighlightingparameter\c!numbercommand,
+             \c!distance=\syntaxhighlightingparameter{\c!number\c!distance},
+                \c!align=\syntaxhighlightingparameter{\c!number\c!align},
+          ]}%
+\to\everysetupsyntaxhighlighting
+
 \def\syntaxhighlighting@id {syntaxhighlighting}
 \edef\t!syntaxhighlighting {\syntaxhighlighting@id}
 
@@ -68,9 +87,13 @@
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
+  \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
+      {\language\minusone}%
+
   \setcatcodetable\externalfilter@minimal_catcodes
   \expandafter\def\activeendoflinetoken{\strut\par}
   \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space}
+  \raggedright
 \stopsetups
 
 \starttexdefinition syntaxhighlighting@read_command #1
@@ -83,19 +106,9 @@
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
        {\startlinenumbering
           [\currentsyntaxhighlighting]
-          [\c!conversion=\externalfilterparameter\c!numberconversion,
+          [
                \c!start=\externalfilterparameter{\c!number\c!start},
                 \c!step=\externalfilterparameter{\c!number\c!step},
-               \c!method=\externalfilterparameter{\c!number\c!method},
-             \c!location=\externalfilterparameter{\c!number\c!location},
-                \c!style=\externalfilterparameter\c!numberstyle,
-                \c!color=\externalfilterparameter\c!numbercolor,
-                \c!width=\externalfilterparameter{\c!number\c!width},
-                 \c!left=\externalfilterparameter{\c!number\c!left},
-                \c!right=\externalfilterparameter{\c!number\c!right},
-              \c!command=\externalfilterparameter\c!numbercommand,
-             \c!distance=\externalfilterparameter{\c!number\c!distance},
-                \c!align=\externalfilterparameter{\c!number\c!align},
              \c!continue=\externalfilterparameter{\c!number\c!continue},
           ]}
    \dostarttagged\t!syntaxhighlighting\colorscheme@name
@@ -111,7 +124,7 @@
 \setupsyntaxhighlighting
   [\c!tab=4,
    \c!space=\v!off,
-   \c!lines=\v!split,
+   \c!lines=\v!fixed,
    \c!start=1,
    \c!stop=0,
    % \c!syntax=context,
@@ -123,13 +136,14 @@
    \c!location=\v!paragraph,
    \c!style=\tttf,
    \c!color=,
+   \c!align={\v!flushleft,\v!nothyphenated}, %Does not work due to \forgetall
    \c!filtercommand=echo, % placeholder
    \c!continue=yes,
    \c!read=\v!yes,
    \c!readcommand=\syntaxhighlighting@read_command,
    \c!output=\externalfilterinputfile, % placeholder
    \c!setups=syntaxhighlighting@setup,
-   \c!option=\v!packed, % Could be a list
+   \c!option=\v!packed, % \v!hyphenated
    \s!parent=\????externalfilter,
    % Numbering options
    \c!numbering=\v!no,
@@ -162,7 +176,7 @@
 \setvalue{\????syntaxhighlighting::\c!lines::\v!fixed}{\dontleavehmode\kern}
 
 % default
-\setvalue{\????syntaxhighlighting::\c!lines::}{\hskip}
+\setvalue{\????syntaxhighlighting::\c!lines::}{\dontleavehmode\kern}
 
 \def\syntaxhighlighting@split%
     {\getvalue{\????syntaxhighlighting::\c!lines::\externalfilterparameter\c!lines}}
