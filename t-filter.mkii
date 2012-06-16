@@ -53,18 +53,20 @@
 %D We use logical names to easily catch typos.
 
 \def\externalfilter@id          {externalfilter}
-\def\externalfilter@namespace   {@@@@\externalfilter@id}
+\def\????externalfilter         {@@@@\externalfilter@id}
 
 \def\externalfilter@temp_prefix {temp}
-\def\externalfilter@count       {\externalfilter@namespace-\currentexternalfilter-counter}
+\def\externalfilter@count       {\????externalfilter-\currentexternalfilter-counter}
 
-\installparameterhandler     \externalfilter@namespace \externalfilter@id
-\installparameterhashhandler \externalfilter@namespace \externalfilter@id
-\installsetuphandler         \externalfilter@namespace \externalfilter@id
-\installdefinehandler        \externalfilter@namespace \externalfilter@id \externalfilter@namespace 
+\installparameterhandler     \????externalfilter \externalfilter@id
+\installparameterhashhandler \????externalfilter \externalfilter@id
+\installsetuphandler         \????externalfilter \externalfilter@id
+\installdefinehandler        \????externalfilter \externalfilter@id \????externalfilter 
 
-\def\setuvalue    #1{\normalprotected\expandafter \def\csname#1\endcsname}
-\def\setuevalue   #1{\normalprotected\expandafter\edef\csname#1\endcsname}
+\ifx\undefined\setuvalue
+  \def\setuvalue    #1{\normalprotected\expandafter \def\csname#1\endcsname}
+  \def\setuevalue   #1{\normalprotected\expandafter\edef\csname#1\endcsname}
+\fi
 
 \appendtoks
     \externalfilter@show_status{defining filter : \currentexternalfilter}%
@@ -99,7 +101,7 @@
 
 \newif\iftraceexternalfilters
 
-\def\traceexternalfilters
+\unexpanded\def\traceexternalfilters
     {\traceexternalfilterstrue}
 
 \starttexdefinition externalfilter@show_filenames
@@ -128,7 +130,7 @@
 \starttexdefinition externalfilter@start_indeed [#1][#2]
     % #1 = filter
     % #2 = options
-    \egroup %\bgroup in \start#1
+    \egroup %\bgroup in \externalfilter@start
 
     \begingroup % to keep assignments local
     \edef\currentexternalfilter{#1}
@@ -256,7 +258,7 @@
 
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
     \endgroup
 \stoptexdefinition
 
@@ -306,7 +308,7 @@
          \normalend}
 
     \doifnot{\externalfilter@get_last_character\externalfilter@get_directory}{/}
-        {\showmessage\m!externalfilter{slash}\externalfilter@get_directory
+        {\iftraceexternalfilters \showmessage\m!externalfilter{slash}\externalfilter@get_directory \fi
          \edef\externalfilter@get_directory{\externalfilter@get_directory/}}
 \stoptexdefinition
 
@@ -360,21 +362,22 @@
 \starttexdefinition externalfilter@process_filter
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
-     \endgroup
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
 
-     \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
-     \dorechecknextindentation
+    \doif{\externalfilterparameter\c!location}\v!paragraph
+       {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}%
+        \dorechecknextindentation}
+     \endgroup
 \stoptexdefinition
 
 %D \subsubject {Execute Filter}
 
 \starttexdefinition externalfilter@execute_filter
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
-   \externalfilter@show_filtercommand
+   \iftraceexternalfilters \externalfilter@show_filtercommand \fi
 
    \doifelse{\externalfilterparameter\c!cache}\v!yes
        {\doifelse{\externalfilterparameter\c!state}\v!stop
@@ -440,6 +443,7 @@
    \c!style=,
    \c!color=,
    \c!indentnext=\v!auto,
+   \c!align=,
    \c!setups=,
    \c!continue=\v!no,
    \c!cache=\externalfilterparameter\c!continue, % for backward compatibility
@@ -457,6 +461,9 @@
 \def\externalfilterinputfile {\externalfilter@input_file}
 \def\externalfilteroutputfile{\externalfilter@output_file}
 
+% t-syntax-groups still uses this.
+\def\externalfilter@name          {\currentexternalfilter}
+\def\externalfilter@namespace     {\????externalfilter}
 % Default value
 \def\externalfilter@input_file {}
 \def\externalfilter@output_file{}

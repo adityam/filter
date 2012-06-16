@@ -329,7 +329,6 @@
    \doifsomething{\externalfilterparameter\c!name}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter\c!name}}
 
-
    \externalfilter@set_filenames_extras
 
    \iftraceexternalfilters \externalfilter@show_filenames \fi
@@ -391,7 +390,7 @@
          {\doglobal\incrementvalue\externalfilter@count}
 
     \doif{\externalfilterparameter\c!location}\v!paragraph
-         {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
+         {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}%
           \dorechecknextindentation}
      \endgroup
 \stoptexdefinition
