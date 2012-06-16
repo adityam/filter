@@ -118,7 +118,8 @@
     \edef\externalfilter@name{#1}
 
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\expandafter\newcounter\csname\externalfilter@count\endcsname}
+         {\ifcsname\externalfilter@count\endcsname \else
+          \expandafter\newcounter\csname\externalfilter@count\endcsname}
 
     \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter@start[#1]}
     \setvalue {\e!stop#1}{\externalfilter@process_filter}

@@ -58,7 +58,8 @@
 \appendtoks
     \externalfilter@show_status{defining filter : \currentexternalfilter}%
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
+         {\ifcsname\externalfilter@count\endcsname \else
+          \expandafter\newcounter\csname\externalfilter@count\endcsname\fi}%
     \setuevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
     \setuvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
     \setuevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
