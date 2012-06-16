@@ -54,14 +54,30 @@
 
 \def\externalfilter@id          {externalfilter}
 \def\externalfilter@namespace   {@@@@\externalfilter@id}
-\def\externalfilter@name        {}
 
 \def\externalfilter@temp_prefix {temp}
-\def\externalfilter@count       {\externalfilter@namespace-\externalfilter@name-counter}
+\def\externalfilter@count       {\externalfilter@namespace-\currentexternalfilter-counter}
 
 \installparameterhandler     \externalfilter@namespace \externalfilter@id
 \installparameterhashhandler \externalfilter@namespace \externalfilter@id
 \installsetuphandler         \externalfilter@namespace \externalfilter@id
+\installdefinehandler        \externalfilter@namespace \externalfilter@id \externalfilter@namespace 
+
+\def\setuvalue    #1{\normalprotected\expandafter \def\csname#1\endcsname}
+\def\setuevalue   #1{\normalprotected\expandafter\edef\csname#1\endcsname}
+
+\appendtoks
+    \externalfilter@show_status{defining filter : \currentexternalfilter}%
+    \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
+         {\ifcsname\externalfilter@count\endcsname \else
+          \expandafter\newcounter\csname\externalfilter@count\endcsname\fi}%
+    \setuevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
+    \setuvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
+    \setuevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
+    \setuevalue{process\currentexternalfilter buffer}{\externalfilter@process_buffer[\currentexternalfilter]}%
+    \setuevalue{inline\currentexternalfilter}{\externalfilter@inline[\currentexternalfilter]}%
+\to \everydefineexternalfilter
+
 
 % For backward compatibility
 \let\setupexternalfilters \setupexternalfilter
@@ -87,7 +103,7 @@
     {\traceexternalfilterstrue}
 
 \starttexdefinition externalfilter@show_filenames
-    \writestatus\m!externalfilter{current filter : \externalfilter@name}
+    \writestatus\m!externalfilter{current filter : \currentexternalfilter}
     \writestatus\m!externalfilter{base file      : \externalfilter@base_file}
     \writestatus\m!externalfilter{input file     : \externalfilter@input_file}
     \writestatus\m!externalfilter{output file    : \externalfilter@output_file}
@@ -106,37 +122,16 @@
 
 %D \section {The main user macros}
 
-%D \subsubject {Define a new filter}
+\unexpanded\def\externalfilter@start
+    {\bgroup\obeylines\dodoubleargument\externalfilter@start_indeed}
 
-\def\defineexternalfilter
-  {\dodoubleargument\externalfilter@define}
-
-\starttexdefinition externalfilter@define [#1][#2]
-    \externalfilter@show_status{defining filter : #1}
-
-    \setupexternalfilter[#1][\s!parent=\externalfilter@namespace,#2]
-    \edef\externalfilter@name{#1}
-
-    \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\ifcsname\externalfilter@count\endcsname \else
-          \expandafter\newcounter\csname\externalfilter@count\endcsname\fi}
-
-    \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter@start[#1]}
-    \setvalue {\e!stop#1}{\externalfilter@process_filter}
-
-    \setvalue{process#1file}{\dodoubleargument\externalfilter@process_file[#1]}
-    \setvalue{process#1buffer}{\dotripleargument\externalfilter@process_buffer[#1]}
-    \setvalue{inline#1}{\dodoubleargument\externalfilter@inline[#1]}
-
-\stoptexdefinition
-
-\starttexdefinition externalfilter@start [#1][#2]
+\starttexdefinition externalfilter@start_indeed [#1][#2]
     % #1 = filter
     % #2 = options
     \egroup %\bgroup in \start#1
 
     \begingroup % to keep assignments local
-    \edef\externalfilter@name{#1}
+    \edef\currentexternalfilter{#1}
 
     \setupexternalfilter[#1][\c!name=,#2]
 
@@ -146,13 +141,16 @@
     \dostartbuffer[\externalfilter@buffer_name][\e!start#1][\e!stop#1]
 \stoptexdefinition
 
-\starttexdefinition externalfilter@process_file [#1][#2]#3
+\unexpanded\def\externalfilter@process_file
+    {\dodoubleargument\externalfilter@process_file_indeed}
+
+\starttexdefinition externalfilter@process_file_indeed [#1][#2]#3
     % #1 = filter
     % #2 = options
     % #3 = filename
     \begingroup
 
-    \edef\externalfilter@name{#1}
+    \edef\currentexternalfilter{#1}
     \setupexternalfilter[#1][\c!name=,#2]
 
     \externalfilter@set_directory
@@ -173,13 +171,16 @@
     \endgroup
 \stoptexdefinition
 
-\starttexdefinition externalfilter@process_buffer [#1][#2][#3]
+\unexpanded\def\externalfilter@process_buffer
+    {\dotripleargument\externalfilter@process_buffer_indeed}
+
+\starttexdefinition externalfilter@process_buffer_indeed [#1][#2][#3]
     % #1 = filter
     % #2 = options
     % #3 = buffer
     \begingroup
 
-    \edef\externalfilter@name{#1}
+    \edef\currentexternalfilter{#1}
     \ifthirdargument
       \setupexternalfilter[#1][\c!name=,#2]
     \fi
@@ -193,9 +194,6 @@
     \fi
 
     \externalfilter@set_filenames_extras
-    % In MkII, the above function sets the wrong value of
-    % \type{\externalfilter@input_file}. So, we reset that name here.
-    \edef\externalfilter@input_file {\externalfilter@base_file.\f!temporaryextension}
 
     \iftraceexternalfilters \externalfilter@show_filenames \fi
 
@@ -203,16 +201,19 @@
 
 \stoptexdefinition
 
-\starttexdefinition externalfilter@inline [#1][#2]
+\unexpanded\def\externalfilter@inline
+    {\dodoubleargument\externalfilter@inline_indeed}
+
+\starttexdefinition externalfilter@inline_indeed [#1][#2]
    \begingroup % to keep assignments local
-   \edef\externalfilter@name{#1}
+   \edef\currentexternalfilter{#1}
 
    \setupexternalfilter[#1][\c!numbering=,\c!name=,\c!location=\v!text,#2]
 
    \externalfilter@set_filenames
 
    \pushcatcodetable
-   \futurelet\next\externalfilter@inline_indeed
+   \futurelet\next\externalfilter@inline_grabcontent
 \stoptexdefinition
 
 %D \subsubject {Write argument to file verbatim}
@@ -220,7 +221,7 @@
 %D Surprisingly, there is nothing in the core to define a function that write its
 %D argument to a file verbatim. I basically copied the \type{\type} macro.
 
-\starttexdefinition externalfilter@inline_indeed
+\starttexdefinition externalfilter@inline_grabcontent
    \ifx\next\bgroup
        \expandafter\externalfilter@inline_group
    \else
@@ -255,7 +256,7 @@
 
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\incrementvalue\externalfilter@count}
+         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
     \endgroup
 \stoptexdefinition
 
@@ -322,11 +323,10 @@
 
    % Set the name of temp file for the filter
    \doifinsetelse{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\externalfilter@name-\csname\externalfilter@count\endcsname}}
-        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\externalfilter@name}}
+        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\csname\externalfilter@count\endcsname}}
+        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
-        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\externalfilter@name-\externalfilterparameter\c!name}}
-
+        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter\c!name}}
 
    \externalfilter@set_filenames_extras
 
@@ -364,7 +364,7 @@
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\incrementvalue\externalfilter@count}
+         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
 
      \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
      \dorechecknextindentation
@@ -398,6 +398,7 @@
 %D \subsubject {Read output}
 
 \starttexdefinition externalfilter@read_processed_file
+            \externalfilter@show_filenames
     \doif{\externalfilterparameter\c!read}\v!yes
        {\doiffileelse{\externalfilter@output_file}
            {\externalfilter@read_processed_file_indeed}
@@ -455,7 +456,6 @@
 \def\externalfilterbasefile  {\externalfilter@base_file}
 \def\externalfilterinputfile {\externalfilter@input_file}
 \def\externalfilteroutputfile{\externalfilter@output_file}
-\def\currentexternalfilter   {\externalfilter@name}
 
 % Default value
 \def\externalfilter@input_file {}
