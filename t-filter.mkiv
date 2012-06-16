@@ -250,7 +250,7 @@
      \fi
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
     \endgroup
 \stoptexdefinition
 
@@ -388,7 +388,7 @@
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
 
     \doif{\externalfilterparameter\c!location}\v!paragraph
          {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}

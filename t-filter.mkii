@@ -119,7 +119,7 @@
 
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
          {\ifcsname\externalfilter@count\endcsname \else
-          \expandafter\newcounter\csname\externalfilter@count\endcsname}
+          \expandafter\newcounter\csname\externalfilter@count\endcsname\fi}
 
     \setvalue{\e!start#1}{\bgroup\obeylines\dodoubleargument\externalfilter@start[#1]}
     \setvalue {\e!stop#1}{\externalfilter@process_filter}
@@ -255,7 +255,7 @@
 
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
     \endgroup
 \stoptexdefinition
 
@@ -364,7 +364,7 @@
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
 
      \expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
      \dorechecknextindentation
