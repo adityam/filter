@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.05.16,
+%D      version=2012.06.16,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.05.16)}
+\writestatus{loading}{Filter (ver: 2012.06.16)}
 
 % For backward compatibility
 \ifx\grabbufferdata\undefined \let\grabbufferdata \dostartbuffer \fi
@@ -58,7 +58,8 @@
 \appendtoks
     \externalfilter@show_status{defining filter : \currentexternalfilter}%
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\expandafter\newcounter\csname\externalfilter@count\endcsname}%
+         {\ifcsname\externalfilter@count\endcsname \else
+          \expandafter\newcounter\csname\externalfilter@count\endcsname\fi}%
     \setuevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
     \setuvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
     \setuevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
@@ -78,6 +79,7 @@
 \setinterfacemessage\m!externalfilter{missing}          {output file missing}
 \setinterfacemessage\m!externalfilter{missing_cache}    {cached output file -- missing. Rerunning filter}
 \setinterfacemessage\m!externalfilter{forbidden}        {Fatal Error: Cannot use absolute path -- as directory}
+\setinterfacemessage\m!externalfilter{unwriteable}      {Fatal Error: Cannot write to file --}
 \setinterfacemessage\m!externalfilter{slash}            {Appending / to directory -- }
 \setinterfacemessage\m!externalfilter{reuse}            {\c!state=\v!stop : Not running filter on file --}
 
@@ -248,7 +250,7 @@
      \fi
     % Finalization
     \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-         {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
     \endgroup
 \stoptexdefinition
 
@@ -296,6 +298,17 @@
     \doifnot{\externalfilter@get_last_character\externalfilter@get_directory}{/}
         {\iftraceexternalfilters \showmessage\m!externalfilter{slash}\externalfilter@get_directory \fi
          \edef\externalfilter@get_directory{\externalfilter@get_directory/}}
+\stoptexdefinition
+
+%D \subsubject {Check if file is writeable}
+
+\starttexdefinition externalfilter@check_writable #1
+
+    \ctxcommand{doifnot(file.is_writable("#1"))}
+        {\showmessage\m!externalfilter{unwriteable}{#1}
+         \batchmode
+         \errmessage{}
+         \normalend}
 \stoptexdefinition
 
 
@@ -355,6 +368,7 @@
      %
      % but using this method we cannot save the file in another directory. 
      % So, we simply write the file in the current directory and then move it.
+         \externalfilter@check_writable \externalfilter@input_file
          \savebuffer[\externalfilterparameter{\c!buffer\c!before},
                      \externalfilter@buffer_name,
                      \externalfilterparameter{\c!buffer\c!after}]
@@ -365,7 +379,6 @@
            os.remove("\jobname-\externalfilter@id.\f!temporaryextension")
          \stopluacode
 
-
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
      \iftraceexternalfilters \else 
@@ -375,7 +388,7 @@
 
      % Finalization
      \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
-          {\doglobal\expandafter\increment\csname\externalfilter@count\endcsname}
+         {\doglobal\incrementvalue\externalfilter@count}
 
     \doif{\externalfilterparameter\c!location}\v!paragraph
          {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}
@@ -391,6 +404,7 @@
 % in the next run.
 \starttexdefinition externalfilter@execute_filter
 
+   \externalfilter@check_writable \externalfilter@output_file
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
    \iftraceexternalfilters \externalfilter@show_filtercommand \fi
 

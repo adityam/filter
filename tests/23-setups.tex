@@ -1,0 +1,16 @@
+\setupcolors[state=start]
+\usemodule[filter]
+\traceexternalfilters
+
+\defineexternalfilter
+  [filterstyle]
+  [color=red]
+
+\defineexternalfilter 
+  [markdown]
+  [filterstyle]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+Normal text \inlinemarkdown{this should be **red**} normal text again
+\stoptext
