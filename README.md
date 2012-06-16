@@ -141,6 +141,37 @@ The above `\defineexternalfilter` macro defines:
 The [wiki](https://github.com/adityam/filter/wiki) page on Github gives the
 setup for common usecases (pandoc, R, etc.)
 
+Inheriting setup from other commands
+-------------------------------------
+
+It is also possible to inherit the settings from another filter. For example, 
+
+    \defineexternalfilter
+      [filterstyle]
+      [color=red,
+       style=bold]
+
+    \defineexternalfilter 
+      [markdown]
+      [filterstyle]
+      [filter={pandoc -w context -o \externalfilteroutputfile },
+       style=italic]
+
+Notice the three arguments to `\defineexternalfilter`. The first argument
+(`markdown`) is the name of the new filter; the second argument (`filterstyle`)
+is the name of the filter whose settings we want to inherit, and the third
+argument (`filter=...`) are the new settings for `markdown` filter. The above
+definition is same as:
+
+    \defineexternalfilter
+      [filter={pandoc -w context -o \externalfilteroutputfile },
+       style=italic,
+       color=red]
+
+Note that if a setting (like `style` above) is defined both in the new filter
+and the parent filter, then the value of the new filter (`style=italic` above)
+is used.
+
 Dealing with slow filters
 -------------------------
 
