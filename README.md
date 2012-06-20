@@ -886,3 +886,5 @@ Version History
     - Added `location`, `spacebefore` and `spaceafter` keys.
 - **2012.05.01**
     - Added `align` key.
+- **2012.06.20**
+    - Support for `\usepath`
