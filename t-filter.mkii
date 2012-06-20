@@ -157,7 +157,13 @@
 
     \externalfilter@set_directory
 
-    \edef\externalfilter@input_file{#3}
+    \locatefilepath{#3}
+    \ifx\locatedfilepath\empty
+        % FIXME: Should we declare an error?
+        \edef\externalfilter@input_file{#3}
+    \else
+        \edef\externalfilter@input_file{\pathplusfile\locatedfilepath{#3}}
+    \fi
     \splitfilename{#3}
     %NOTE: \edef doesn not work because \splitoffname is not expandable
     \def\externalfilter@base_file   {\splitoffname}
