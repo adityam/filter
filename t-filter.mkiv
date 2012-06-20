@@ -145,7 +145,7 @@
 
     \externalfilter@set_directory
 
-    \edef\externalfilter@input_file{\locfilename{#3}}
+    \edef\externalfilter@input_file{\externalfilter@any_filename{#3}}
     \splitfilename{#3}
     %NOTE: \edef doesn not work because \splitoffname is not expandable
     \def\externalfilter@base_file   {\splitoffname}
@@ -311,7 +311,13 @@
          \normalend}
 \stoptexdefinition
 
+%D \subsubject {Find file name (with search in \usepath)}
+%D 
+%D The `\locfilename` macro does not search in the path specified by `\usepath`.
+%D So, we define a macro that is based on `\readfile`.
 
+\def\externalfilter@any_filename#1%
+	{\ctxcommand{getreadfilename("any",".","#1")}}
 
 %D \subsubject {Set file names}
 %D
@@ -407,17 +413,19 @@
    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
    \iftraceexternalfilters \externalfilter@show_filtercommand \fi
 
-   \doifelse{\externalfilterparameter\c!cache}\v!yes
-       {\doifelse{\externalfilterparameter\c!state}\v!stop
-            {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
-            {\doiffileelse{\externalfilter@output_file}
-                {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,
-                              \!!bs\externalfilterparameter\c!filtercommand\!!es)}}
-                {\showmessage\m!externalfilter{missing_cache}\externalfilter@output_file
-                 \executesystemcommand
-                   {\externalfilterparameter\c!filtercommand}}}}
-       {\executesystemcommand
-          {\externalfilterparameter\c!filtercommand}}
+   \doifelsenothing{\externalfilter@input_file}
+        {\showmessage\m!externalfilter{missing}\externalfilter@input_file}
+        {\doifelse{\externalfilterparameter\c!cache}\v!yes
+             {\doifelse{\externalfilterparameter\c!state}\v!stop
+                  {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
+                  {\doiffileelse{\externalfilter@output_file}
+                      {\ctxlua{job.files.run(\!!bs\externalfilter@input_file\!!es,
+                                    \!!bs\externalfilterparameter\c!filtercommand\!!es)}}
+                      {\showmessage\m!externalfilter{missing_cache}\externalfilter@output_file
+                       \executesystemcommand
+                         {\externalfilterparameter\c!filtercommand}}}}
+             {\executesystemcommand
+                {\externalfilterparameter\c!filtercommand}}}
 \stoptexdefinition
 
 %D \subsubject {Read output}

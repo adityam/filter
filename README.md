@@ -524,6 +524,12 @@ file. To use such markdown files in ConTeXt, I can just use
 
     \processmarkdownfile{filename.md}
 
+In MkII, either `filename.md` should be in the current directory, or an absolute
+or relative path of the file must be used. In MkIV, the file can be in any
+directory where ConTeXt searches for files; that is, the current directory, the
+parent directory, the grand-parent directory, or directories specified by
+`\usepath`. 
+
 The general macro is `\process<filter>file{...}`, which takes the name of a file
 **or a url** as an argument and uses that file as the input file for the filter. The rest of
 the processing is the same as with `\start<filter>` ... `\stop<filter>`
@@ -569,7 +575,6 @@ or use
     context --trackers=resolvers.schemes <filename>
 
 to compile the file.
-
 
 Processing existing buffers
 ---------------------------
