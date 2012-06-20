@@ -524,10 +524,15 @@ file. To use such markdown files in ConTeXt, I can just use
 
     \processmarkdownfile{filename.md}
 
+By default, the file is searched the current directory and in the directories
+specified by `\usepath`. In addition, in MkIV, the parent and grand-parent
+directories are also searched. If the file is not in one of these locations,
+specify a full or a relative path to the file.
+
 The general macro is `\process<filter>file{...}`, which takes the name of a file
-**or a url** as an argument and uses that file as the input file for the filter. The rest of
-the processing is the same as with `\start<filter>` ... `\stop<filter>`
-environment. 
+**or a url (MkIV only)** as an argument and uses that file as the input file for
+the filter. The rest of the processing is the same as with `\start<filter>` ...
+`\stop<filter>` environment. 
 
 The `\process<filter>file` macro also takes an optional argument for setup
 options:
@@ -569,7 +574,6 @@ or use
     context --trackers=resolvers.schemes <filename>
 
 to compile the file.
-
 
 Processing existing buffers
 ---------------------------
@@ -882,3 +886,5 @@ Version History
     - Added `location`, `spacebefore` and `spaceafter` keys.
 - **2012.05.01**
     - Added `align` key.
+- **2012.06.20**
+    - Support for `\usepath`

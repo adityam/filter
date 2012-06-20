@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.06.16,
+%D      version=2012.06.20,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.06.16)}
+\writestatus{loading}{Filter (ver: 2012.06.20)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -157,7 +157,13 @@
 
     \externalfilter@set_directory
 
-    \edef\externalfilter@input_file{#3}
+    \locatefilepath{#3}
+    \ifx\locatedfilepath\empty
+        % FIXME: Should we declare an error?
+        \edef\externalfilter@input_file{#3}
+    \else
+        \edef\externalfilter@input_file{\pathplusfile\locatedfilepath{#3}}
+    \fi
     \splitfilename{#3}
     %NOTE: \edef doesn not work because \splitoffname is not expandable
     \def\externalfilter@base_file   {\splitoffname}
