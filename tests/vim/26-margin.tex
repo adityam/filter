@@ -6,15 +6,28 @@
    default=left]
 
 \definevimtyping
-  [C]
+  [Cnarrow]
   [
     syntax=c,
     before=\startcode,
     after=\stopcode,
   ]
 
+\definevimtyping
+  [C]
+  [
+    syntax=c,
+    margin=3cm,
+  ]
+
 \showframe
 \starttext
+
+\startCnarrow
+/* This MEMB() definition defines a memory pool from
+ * which we allocate neighbour entries. */
+MEMB(neighbours_memb, struct neighbour, MAX_NEIGHBOURS);
+\stopCnarrow
 
 \startC
 /* This MEMB() definition defines a memory pool from
