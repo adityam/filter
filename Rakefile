@@ -23,7 +23,7 @@ end
 def run_tests tests, engine
   FileUtils.mkdir_p "output"
   tests.each do |file|
-    sh "context --#{engine} --color --mode=dev-vim --noconsole --purgeall --purgeresult #{file}"
+    sh "context --#{engine} --usemodule=pandoc --color --mode=dev-vim --noconsole --purgeall --purgeresult #{file}"
   end
   sh "context --purgeall"
 end
