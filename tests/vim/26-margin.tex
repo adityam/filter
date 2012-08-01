@@ -1,0 +1,28 @@
+\usemodule [vim]
+
+\definenarrower
+  [code]
+  [left=3cm,
+   default=left]
+
+\definevimtyping
+  [C]
+  [
+    syntax=c,
+    before=\startcode,
+    after=\stopcode,
+  ]
+
+\showframe
+\starttext
+
+\startC
+/* This MEMB() definition defines a memory pool from
+ * which we allocate neighbour entries. */
+MEMB(neighbours_memb, struct neighbour, MAX_NEIGHBOURS);
+\stopC
+
+\blank
+
+\stoptext
+
