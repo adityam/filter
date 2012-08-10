@@ -58,7 +58,7 @@ end.to_s
 submission_page = version_form.submit
 # puts submission_page.body
 
-result = submission_page.search('//div[@id="description"]/div[@class="content"]/div[@id="notice"]')
+result = submission_page.search('//div[@id="description"]/div[@class="content"]/div[@id="notice"]').first.content
 puts result
 
 

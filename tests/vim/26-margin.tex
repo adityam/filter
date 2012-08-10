@@ -1,0 +1,45 @@
+\usemodule [vim]
+
+\definenarrower
+  [code]
+  [left=3cm,
+   default=left]
+
+\definevimtyping
+  [Cnarrow]
+  [
+    syntax=c,
+    before=\startcode,
+    after=\stopcode,
+  ]
+
+\definevimtyping
+  [C]
+  [
+    syntax=c,
+    margin=3cm,
+  ]
+
+\showframe
+\starttext
+
+\subject{Default margin}
+
+\startCnarrow
+/* This MEMB() definition defines a memory pool from
+ * which we allocate neighbour entries. */
+MEMB(neighbours_memb, struct neighbour, MAX_NEIGHBOURS);
+\stopCnarrow
+
+\subject{margin=3cm}
+
+\startC
+/* This MEMB() definition defines a memory pool from
+ * which we allocate neighbour entries. */
+MEMB(neighbours_memb, struct neighbour, MAX_NEIGHBOURS);
+\stopC
+
+\blank
+
+\stoptext
+
