@@ -23,11 +23,15 @@
 \showframe
 \starttext
 
+\subject{Default margin}
+
 \startCnarrow
 /* This MEMB() definition defines a memory pool from
  * which we allocate neighbour entries. */
 MEMB(neighbours_memb, struct neighbour, MAX_NEIGHBOURS);
 \stopCnarrow
+
+\subject{margin=3cm}
 
 \startC
 /* This MEMB() definition defines a memory pool from

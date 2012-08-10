@@ -353,6 +353,24 @@ set
 
 The default value of `strip` is `no`.
 
+Adding left margin
+------------------
+
+By default, a `<vimtyping>` environment resets the left skip to `0pt`, so each
+line is aligned to the left edge. Use the `margin` key to change the left skip
+of each line:
+
+    \definevimtyping
+        [...]
+        [...
+         margin=<dimen>,
+         ...]
+
+where `<dimen>` is a valid TeX dimension.
+
+    
+
+
 Wrapping lines
 ---------------
 
