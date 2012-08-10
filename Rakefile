@@ -1,6 +1,15 @@
 require 'fileutils'
 require 'rake/clean'
 
+def make_pandoc
+  File.open('t-pandoc.tex', 'w') do |file|
+    file.puts "\\startmodule [pandoc]"
+    file.puts "\\let\\strong\\bold"
+    file.puts "\\let\\emph\\italic"
+    file.puts "\\stopmodule"
+  end
+end
+
 def make_tds(name, files, doc)
   tex_dir = "#{name}/tex/context/third/#{name}"
   doc_dir = "#{name}/doc/context/third/#{name}"
@@ -21,6 +30,7 @@ def make_zip name
 end
 
 def run_tests tests, engine
+  make_pandoc
   FileUtils.mkdir_p "output"
   tests.each do |file|
     sh "context --#{engine} --usemodule=pandoc --color --mode=dev-vim --noconsole --purgeall --purgeresult #{file}"
@@ -35,7 +45,6 @@ FILTER_TEST = FileList['tests/[0-9][0-9]-*.tex']
 VIM_TEX  = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv 2context.vim]
 VIM_DOC  = "vim-README.md"
 VIM_TEST = FileList['tests/vim/[0-9][0-9]-*.tex']
-
 
 desc "Run tests for filter module (MkIV)"
 task :test_filter_mkiv => FILTER_TEST do
