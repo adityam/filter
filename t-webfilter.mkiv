@@ -75,6 +75,15 @@
 
 \defineexternalfigure[GoogleCharts][method=png,scale=4000]
 
+\definewebfilter
+  [OpenStreetMap]
+  [\c!prefix={http://parent.tile.openstreetmap.org/cgi-bin/export?},
+   \c!transform=ampersand,
+   \c!suffix=,
+   \c!figuresetup=OpenStreetMap,
+  ]
+
+\defineexternalfigure[OpenStreetMap][maxwidth=\textwidth,maxheight=\textheight]
 
 \definewebfilter
   [UML]
