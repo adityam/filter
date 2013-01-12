@@ -44,6 +44,7 @@
     \setinterfaceconstant {output}           {output}
     \setinterfaceconstant {purge}            {purge}
     \setinterfaceconstant {read}             {read}
+    \setinterfaceconstant {write}            {write}
     \setinterfaceconstant {readcommand}      {readcommand}
 \stopinterface
 
@@ -355,7 +356,7 @@
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter\c!name}}
-   \doifnot{\externalfilterparameter\c!write}\v!no
+   \doif{\externalfilterparameter\c!write}\v!no
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter{\c!cache\c!option}}}
 
    \externalfilter@set_filenames_extras
