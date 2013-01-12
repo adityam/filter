@@ -699,8 +699,17 @@ Notice that in this case, the external program does not need any input file. We
 just need to pass the size of the image to the external program. 
 
 In such cases, we still want to cache the result, i.e., rerun the external
-program only when the `size` of the image has changed. For this use case, the
-externalfilter module provides `write=no` option. 
+program only when the `size` of the image has changed. The `write=no` option
+covers this use case. The basic usage is:
+
+    \defineexternalfilter
+        [...]
+        [
+          ...
+          write=no,
+          cacheoption=....,
+          ...
+        ]
 
 Out of the four macros (see [Basic Usage]) created by `\defineexternalfilter`,
 only `\inline<externalfilter>` makes sense with `write=no`. The usage of this
@@ -713,9 +722,9 @@ because, it does not write anything to a file).
 
 When `write=no` is set, `\externalfilterbasefile` is equal to
 `\jobname-temp-<filter>-<cacheoption>` where `<cacheoption>` is the value of the
-`cacheoption` key. Thus, `cacheoption=...` **must** be used with `write=no`. 
+`cacheoption` key. 
 
-To generate swirl backgrounds described above, define the following:
+For example, to generate swirl backgrounds described above, define:
 
     \defineexternalfilter
         [swirl]
@@ -738,7 +747,6 @@ This creates a macro `\inlineswirl` that uses ImageMagick to generate a file
 
 The result is cached and the external program is rerun only if the value of
 cacheoption changes, that is, only if the value of `size` key changes. 
-
 
 
 Dealing with expansion
