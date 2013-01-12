@@ -95,6 +95,7 @@
 \setinterfacemessage\m!externalfilter{forbidden}        {Fatal Error: Cannot use absolute path -- as directory}
 \setinterfacemessage\m!externalfilter{slash}            {Appending / to directory -- }
 \setinterfacemessage\m!externalfilter{reuse}            {\c!state=\v!stop : Not running filter on file --}
+\setinterfacemessage\m!externalfilter{writedisabled}    {\c!write=\v!no : Not writing output for filter --}
 
 
 %D \subject {Tracing Macros}
@@ -221,6 +222,25 @@
    \externalfilter@set_filenames
 
    \pushcatcodetable
+   \doifelse{\externalfilterparameter\c!write}\v!no
+       \externalfilter@inline_write_disabled
+       \externalfilter@inline_write_enabled
+\stoptexdefinition
+       
+\starttexdefinition externalfilter@inline_write_disabled
+   \iftraceexternalfilters \showmessage\m!externalfilter{writedisabled} \currentexternalfilter \fi 
+
+   \externalfilter@execute_filter
+   \endlinechar\minusone %to prevent line break after reading file
+   \externalfilter@read_processed_file
+
+   % Finalization
+   \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
+        {\doglobal\incrementvalue\externalfilter@count}
+   \endgroup
+\stoptexdefinition
+
+\starttexdefinition externalfilter@inline_write_enabled
    \futurelet\next\externalfilter@inline_grabcontent
 \stoptexdefinition
 
@@ -335,6 +355,8 @@
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter\c!name}}
+   \doifnot{\externalfilterparameter\c!write}\v!no
+        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter{\c!cache\c!option}}}
 
    \externalfilter@set_filenames_extras
 
@@ -453,6 +475,7 @@
    \c!setups=,
    \c!continue=\v!no,
    \c!cache=\externalfilterparameter\c!continue, % for backward compatibility
+   \c!cache\c!option=,
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
    \c!directory=,
