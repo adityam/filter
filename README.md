@@ -736,11 +736,9 @@ To generate swirl backgrounds described above, define the following:
 This creates a macro `\inlineswirl` that uses ImageMagick to generate a file
 `\jobname-temp-swirl-1000x1000.png`. 
 
-In MkIV, the result is cached and the external program is rerun only if the
-value of cacheoption changes, that is, only if the value of `size` key changes. 
-(**Note**: Caching is not yet implemented).
+The result is cached and the external program is rerun only if the value of
+cacheoption changes, that is, only if the value of `size` key changes. 
 
-In MkII, the result is not cached. 
 
 
 Dealing with expansion

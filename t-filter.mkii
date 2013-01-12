@@ -412,9 +412,10 @@
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
             {\doifmode{*first}
                  {\doiffileelse{\externalfilter@output_file}
-                     {\executesystemcommand
-                              {mtxrun --ifchanged=\externalfilter@input_file\space
-                                  --direct \externalfilterparameter\c!filtercommand}}}
+                     {\doifnot{\externalfilterparameter\c!write}\v!no
+                         {\executesystemcommand
+                                  {mtxrun --ifchanged=\externalfilter@input_file\space
+                                      --direct \externalfilterparameter\c!filtercommand}}}}
                      {\showmessage\m!externalfilter{missing_cache}\externalfilter@output_file
                          \executesystemcommand
                               {mtxrun --direct \externalfilterparameter\c!filtercommand}}}}
