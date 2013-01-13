@@ -2,34 +2,34 @@
 
 \usemodule[vim]
 
-\startvimrc[name=bash]
-let g:is_bash=1
+\startvimrc[name=comment]
+let c_comment_strings = 1
 \stopvimrc
 
-\definevimtyping[SH][syntax=sh]
-\definevimtyping[BASH][syntax=sh, vimrc=bash]
+\definevimtyping[C][syntax=c]
+\definevimtyping[CComment][syntax=c, vimrc=comment]
 
 \starttext
 
-\subject{SH default}
-\startSH
-  export foo=bar
-\stopSH
+\subject{C default}
+\startC
+/* "This is a string" */
+\stopC
 
-\subject{BASH default} 
-\startBASH
-  export foo=bar
-\stopBASH
+\subject{C Comment} 
+\startCComment
+/* "This is a string" */
+\stopCComment
 
-\subject{BASH vimrc=none}
-\startBASH[vimrc=none]
-  export foo=bar
-\stopBASH
+\subject{CComment vimrc=none}
+\startCComment[vimrc=none]
+/* "This is a string" */
+\stopCComment
 
-\subject{SH vimrc=bash}
-\startSH[vimrc=bash]
-  export foo=bar
-\stopSH
+\subject{C vimrc=comment}
+\startC[vimrc=comment]
+/* "This is a string" */
+\stopC
 
 \stoptext
 

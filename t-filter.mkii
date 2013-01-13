@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2012.06.20,
+%D      version=2013.01.13,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2012.06.20)}
+\writestatus{loading}{Filter (ver: 2013.01.13)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -44,6 +44,7 @@
     \setinterfaceconstant {output}           {output}
     \setinterfaceconstant {purge}            {purge}
     \setinterfaceconstant {read}             {read}
+    \setinterfaceconstant {write}            {write}
     \setinterfaceconstant {readcommand}      {readcommand}
 \stopinterface
 
@@ -95,6 +96,7 @@
 \setinterfacemessage\m!externalfilter{forbidden}        {Fatal Error: Cannot use absolute path -- as directory}
 \setinterfacemessage\m!externalfilter{slash}            {Appending / to directory -- }
 \setinterfacemessage\m!externalfilter{reuse}            {\c!state=\v!stop : Not running filter on file --}
+\setinterfacemessage\m!externalfilter{writedisabled}    {\c!write=\v!no : Not writing output for filter --}
 
 
 %D \subject {Tracing Macros}
@@ -221,6 +223,25 @@
    \externalfilter@set_filenames
 
    \pushcatcodetable
+   \doifelse{\externalfilterparameter\c!write}\v!no
+       \externalfilter@inline_write_disabled
+       \externalfilter@inline_write_enabled
+\stoptexdefinition
+       
+\starttexdefinition externalfilter@inline_write_disabled
+   \iftraceexternalfilters \showmessage\m!externalfilter{writedisabled} \currentexternalfilter \fi 
+
+   \externalfilter@execute_filter
+   \endlinechar\minusone %to prevent line break after reading file
+   \externalfilter@read_processed_file
+
+   % Finalization
+   \doifinset{\externalfilterparameter\c!cache}{\v!yes,\v!force}
+        {\doglobal\incrementvalue\externalfilter@count}
+   \endgroup
+\stoptexdefinition
+
+\starttexdefinition externalfilter@inline_write_enabled
    \futurelet\next\externalfilter@inline_grabcontent
 \stoptexdefinition
 
@@ -335,6 +356,8 @@
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter}}
    \doifsomething{\externalfilterparameter\c!name}
         {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter\c!name}}
+   \doif{\externalfilterparameter\c!write}\v!no
+        {\edef\externalfilter@buffer_name{\externalfilter@temp_prefix-\currentexternalfilter-\externalfilterparameter{\c!cache\c!option}}}
 
    \externalfilter@set_filenames_extras
 
@@ -390,9 +413,10 @@
             {\showmessage\m!externalfilter{reuse}\externalfilter@input_file}
             {\doifmode{*first}
                  {\doiffileelse{\externalfilter@output_file}
-                     {\executesystemcommand
-                              {mtxrun --ifchanged=\externalfilter@input_file\space
-                                  --direct \externalfilterparameter\c!filtercommand}}}
+                     {\doifnot{\externalfilterparameter\c!write}\v!no
+                         {\executesystemcommand
+                                  {mtxrun --ifchanged=\externalfilter@input_file\space
+                                      --direct \externalfilterparameter\c!filtercommand}}}}
                      {\showmessage\m!externalfilter{missing_cache}\externalfilter@output_file
                          \executesystemcommand
                               {mtxrun --direct \externalfilterparameter\c!filtercommand}}}}
@@ -453,6 +477,7 @@
    \c!setups=,
    \c!continue=\v!no,
    \c!cache=\externalfilterparameter\c!continue, % for backward compatibility
+   \c!cache\c!option=,
    \c!read=\v!yes,
    \c!readcommand=\ReadFile,
    \c!directory=,

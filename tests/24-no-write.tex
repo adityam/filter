@@ -1,0 +1,30 @@
+% Test to check that write=no works properly.
+
+\usemodule[filter]
+
+\traceexternalfilters
+\defineexternalfilter
+    [swirl]
+    [
+      write=no,
+      size={1000x1000},
+      cache=yes,
+      cacheoption={\externalfilterparameter{size}},
+      output=\externalfilterbasefile.png,
+      filtercommand={convert -size \externalfilterparameter{size} gradient: -swirl 180 \externalfilteroutputfile},
+      readcommand=\ReadFigure,
+    ]
+
+\def\ReadFigure#1%
+    {\externalfigure[#1]}
+
+\starttext
+
+\inlineswirl
+
+\inlineswirl[size=1000x500]
+
+\inlineswirl
+
+\inlineswirl[size=1000x500]
+\stoptext

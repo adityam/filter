@@ -1,0 +1,24 @@
+\usemodule[vim]
+
+\startvimrc[name=collapse]
+au BufEnter *.tmp %s/\(^\s*\n\)\{2,\}/\r/ge | w
+\stopvimrc
+
+
+\definevimtyping[CPPtyping][syntax=cpp, vimrc=collapse]
+
+\starttext
+\startCPPtyping
+  i++;
+
+
+  i++;
+
+
+
+
+
+
+  i--;
+\stopCPPtyping
+\stoptext

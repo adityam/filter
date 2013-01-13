@@ -683,6 +683,72 @@ Then you can use
 
 to get a chess board.
 
+Special use case:  `\write18` with caching
+------------------------------------------
+
+Although the raison d'être of the externalfilter module is to process the
+content of an evironment or a macro through an external program, it may also be
+used to simply exectute an external program without processing any content.
+
+For example, suppose we want to include an image with a swirl gradient in our
+document. ImageMagick can generate such an image using:
+
+     convert -size 100x100 gradient: -swirl 180 <output file>
+
+Notice that in this case, the external program does not need any input file. We
+just need to pass the size of the image to the external program. 
+
+In such cases, we still want to cache the result, i.e., rerun the external
+program only when the `size` of the image has changed. The `write=no` option
+covers this use case. The basic usage is:
+
+    \defineexternalfilter
+        [...]
+        [
+          ...
+          write=no,
+          cacheoption=....,
+          ...
+        ]
+
+Out of the four macros (see [Basic Usage]) created by `\defineexternalfilter`,
+only `\inline<externalfilter>` makes sense with `write=no`. The usage of this
+macro is
+
+    \inline<externalfilter>[....]
+
+Unlike the default case, this version does not take an argument! (That is
+because, it does not write anything to a file). 
+
+When `write=no` is set, `\externalfilterbasefile` is equal to
+`\jobname-temp-<filter>-<cacheoption>` where `<cacheoption>` is the value of the
+`cacheoption` key. 
+
+For example, to generate swirl backgrounds described above, define:
+
+    \defineexternalfilter
+        [swirl]
+        [
+          write=no,
+          cacheoptions={\externalfilterparameter{size}},
+          cache=yes,
+          size={1000x1000},
+          output=\externalfilterbasefile.png,
+          filtercommand={convert -size \externalfilterparameter{size} gradient: -swirl 180 \externalfilteroutputfile},
+          readcommand=\ReadFigure,
+        ]
+
+    \def\ReadFigure#1%
+        {\externalfigure[#1]}
+
+
+This creates a macro `\inlineswirl` that uses ImageMagick to generate a file
+`\jobname-temp-swirl-1000x1000.png`. 
+
+The result is cached and the external program is rerun only if the value of
+cacheoption changes, that is, only if the value of `size` key changes. 
+
+
 Dealing with expansion
 ----------------------
 
@@ -888,3 +954,5 @@ Version History
     - Added `align` key.
 - **2012.06.20**
     - Support for `\usepath`
+- **2012.01.13**
+    - Support for `write=no` and `cacheoption=...`.
