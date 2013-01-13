@@ -954,3 +954,5 @@ Version History
     - Added `align` key.
 - **2012.06.20**
     - Support for `\usepath`
+- **2012.01.13**
+    - Support for `write=no` and `cacheoption=...`.
