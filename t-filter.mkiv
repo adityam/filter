@@ -471,10 +471,11 @@
 \stoptexdefinition
 
 \starttexdefinition externalfilter@read_processed_file_indeed
-   \doif{\externalfilterparameter\c!location}\v!paragraph
+   \doifelse{\externalfilterparameter\c!location}\v!paragraph
      {\blank[\externalfilterparameter\c!spacebefore]
-      \usealignparameter\externalfilterparameter}
-   \externalfilterparameter\c!before
+      \usealignparameter\externalfilterparameter
+      \externalfilterparameter\c!before}
+     {\externalfilterparameter\c!left}
 
    \begingroup
    \dostarttagged{\externalfilterparameter\c!taglabel}\currentexternalfilter
@@ -484,9 +485,10 @@
    \dostoptagged
    \endgroup
 
-   \externalfilterparameter\c!after
-   \doif{\externalfilterparameter\c!location}\v!paragraph
-     {\par\blank[\externalfilterparameter\c!spaceafter]}%
+   \doifelse{\externalfilterparameter\c!location}\v!paragraph
+     {\externalfilterparameter\c!after
+      \par\blank[\externalfilterparameter\c!spaceafter]}
+     {\externalfilterparameter\c!right}
 \stoptexdefinition
 
 %D \section {Default Values}
@@ -496,6 +498,8 @@
    \c!location=\v!paragraph,
    \c!before=,
    \c!after=,
+   \c!left=\externalfilterparameter\c!before,
+   \c!right=\externalfilterparameter\c!after,
    \c!spacebefore=,
    \c!spaceafter=,
    \c!style=,

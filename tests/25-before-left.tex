@@ -1,0 +1,24 @@
+\usemodule[filter]
+
+\defineexternalfilter
+    [markdown]
+    [
+      filter=pandoc -t context -o \externalfilteroutputfile,
+      before=\startbackground,
+      after=\stopbackground,
+      left={\startframed[location=low]},
+      right=\stopframed,
+    ]
+
+
+
+\starttext
+
+\startmarkdown
+  * A list
+  * Written in markdown
+\stopmarkdown
+
+and also \inlinemarkdown{**bold text**}
+
+\stoptext
