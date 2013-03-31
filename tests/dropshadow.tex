@@ -1,0 +1,101 @@
+% A proof of concept implementation of the drops module
+
+% - How do we shift the shadow?
+
+\usemodule[filter]
+
+\traceexternalfilters
+
+\unprotect
+
+\startluacode
+  thirddata = thirddata or {}  
+  local format = string.format
+
+  -- Unix Only
+  local   left_parenthesis = "\\LP"
+  local  right_parenthesis = "\\RP"
+  local  double_quote      = [["]]
+  thirddata.dropshadowsetup = function (settings)
+        width, height, radius = tonumber(settings.width), tonumber(settings.height), tonumber(settings.radius)
+        print (">>>>>", "filter", width, height, radius)
+
+        local border = 2 -- add x pixels around mask to get reliable corners (can differ with small radii otherwise)
+        -- AM: Perhaps inherit from framethickness or shadowthickness?
+
+        -- '-depth 8' is needed for the correct interpretation of the shadow color values
+        -- must stand before 'xc:none'; using the '--verbose' parameter showed 16-bit for the first shadow mask otherwise
+        local mask_template = [[-size %dx%d -depth 8 xc:none -fill black -stroke none -draw "roundrectangle 1,1 %d,%d %d,%d"]]
+        local mask   = format(mask_template, width+border, height+border, width, height, radius, radius)
+
+        -- shifting the shadow in the graphic makes no sense here, as the positioning is done by ConTeXt;
+        local shadow_template = [[-background %s -shadow %dx%d+0+0 +repage]]
+        local shadow = format(shadow_template, [["black"]], 50, 5)
+
+        local lp, rp, dq = left_parenthesis, right_parenthesis, double_quote
+        local gfx_options = [[-units PixelsPerInch -density 72 -quality 00 +set date:create +set date:modify -background "gray(255)" -colorspace rgb ]]
+
+        --  1. create shadow mask
+        --  2. create shadow from shadow mask
+        --  3. delete mask and save shadow
+        local convert = "convert " .. lp .. mask  .. rp 
+                                   .. lp .. "+clone " .. shadow   .. rp 
+                                   .. " -delete 0 " .. gfx_options 
+                                   .. dq .. "\\externalfilteroutputfile" .. dq
+
+        context.setvalue("dropshadowcommand", convert)
+        context.setvalue("dropshadowcacheoption", md5.hex(format("%d-%d-%d", width, height, radius)))
+    end
+\stopluacode
+
+\def\LP{ \letterbackslash( }
+\def\RP{ \letterbackslash) }
+
+\defineexternalfilter
+    [dropshadow]
+    [
+      \c!write=\v!no,
+      \c!cache\c!option=\dropshadowcacheoption,
+      \c!cache=\v!yes,
+      \c!output=\externalfilterbasefile.png,
+      \c!filtercommand=\dropshadowcommand,
+      \c!filter\c!setups=dropshadowsetups,
+      \c!width=100pt,
+      \c!height=100pt,
+      \c!radius=2pt,
+      \c!readcommand=\ReadFigure
+    ]
+
+\startsetups dropshadowsetups
+    \ctxlua{thirddata.dropshadowsetup( {
+                  height = "\withoutpt\the\dimexpr\externalfilterparameter\c!height\relax",
+                  width  = "\withoutpt\the\dimexpr\externalfilterparameter\c!width\relax",
+                  radius = "\withoutpt\the\dimexpr\externalfilterparameter\c!radius\relax",
+              })}
+\stopsetups
+
+\def\ReadFigure#1{\externalfigure[#1]}
+
+\defineoverlay[dropshadow][{\inlinedropshadow[width=\overlaywidth,height=\overlayheight]}]
+
+\protect
+
+\starttext
+
+\externalfigure[cow][background=dropshadow]
+
+\blank[big]
+
+% Reuse background
+\externalfigure[cow][background=dropshadow]
+
+\blank[big]
+
+% Recompute background
+\externalfigure[cow][width=3cm, background=dropshadow]
+
+\blank[big]
+
+\framed[width=5cm, height=3cm, foregroundstyle=\bfc, foregroundcolor=white, background=dropshadow]{Hello world}
+
+\stoptext
