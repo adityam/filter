@@ -388,7 +388,10 @@ Standard options
 
 - `spacebefore` and `spaceafter` to specify the blank space to be used 
    before and after the environment. 
-- `before` and `after`: to enclose the output in a frame, etc. 
+- `before` and `after`: to enclose the output in a frame, etc. (only if
+  `location` is `paragraph`)
+- `left` and `right`: same as `before` and `after` but used when `location` is
+  not `paragraph`.
 - `style` and `color`: to set the color and style of the output.
 - `align`: to set the alignment of the output (only if
   `location` is `paragraph`).
@@ -400,13 +403,14 @@ Standard options
 The order in which these options are executed are:
 
 1. `\blank[spacebefore]`
-2. `before`
-3. `style` and `color`
-4. `setups`
-5. `readcommand`
-6. `after`
-7. `\blank[afterspace]`
-8. check `indentnext`
+2. `before/left
+3. `align` (if `location=paragraph`)
+4. `style` and `color`
+5. `setups`
+6. `readcommand`
+7. `after/right
+8. `\blank[afterspace]`
+9. check `indentnext`
 
 Options to a specific environment
 ---------------------------------
@@ -956,3 +960,5 @@ Version History
     - Support for `\usepath`
 - **2012.01.13**
     - Support for `write=no` and `cacheoption=...`.
+- **2013.03.31**
+    - Support for `left` and `right`

@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2013.01.13,
+%D      version=2013.03.31,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2013.01.13)}
+\writestatus{loading}{Filter (ver: 2013.03.31)}
 
 \ifx\undefined\normalexpanded \let\normalexpanded\expanded \fi
 
@@ -443,11 +443,12 @@
 \stoptexdefinition
 
 \starttexdefinition externalfilter@read_processed_file_indeed
-   \doif{\externalfilterparameter\c!location}\v!paragraph
+   \doifelse{\externalfilterparameter\c!location}\v!paragraph
      {\blank[\externalfilterparameter\c!spacebefore]
       \doifsomething{\externalfilterparameter\c!align}
-          {\setupalign[\externalfilterparameter\c!align]}}
-   \externalfilterparameter\c!before
+          {\setupalign[\externalfilterparameter\c!align]}
+      \externalfilterparameter\c!before}
+     {\externalfilterparameter\c!left}
 
    \begingroup
    \externalfilter@attributes_start \externalfilter@id \c!style \c!color
@@ -456,9 +457,10 @@
    \externalfilter@attributes_stop
    \endgroup
 
-   \externalfilterparameter\c!after
-   \doif{\externalfilterparameter\c!location}\v!paragraph
-     {\par\blank[\externalfilterparameter\c!spaceafter]}%
+   \doifelse{\externalfilterparameter\c!location}\v!paragraph
+     {\externalfilterparameter\c!after
+      \par\blank[\externalfilterparameter\c!spaceafter]}%
+     {\externalfilterparameter\c!right}
 \stoptexdefinition
 
 %D \section {Default Values}
@@ -468,6 +470,8 @@
    \c!location=\v!paragraph,
    \c!before=,
    \c!after=,
+   \c!left=\externalfilterparameter\c!before,
+   \c!right=\externalfilterparameter\c!after,
    \c!spacebefore=,
    \c!spaceafter=,
    \c!style=,
