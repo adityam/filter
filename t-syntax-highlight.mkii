@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2012.06.07,
+%D      version=2013.04.15,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2012.06.07)}
+\writestatus{loading}{Code syntax highlighting (ver: 2013.04.15)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -63,6 +63,8 @@
   \let\\\textbackslash
   \let\{\textbraceleft
   \let\}\textbraceright
+  \let\SYNBOL\donothing
+  \let\SYNEOL\donothing
 
   \def\tab##1%
       {\dorecurse{##1}{\obeyedspace}}%
