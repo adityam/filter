@@ -188,7 +188,7 @@ fast, so these extra runs are not noticeable. But some filters, like the
 R-programming language for which simply startup and exit takes about 0.3
 seconds, are slow. In such cases, the additional runs start adding up. A better
 trade off is to store the contents of each environment in a separate file and
-invoke the filter only if a file *changes in between successive runes*.
+invoke the filter only if a file *changes in between successive runs*.
 
 The second behavior is achieved by adding `cache=yes` option to the
 definition:
