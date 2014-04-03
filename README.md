@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/adityam/filter.png?label=ready&title=Ready)](https://waffle.io/adityam/filter)
 The filter module
 =================
 
