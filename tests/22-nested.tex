@@ -14,14 +14,17 @@
 # Basic Usage
 
 Show: \currentexternalfilter
-
+\starttyping
     \usemodule[filter]
     \defineexternalfilter 
       [markdown]
       [filter={pandoc -w context -o \externalfilteroutputfile }]
 
 Show: \currentexternalfilter
+\stoptyping
+# OMG!
 
+Show: \currentexternalfilter
 \stopmarkdown
 
 Show: \currentexternalfilter
