@@ -181,6 +181,7 @@
       \setupexternalfilter[#1][\c!name=,#2]
     \fi
 
+    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
     \externalfilter@set_directory
 
     \ifthirdargument
