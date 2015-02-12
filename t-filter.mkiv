@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2013.04.15,
+%D      version=2015.02.12,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2013.04.15)}
+\writestatus{loading}{Filter (ver: 2015.02.12)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -181,6 +181,7 @@
       \setupexternalfilter[#1][\c!name=,#2]
     \fi
 
+    \processcommacommand[\externalfilterparameter{\c!filter\c!setups}]\directsetup
     \externalfilter@set_directory
 
     \ifthirdargument

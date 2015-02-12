@@ -519,7 +519,17 @@ Thus, all the following are valid:
 
     \inlinemarkdown!a closing brace }!
 
+**Note** Inline mode sets `\endlinechar=\minusone`; therefore no space is
+inserted after a newline. This may lead to unexpected results if the output of
+the filter is wrapped into multiple lines. For example, if the output of the
+filter is
 
+    This is a long line that is wrapped
+    after a fixed number of characters.
+
+Then, when reading the file the space between `wrapped` and `after` will be
+lost! To avoid that pass appropriate options to the filter program so that it
+does not wrap long lines.
 
 Processing existing Files
 -------------------------
