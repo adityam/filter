@@ -374,7 +374,9 @@ where `<dimen>` is a valid TeX dimension.
 Wrapping lines
 ---------------
 
-By default, long lines are not wrapped. If you want to wrap long lines, set
+By default, long lines are not wrapped. If your source code has long lines,
+there are two alternatives. First, you can allow the lines to break at spaces by
+setting
 
     \definevimtyping
         [...]
@@ -383,6 +385,31 @@ By default, long lines are not wrapped. If you want to wrap long lines, set
          ...]
 
 The default value is `lines=fixed`.
+
+Second, you can allow lines to break between _compound_ words, such as
+`long/path`, `long-path`, `long+path`, etc by setting
+
+    \definevimtyping
+        [...]
+        [...
+         option={packed,hyphenated},
+         ...]
+
+The default value of `option` is `packed`.  
+
+Note that with both these alternatives do not hyphenate a word, merely break
+lines at spaces or at the boundary of compound words. If you really need to
+hyphenate words, use
+
+    \definevimtyping
+        [...]
+        [...
+         option={packed,hyphenated},
+         align=hyphenated,
+         ...]
+
+Note that you have to add **both** `option=hyphenated` and `align=hyphenated`.
+The default value of align is `nothypenated`. 
 
 Highlighting lines
 ------------------

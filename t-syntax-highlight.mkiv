@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2014.08.13,
+%D      version=2015.05.14,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2014.08.13)}
+\writestatus{loading}{Code syntax highlighting (ver: 2015.05.14)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -86,11 +86,13 @@
       {\dorecurse{##1}{\obeyedspace}}%
 
   \forgetall
+  \usealignparameter\externalfilterparameter
   \doifinset{\externalfilterparameter\c!option}{\v!packed}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
   \doadaptleftskip{\externalfilterparameter\c!margin}%
 
+  \setbreakpoints[compound]% Only works is `option=hyphenated` is set.
   \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
       {\language\minusone}%
 
@@ -155,7 +157,7 @@
    \c!location=\v!paragraph,
    \c!style=\tttf,
    \c!color=,
-   \c!align={\v!flushleft,\v!nothyphenated}, %Does not work due to \forgetall
+   \c!align={\v!flushleft,\v!nothyphenated}, 
    \c!filtercommand=echo, % placeholder
    \c!continue=yes,
    \c!read=\v!yes,
