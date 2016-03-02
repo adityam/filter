@@ -277,7 +277,7 @@ variant to behave in _text_ mode, set:
 
 (The default value of `location` is `paragraph`). 
 
-**Note** that `locatiion=text` is not equivalent to `\inline{...}`. Inline also
+**Note** that `location=text` is not equivalent to `\inline{...}`. Inline also
 sets `\endlinechar=\minusone`; therefore no space is inserted when the file is
 read. `location=text` does not change `\endlinechar`. Therefore a space is
 inserted after the file is read. 
