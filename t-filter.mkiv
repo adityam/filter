@@ -400,18 +400,16 @@
      %               [\externalfilter@input_file]}
      %
      % but using this method we cannot save the file in another directory. 
-     % So, we simply write the file in the current directory and then move it.
+     % So, we use the key-value interface for \savebuffer.
          \externalfilter@check_writable \externalfilter@input_file
-         \savebuffer[\externalfilterparameter{\c!buffer\c!before},
-                     \externalfilter@buffer_name,
-                     \externalfilterparameter{\c!buffer\c!after}]
-                    [\externalfilter@id]
-         \startluacode
-           %% -- On Windows, os.rename does not overwrite files :( So we copy and delete files
-           file.copy("\jobname-\externalfilter@id.\f!temporaryextension", "\externalfilter@input_file")
-           os.remove("\jobname-\externalfilter@id.\f!temporaryextension")
-         \stopluacode
-
+         \savebuffer
+           [
+              \c!list={\externalfilterparameter{\c!buffer\c!before},
+                       \externalfilter@buffer_name,
+                       \externalfilterparameter{\c!buffer\c!after}},
+              \c!file={\externalfilter@input_file},
+              \c!prefix=\v!no,
+            ]
      \externalfilter@execute_filter
      \externalfilter@read_processed_file
      \iftraceexternalfilters \else 
