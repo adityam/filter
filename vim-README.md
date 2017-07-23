@@ -478,7 +478,7 @@ For example
     \definevimtyping[C][syntax=c, escape=on]
 
     \startC
-    /* The following function computers the roots of \m{ax^2+bx+c=0}
+    /* The following function computes the roots of \m{ax^2+bx+c=0}
      * using the determinant \m{\Delta=\frac{-b\pm\sqrt{b^2-2ac}}{2a}} 
      */
         double root (double a, double b, double c) {....}
