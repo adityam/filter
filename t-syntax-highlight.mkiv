@@ -206,15 +206,17 @@
 \installspacemethod {\????syntaxhighlighting\v!on}
   {\obeyspaces
    \unexpanded\def\obeyedspace
-      {\syntaxhighlighting@split\zeropoint\relax
-       \hbox{\normalcontrolspace}%
-       \syntaxhighlighting@split\zeropoint\relax}}%
+      {\mathortext\normalspace
+        {\syntaxhighlighting@split\zeropoint\relax
+         \hbox{\normalcontrolspace}%
+         \syntaxhighlighting@split\zeropoint\relax}}}
 
 % Invisible space
 \installspacemethod {\????syntaxhighlighting\v!off}
   {\obeyspaces
    \unexpanded\def\obeyedspace
-      {\syntaxhighlighting@split\interwordspace\relax}}
+      {\mathortext\normalspace
+          {\syntaxhighlighting@split\interwordspace\relax}}}
 
 % Default
 \installspacemethod {\????syntaxhighlighting}
