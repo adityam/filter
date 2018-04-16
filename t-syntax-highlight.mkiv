@@ -96,8 +96,10 @@
   \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
       {\language\minusone}%
 
-  \setcatcodetable\externalfilter@minimal_catcodes
-  \expandafter\def\activeendoflinetoken{\strut\par}
+  \def\obeyedline{\strut\par}
+  \setcatcodetable\externalfilter@minimal_catcodes%
+  \letcharcode\endoflineasciicode\obeyedline
+  \letcharcode\spaceasciicode\obeyedspace
   \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space}
   \raggedright
 \stopsetups
@@ -204,19 +206,19 @@
 
 % Visible space
 \installspacemethod {\????syntaxhighlighting\v!on}
-  {\obeyspaces
-   \unexpanded\def\obeyedspace
+  {\unexpanded\def\obeyedspace
       {\mathortext\normalspace
         {\syntaxhighlighting@split\zeropoint\relax
          \hbox{\normalcontrolspace}%
-         \syntaxhighlighting@split\zeropoint\relax}}}
+         \syntaxhighlighting@split\zeropoint\relax}}
+  \letcharcode\spaceasciicode\obeyedspace}
 
 % Invisible space
 \installspacemethod {\????syntaxhighlighting\v!off}
-  {\obeyspaces
-   \unexpanded\def\obeyedspace
+  {\unexpanded\def\obeyedspace
       {\mathortext\normalspace
-          {\syntaxhighlighting@split\interwordspace\relax}}}
+          {\syntaxhighlighting@split\interwordspace\relax}}
+   \letcharcode\spaceasciicode\obeyedspace}
 
 % Default
 \installspacemethod {\????syntaxhighlighting}

@@ -73,7 +73,7 @@
     \catcode\leftbraceasciicode  = \begingroupcatcode  
     \catcode\rightbraceasciicode = \endgroupcatcode
     \catcode\endoflineasciicode  = \activecatcode
-    \catcode\formfeedasciicode   = \activecatcode
+    \catcode\formfeedasciicode   = \othercatcode
     \catcode\spaceasciicode      = \activecatcode
 \stopcatcodetable 
 
@@ -84,18 +84,6 @@
     \catcode\spaceasciicode     = \othercatcode
     \catcode\endoffileasciicode = \othercatcode
 \stopcatcodetable
-
-
-
-\ifdefined \activeendoflinetoken \else
-    % from catc-ini.mkiv
-    \bgroup
-        \catcode \tabasciicode       \activecatcode  \gdef\activetabtoken      {^^I}
-                                                     \gdef\outputnewlinechar   {^^J}
-        \catcode \formfeedasciicode  \activecatcode  \gdef\activeformfeedtoken {^^L}
-        \catcode \endoflineasciicode \activecatcode  \gdef\activeendoflinetoken{^^M}
-    \egroup
-\fi
 
 \protectmodulecatcodes
 \stopmodule
