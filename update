@@ -11,19 +11,21 @@ require 'highline/import'
 
 agent = Mechanize.new
 
-login_page = agent.get "http://modules.contextgarden.net/admin/login"
+login_page = agent.get "https://modules.contextgarden.net/cgi-bin/menu.cgi/action=login"
 login_form = login_page.form_with :method => "POST"
 
-username = login_form.field_with :name => "user[name]" 
-password = login_form.field_with :name => "user[password]"
+username = login_form.field_with :name => "username" 
+password = login_form.field_with :name => "password"
 
 username.value = ask("username: ") { |q| q.default = "adityam" }
 password.value = ask("password: ") { |q| q.echo    = false }
 
 module_page = login_form.submit()
 
-my_module_page = module_page.link_with(:text => 'my modules').click
-module_list    = my_module_page.search('//div[@class="content"]/table/tr/td/a')
+
+my_module_page = module_page.link_with(:text => 'Your module list').click
+
+module_list    = my_module_page.search('table > tr[class="#STATE#"] > td:first-of-type > a')
 
 current_module = ""
 
@@ -31,34 +33,41 @@ say "User modules"
 choose do |menu|
     menu.prompt = "Choose module to update: "
     module_list.map do |module_name|
-        name = module_name.attr(:href)[1..-1]
+        name = module_name.children[0].text
+        name = name.partition(" ").first.downcase
+        link = module_name.attr(:href)
         menu.choice name do 
             current_module = name
-            say "loading module #{module_name.content.downcase}"
-            module_page = my_module_page.link_with(:text => module_name.content).click
+            say "loading module #{name}"
+            module_page = my_module_page.link_with(:href => link).click
         end
     end
     menu.first_answer = ARGV[0]
     menu.select_by    = :index_or_name
 end
 
-version_page = module_page.link_with(:text => "add new revison").click
+version_page = module_page.link_with(:text => "new version").click
 version_form = version_page.form_with :method => "POST"
 
-version  = version_form.field_with       :name => "package[latest_version]" 
-filename = version_form.file_upload_with :name => "package[file]"
+message  = version_form.field_with       :name => "pv_message"
+version  = version_form.field_with       :name => "pv_version" 
+filename = version_form.file_upload_with :name => "uploaded_file"
+method   = version_form.radiobutton_with(:name => "pv_source_method", :value => "9")
 
-version.value       = ask("version (old=#{version.value}): ") { |q| q.default = Time.now.strftime("%Y.%m.%d") }
+version.value       = ask("version: ") { |q| q.default = Time.now.strftime("%Y.%m.%d") }
 filename.file_name  = ask("filename: ", Pathname) do |q|
     q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
     q.responses[:not_valid] = "Please select a zip file"
     q.default = current_module + ".zip"
 end.to_s
 
-submission_page = version_form.submit
-# puts submission_page.body
+message.value = ask("Log message: ")
+method.check
 
-result = submission_page.search('//div[@id="description"]/div[@class="content"]/div[@id="notice"]').first.content
-puts result
+confirmation_page = agent.submit(version_form, version_form.buttons.first)
 
+confirmation_form = confirmation_page.form_with :method => "POST"
+result = agent.submit(confirmation_form, confirmation_form.buttons.first)
+
+pp result
 
