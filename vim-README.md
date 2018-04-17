@@ -353,6 +353,10 @@ set
 
 The default value of `strip` is `no`.
 
+> **NOTE**: As of `context ver: 2018.04.16`, leading spacing are automatically
+> stripped. This is a "feature" of the current version of ConTeXt. I don't
+> know how to disable it.
+
 Adding left margin
 ------------------
 
