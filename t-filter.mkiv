@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2018.04.16,
+%D      version=2018.04.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,14 +9,11 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2018.04.16)}
+\writestatus{loading}{Filter (ver: 2018.04.17)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
 \unprotect
-
-% For backward compatibility
-\ifx\grabbufferdata\undefined \let\grabbufferdata \dostartbuffer \fi
 
 % \f!temporaryextension was removed from the core in July 2012.
 \ifx\f!temporaryextension\undefined \def\f!temporaryextension{tmp} \fi
@@ -65,7 +62,7 @@
          {\ifcsname\externalfilter@count\endcsname \else
           \expandafter\newcounter\csname\externalfilter@count\endcsname\fi}%
     \setuevalue{\e!start\currentexternalfilter}{\externalfilter@start[\currentexternalfilter]}%
-    \setuvalue {\e!stop\currentexternalfilter}{\externalfilter@process_filter}%
+    \setuvalue {\e!stop\currentexternalfilter}{}%
     \setuevalue{process\currentexternalfilter file}{\externalfilter@process_file[\currentexternalfilter]}%
     \setuevalue{process\currentexternalfilter buffer}{\externalfilter@process_buffer[\currentexternalfilter]}%
     \setuevalue{inline\currentexternalfilter}{\externalfilter@inline[\currentexternalfilter]}%
@@ -133,8 +130,16 @@
     \externalfilter@set_filenames
 
     % Capture the contents of the buffer
-    \grabbufferdata[\externalfilter@buffer_name][\e!start#1][\e!stop#1]
+    \edef\p_strip{\getvalue{\externalfilter@id-\c!strip-\externalfilterparameter\c!strip}}
+    \buff_pickup{\externalfilter@buffer_name}{\e!start#1}{\e!stop#1}{}{\externalfilter@process_filter}{\p_strip}
 \stoptexdefinition
+
+\setvalue{\externalfilter@id-\c!strip-}{\zerocount}
+\setvalue{\externalfilter@id-\c!strip-\v!off}{\zerocount}
+\setvalue{\externalfilter@id-\c!strip-\v!on}{\plusone}
+
+\setvalue{\externalfilter@id-\c!strip-\v!no}{\zerocount}
+\setvalue{\externalfilter@id-\c!strip-\v!yes}{\plusone}
 
 \unexpanded\def\externalfilter@process_file
     {\dodoubleargument\externalfilter@process_file_indeed}
@@ -511,6 +516,7 @@
    \c!cache=\externalfilterparameter\c!continue, % for backward compatibility
    \c!cache\c!option=,
    \c!read=\v!yes,
+   \c!strip=\v!yes,
    \c!readcommand=\ReadFile,
    \c!directory=,
    \c!purge=\v!yes,

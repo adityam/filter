@@ -282,6 +282,32 @@ sets `\endlinechar=\minusone`; therefore no space is inserted when the file is
 read. `location=text` does not change `\endlinechar`. Therefore a space is
 inserted after the file is read. 
 
+Stripping leading whitespace (MkIV only)
+----------------------------------------
+
+By default, the leading whitespace is removed before the content of the filter
+environment are saved to an external file. This is useful because one can then
+indent the TeX code without worring how the leading whitespaces will be
+interpretted by the filter. For example,
+
+    \startitemize
+      \item 
+        \startmarkdown
+            This is treated as regular text. If the leading spaces were not
+            stripped, this would be treated as a code block in markdown.
+        \stopmarkdown
+    \stopitemize
+
+If you want to keep the leading whitespace, you can set
+
+    \defineexternalfilter
+      [...]
+      [....
+       strip=no,
+       ...]
+
+(The default value is `yes`).
+
 Names of temporary files
 ------------------------
 
@@ -975,3 +1001,5 @@ Version History
     - Support for `write=no` and `cacheoption=...`.
 - **2013.03.31**
     - Support for `left` and `right`
+- **2018-04-17**
+    - Support for `strip=yes` (which is now default). 

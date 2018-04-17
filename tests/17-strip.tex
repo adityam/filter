@@ -1,0 +1,22 @@
+%T Test for removing leading whitespace
+
+\usemodule[filter]
+
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\startitemize
+  \item \type{strip=no} 
+    \startmarkdown
+      With `strip=no`, this shows up as a code block due to indentation.
+    \stopmarkdown
+  \item \type{strip=yes} (default value) 
+    \startmarkdown[strip=yes]
+      With `strip=yes`, this shows up as _regular_ text.
+    \stopmarkdown
+\stopitemize
+\stoptext
+\endinput
+

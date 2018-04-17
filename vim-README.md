@@ -322,40 +322,35 @@ indent the TeX code. For example:
             \stopruby
     \stopitemize
 
-Although, the source code is easy to read, the output will not be. This is
-because, unlike regular TeX,  `\start<vimtyping>` ... `\stop<vimtyping>`
-environment does not ignore white space. So, the output is the same as 
+By default, the leading whitespace is stripped so that the output is the same
+as
 
     \startitemize
     \item A hello world example in C
     \startC
-              #include<stdio.h>
+    #include<stdio.h>
 
-              int main()
-              {
-                printf("Hello World")
-              }
+    int main()
+    {
+      printf("Hello World")
+    }
     \stopC
     \item A hello world example in ruby
     \startruby
-              puts "Hello World"
+    puts "Hello World"
     \stopruby
     \stopitemize
 
-So, all the code snippets are indented by nine space. To avoid this behavior,
-set
+
+If you want to disable this, set
 
     \definevimtyping
         [...]
         [...
-         strip=yes,
+         strip=no,
          ...]
 
-The default value of `strip` is `no`.
-
-> **NOTE**: As of `context ver: 2018.04.16`, leading spacing are automatically
-> stripped. This is a "feature" of the current version of ConTeXt. I don't
-> know how to disable it.
+The default value of `strip` is ψ`yes`.
 
 Adding left margin
 ------------------
@@ -594,7 +589,7 @@ ConTeXt has two ways of indicating binary options:
 The core commands freely switch between the two. In some cases, `option=yes` has
 a different meaning than `option=on`. To avoid confusion, I have made these
 synonyms. Thus, whenever the documentation says `option=yes`, you may use
-`option=on`. One less thing to worry about!
+`option=on`. And vice-versa. One less thing to worry about!
 
 A bit of a history
 ------------------
