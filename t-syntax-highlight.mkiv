@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2018.04.16,
+%D      version=2018.08.10,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2018.04.16)}
+\writestatus{loading}{Code syntax highlighting (ver: 2018.08.10)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -210,14 +210,14 @@
       {\mathortext\normalspace
         {\syntaxhighlighting@split\zeropoint\relax
          \hbox{\normalcontrolspace}%
-         \syntaxhighlighting@split\zeropoint\relax}}
+         \syntaxhighlighting@split\zeropoint\relax}}%
   \letcharcode\spaceasciicode\obeyedspace}
 
 % Invisible space
 \installspacemethod {\????syntaxhighlighting\v!off}
   {\unexpanded\def\obeyedspace
       {\mathortext\normalspace
-          {\syntaxhighlighting@split\interwordspace\relax}}
+          {\syntaxhighlighting@split\interwordspace\relax}}%
    \letcharcode\spaceasciicode\obeyedspace}
 
 % Default
