@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2018.04.17,
+%D      version=2018.08.10,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2018.04.17)}
+\writestatus{loading}{Filter (ver: 2018.08.10)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -427,8 +427,8 @@
          {\doglobal\incrementvalue\externalfilter@count}
 
     \doif{\externalfilterparameter\c!location}\v!paragraph
-         {\expanded{\checknextindentation[\externalfilterparameter\c!indentnext]}%
-          \dorechecknextindentation}
+         {\useindentnextparameter\externalfilterparameter
+          \aftergroup\dorechecknextindentation}
      \endgroup
 \stoptexdefinition
 
