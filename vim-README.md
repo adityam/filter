@@ -73,6 +73,9 @@ on the ConTeXt wiki for detailed instructions.
 
 Usage
 -----
+Include the module
+
+    \usemodule[vim]
 
 Suppose you want to syntax highlight Ruby. In particular, you want
 
