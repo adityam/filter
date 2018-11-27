@@ -125,7 +125,15 @@ defines three things:
     processing a url, see the _Processing remote files_ section of the
     `t-filter` manual.
 
-In all the three cases, the `t-filter` module takes care of writing to external
+4. A macro
+
+        \processRUBYbuffer[...]
+
+     The argument to the macro is the name of a buffer, which is written to an
+     external file, processesd by `2context.vim` and the result is read back in
+     ConTeXt.
+
+In all the four cases, the `t-filter` module takes care of writing to external
 file, processing by `2context.vim`, and reading the contents back to ConTeXt.
 The `t-vim` module simply defines the macros that are used by `2context.vim`.
 
