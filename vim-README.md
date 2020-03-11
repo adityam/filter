@@ -73,6 +73,9 @@ on the ConTeXt wiki for detailed instructions.
 
 Usage
 -----
+Include the module
+
+    \usemodule[vim]
 
 Suppose you want to syntax highlight Ruby. In particular, you want
 
@@ -127,7 +130,11 @@ defines three things:
 
 4. A macro
 
+<<<<<<< HEAD
         \processmarkdownbuffer[...]
+=======
+        \processRUBYbuffer[...]
+>>>>>>> master
 
      The argument to the macro is the name of a buffer, which is written to an
      external file, processesd by `2context.vim` and the result is read back in
