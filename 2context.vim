@@ -33,6 +33,8 @@ else
   let s:lstop = line("$")
 endif
 
+let s:preservetagspattern = '\\\(some\|st\(art\|op\)\)line\[[^\]]\+\]'
+
 " Set highlight
 if !exists("highlight") 
   let highlight=[]
@@ -42,6 +44,34 @@ endif
 if !exists("escapecomments")
   let escapecomments=0
 endif
+
+if !exists("showlinetags")
+   let showlinetags=1
+endif
+let s:startcomment = []
+let s:stopcomment = []
+for s:comsym in split(&comments,',')
+  let s:comsym = split(s:comsym,':')
+  echo s:comsym
+  if len(s:comsym) < 2
+    let s:startcomment = add(s:startcomment,escape(s:comsym[0],'\[*.]^$'))
+  elseif ( s:comsym[0] =~ 's\|m\|^[^e]*$' || s:comsym[0] =~ '^$' )
+    let s:startcomment = add(s:startcomment,escape(s:comsym[1],'\[*.]^$'))
+  else
+    let s:stopcomment = add(s:stopcomment,escape(s:comsym[1],'\[*.]^$'))
+  endif
+endfor
+if len(s:startcomment) < 1 && exists("+commentstring")
+  let s:havecomment = split(&commentstring,"%s")
+  if len(s:havecomment) > 0
+    let s:startcomment = add(s:startcomment,s:havecomment[0])
+    if len(s:havecomment) > 1
+      let s:stopcomment = add(s:stopcomment,s:havecomment[1])
+    endif
+  endif
+endif
+let s:endcomment = add(s:stopcomment,'$')
+let s:emptycomment = '^\(' . join(s:startcomment,'\|') . '\)\s*\(' . join(s:stopcomment,'\|') . '\)$'
 
 let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
 
@@ -99,13 +129,76 @@ while s:lnum <= s:lstop
 " we don't need to print in in that case
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
-      if !(escapecomments && s:id_name == "Comment")
-        let s:temp = escape( s:temp, '\{}')
+
+      let s:tags = ''
+      if ( s:id_name != "Comment" || s:temp =~ s:emptycomment )
+          let s:temp = escape( s:temp, '\{}')
+      else 
+        let s:strip = s:temp
+       	let s:foundtag = matchstrpos(s:temp,s:preservetagspattern)
+		if s:foundtag[1] < 0
+          let s:temp = ''
+          let s:tail = 0
+        else
+          let s:temp = s:temp[:(s:foundtag[1]-1)]
+          let s:tail = s:foundtag[2]
+        endif
+        if !(escapecomments)
+          if ( showlinetags || s:foundtag[1] < 0 )
+" extract \someline, \linestart, \linestop tags and ensure that they are
+" processed by lex eventhough escapecomments is off. In addition keep them visible in
+" output if present 
+            let s:temp = escape(s:strip,'\{}')
+            while ( s:foundtag[1] >= 0 )
+              let s:tags = s:tags . s:foundtag[0]
+       	      let s:foundtag = matchstrpos(s:strip,s:preservetagspattern,s:foundtag[2])
+            endwhile
+          else
+" extract \someline, \linestart, \linestop tags and ensure that they are
+" processed by lex eventhough escapecomments is off.
+            let s:temp = escape(s:temp,'\{}')
+            while ( s:foundtag[1] >= 0 )
+              let s:tags = s:tags . s:foundtag[0]
+              let s:temp = s:temp . escape(s:strip[(s:tail) : (s:foundtag[1]-1)],'\{}')
+              let s:tail = s:foundtag[2]
+       	      let s:foundtag = matchstrpos(s:strip,s:preservetagspattern,s:tail)
+            endwhile
+            let s:temp = s:temp . escape(s:strip[(s:tail):],'\{}')
+          endif
+        elseif showlinetags
+" extract \someline, \linestart, \linestop tags and show them literally in
+" output disregarding that escapecomments is set 
+          while (s:foundtag[1] >= 0 )
+            let s:tags = s:tags . s:foundtag[0]
+            let s:temp = s:temp . s:strip[(s:tail) : (s:foundtag[1]-1) ] . escape(s:foundtag[0],'\{}')
+            let s:tail = s:foundtag[2]
+       	    let s:foundtag = matchstrpos(s:strip,s:preservetagspattern,s:tail)
+          endwhile
+          let s:temp = s:temp . s:strip[(s:tail):]
+        else
+" extract \someline, \linestart, \linestop tags disregarding the fact that 
+" escapecomments is set anyway.
+          while ( s:foundtag[1] >= 0 )
+            let s:tags = s:tags . s:foundtag[0]
+            let s:temp = s:temp . s:strip[(s:tail) : (s:foundtag[1]-1) ]
+            let s:tail = s:foundtag[2]
+       	    let s:foundtag = matchstrpos(s:strip,s:preservetagspattern,s:tail)
+          endwhile
+          let s:temp = s:temp . s:strip[(s:tail):]
+        endif
+" check if comment falls empty after removing all \someline, \startline and
+" \stopline tags. If it does hide it from syntaxhighlighting
+        if ( s:temp =~ s:emptycomment )
+           let s:temp = ''
+           let s:id_name = ''
+        endif
       endif
       if !empty(s:id_name)
         let s:temp = '\SYN[' . s:id_name . ']{' . s:temp .  '}'
       endif
-      let s:new  = s:new . s:temp
+" assemble output and append string containing \someline, \startline and
+" \stopline tags if any 
+      let s:new  = s:new . s:temp . s:tags
     endif
 
 " Why will we ever enter this loop
