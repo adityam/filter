@@ -8,6 +8,36 @@
 " output buffer. The script parses content line-by-line from the first buffer
 " and pastes the modified result on the second buffer.
 
+"" before starting open buffer to get syntaxid of vimTypingTeXTags syntax
+"" group. knowing the id simplifies and speedsup location of /BTEX /ETEX
+"" syntax group added by vimtypingfilter.vim syntax file.
+"" These are used to hide context commands from vim syntax highlighting and
+"" checking. For details see vim/syntax/vimtypingfilter.vim file
+
+"" open hidden [scratch] buffer
+new 
+setlocal buftype=nofile noswapfile bufhidden=hide
+
+"" write line containing begin and end tex tags only
+call setline(1,"/BTEX /ETEX")
+
+"" denominate vimtypingfilter as the syntax file to be used for this buffer
+set syntax=vimtypingfilter
+
+"" loop through characters of first line containing the string unti
+"" synid returns the id of the transparent 'vimTypingTeXTags' group
+"" stop as soon as found and remove buffer
+let s:vimtypingid = synID(1,0,0)
+let s:col = 1
+while synIDattr(s:vimtypingid,"name") != "vimTypingTeXTags"
+	let s:vimtypingid = synID(1,s:col,0)
+	let s:col = s:col + 1
+endwhile
+"" done discard the [scratch] buffer again
+q!
+
+"" start processing regular input
+
 " Split screen and go to the second buffer, ensure modifiable is set, and the
 " buffer is empty.
 sblast 
@@ -72,8 +102,9 @@ let s:buffer_lnum = 1
 let s:lnum = s:lstart
 
 while s:lnum <= s:lstop
-" Get the current line
+" Get the current line and remove windows line ends
   let s:line = getline(s:lnum)
+
   let s:len  = strlen(s:line)
   let s:new  = '' 
 
@@ -81,25 +112,55 @@ while s:lnum <= s:lstop
   let s:col = s:strip + 1
   while s:col <= s:len
     let s:startcol = s:col " The start column for processing text
-    let s:id       = synID (s:lnum, s:col, 1)
+
+" tets the syntaxid at the current column position
+" check if it resembles the special, transparent vimTypingTeXTags section
+" in case not reread the syntax id hiding transparent syntax groups
+    let s:id       = synID (s:lnum, s:col, 0)
+	if s:id != s:vimtypingid 
+      let s:id   = synID (s:lnum, s:col, 1)
+	endif
     let s:col      = s:col + 1
 " Speed loop (it's small - that's the trick)
 " Go along till we find a change in synID
-    while s:col <= s:len && s:id == synID(s:lnum, s:col, 1) 
+" changes may include begin or end of the transparent vimTypingTeXTags
+" syntax group. Any other transparent syntax group is ignored and it's
+" syntax id recalculated with transparent groups hidden
+    while s:col <= s:len
+      let s:nextid = synID(s:lnum, s:col, 0)
+      if s:nextid != s:vimtypingid
+        let s:nextid = synID(s:lnum, s:col, 1) 
+      endif
+      if s:nextid != s:id
+		break
+      endif
       let s:col = s:col + 1 
     endwhile
 
 " Output the text with the same synID, with class set to {s:id_name}
-    let s:id      = synIDtrans (s:id)
-    let s:id_name = synIDattr  (s:id, "name", "gui")
-    let s:temp    = strpart(s:line, s:startcol - 1, s:col - s:startcol)
+" For vimTypingTeXTags remove leading and trailing /BTEX and /ETEX tags
+" which are 5 characters wide each
+    if s:id == s:vimtypingid
+
+" finally get synID of enclosing syntax group if any to pick proper color
+" for any visible content between /BTEX /ETEX
+      let s:id = synID(s:lnum,s:startcol,1)
+      let s:escapetexchars = 0 " do not escape tex commands inbetween /BTEX /ETEX in any case
+      let s:temp    = strpart(s:line, s:startcol + 4, s:col - s:startcol - 10)
+	else
+      let s:escapetexchars = !(escapecomments && s:id_name == "Comment" )
+      let s:temp    = strpart(s:line, s:startcol - 1, s:col - s:startcol)
+    endif
+
 " Remove line endings (on unix machines reading windows files)
     let s:temp    = substitute(s:temp, '\r*$', '', '')
+    let s:id      = synIDtrans (s:id)
+    let s:id_name = synIDattr  (s:id, "name", "gui")
 " It might have happened that that one has been the last item in a row, so
 " we don't need to print in in that case
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
-      if !(escapecomments && s:id_name == "Comment")
+      if s:escapetexchars 
         let s:temp = escape( s:temp, '\{}')
       endif
       if !empty(s:id_name)

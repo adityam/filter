@@ -1,0 +1,19 @@
+
+\usemodule[vim]
+\definevimtyping[Python][syntax=python,tab=4,numbering=yes]
+\traceexternalfilters
+\starttext
+This is a more complex test using /BTEX /ETEX markers.
+\startPython
+"""small test""" # /BTEX \someline[ln:first_someline] /ETEX
+/BTEX \startline[ln:first_lineblock] /ETEX
+def funny_method(x,k)
+    print("I'm funny") # math formula inside comment and method /BTEX \m{\fraction{x^2}{k+1}} /ETEX
+    return x**2 / ( k + 1)  /BTEX \someline[ln:calculate_formula] /ETEX
+/BTEX \stopline[ln:first_lineblock] /ETEX
+\stopPython
+
+If this works docstring should be on \inline[ln:first_someline] and
+\inlinePython{funny_method} should be defined between lines \inlinerange[ln:first_lineblock].
+The comment contains a math formula typset by context and the following line \inline[ln:calculate_formula] returns its result
+\stoptext

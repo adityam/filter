@@ -1,0 +1,16 @@
+\usemodule[vim]
+\definevimtyping[Python][syntax=python,tab=4,numbering=yes]
+\traceexternalfilters
+\starttext
+This is a litte linenumber test using /BTEX /ETEX markers.
+\startPython
+"""small test""" /BTEX \someline[ln:first_someline] /ETEX
+/BTEX \startline[ln:first_lineblock] /ETEX
+def funny_method()
+    print("I'm funny")
+/BTEX \stopline[ln:first_lineblock] /ETEX
+\stopPython
+
+If this works docstring should be on \inline[ln:first_someline] and
+\inlinePython{funny_method} should be defined between lines \inlinerange[ln:first_lineblock].
+\stoptext
