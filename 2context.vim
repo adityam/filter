@@ -65,7 +65,24 @@ else
   let s:strip = 0
 endif
 
+" Find /BTEX .. /ETEX and store their lines
 let s:lines = []
+let s:btex  = {}
+if 1 " TODO: Create an interface
+  echo "Searching for /BTEX ... /ETEX"
+  for s:lnum in range(s:lstart, s:lstop)
+    let s:line  = getline(s:lnum)
+    let s:matches = matchlist(s:line,'\/BTEX\s*\(.\{-}\)\s*\/ETEX')
+    if len(s:matches) > 0 " line contains /BTEX.../ETEX
+       let s:btex[s:lnum] = s:matches[1]
+    endif
+  endfor
+endif
+echo s:btex
+
+" Remove all /BTEX ... /ETEX from original file
+s/\/BTEX.\{-}\/ETEX//e
+
 
 " Loop over all lines in the original text.
 let s:buffer_lnum = 1
@@ -133,6 +150,11 @@ while s:lnum <= s:lstop
 " Highlight line, if needed.
   if (index(highlight, s:lnum) != -1)
     let s:new = '\HGL{' . s:new . '}'
+  endif
+
+  " Add BTEX ... ETEX if available
+  if has_key(s:btex, s:lnum)
+    let s:new = s:new . s:btex[s:lnum]
   endif
 
   " Add begin and end line markers 

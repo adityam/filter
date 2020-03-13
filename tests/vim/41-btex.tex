@@ -1,0 +1,17 @@
+%T Testing btex
+
+\setupcolors[state=start]
+\usemodule[vim]
+
+\definevimtyping  [RUBY]    [syntax=ruby, cache=force, purge=no]
+
+\starttext
+\startRUBY[numbering=yes]
+# Here's the code:
+ 
+puts "Hello World!" /BTEX\someline[test]/ETEX
+\stopRUBY
+
+Notice that \inline{line}[test] prints to \type{STDOUT}
+\stoptext
+
