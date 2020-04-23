@@ -1,23 +1,18 @@
-\setupbackend[
-export=yes,
-xhtml=yes
-]
-\setupexport[
-title={\type{SYNBOL}, \type{SYNEOL} tagging test},
-subtitle={},
-author={J.R.C.H.}
-]
-\usemodule[amsl]
+\setupbackend
+  [
+    export=yes,
+    xhtml=yes
+  ]
 \usemodule[vim]
-\definevimtyping[Python][syntax=python,tab=4,numbering=no]
+\definevimtyping[PYTHON][syntax=python,tab=4,numbering=no]
 \starttext
 This is a little test whether modifcation in \type{\SYNBOL} and \type{\SYNEOL} have any sideeffects
 when export is set to XML
-\startPython
+\startPYTHON
 a=12
 def hello_world(hello)
     print("simon says: {}".format(hello))
 hallo_welt("how do youdo")
-\stopPython
+\stopPYTHON
 \stoptext
 

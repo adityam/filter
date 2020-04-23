@@ -1,28 +1,22 @@
-\setupbackend[
-export=yes,
-xhtml=yes
-]
-\setupexport[
-title={\type{SYNBOL}, \type{SYNEOL} tagging test},
-subtitle={},
-author={J.R.C.H.}%,
-%cssfile=38-SYNBOL-SYNEOL-ln-tagging-export-templates.css%
-]
-\usemodule[amsl]
+\setupbackend
+  [
+    export=yes,
+    xhtml=yes
+  ]
 \usemodule[vim]
 \writestatus{main}{we define Python}
-\definevimtyping[Python][syntax=python,tab=4,numbering=yes]
+\definevimtyping[PYTHON][syntax=python,tab=4,numbering=yes,numberlocation=right]
 \traceexternalfilters
 \writestatus{main}{we start now}
 \starttext
 %\exportparameter\c!cssfile
-This is a little test whether modifcation in \type{\SYNBOL} and \type{\SYNEOL} have any sideeffects
+This is a little test whether modifcation in \type{\SYNBOL} and \type{\SYNEOL} have any side effects
 when export is set to XML
-\startPython
+\startPYTHON
 a=12
 def hello_world(hello)
     print("simon says:    {}".format(hello))
-hallo_welt("how do youdo")
-\stopPython
+hallo_welt("how do you do")
+\stopPYTHON
 \stoptext
 

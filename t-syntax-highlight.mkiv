@@ -60,8 +60,12 @@
           ]}%
 \to\everysetupsyntaxhighlighting
 
-\def\syntaxhighlighting@id {syntaxhighlighting}
+\def\syntaxhighlighting@id{syntaxhighlighting}
 \edef\t!syntaxhighlighting {\syntaxhighlighting@id}
+\def\syntaxlinegroup@id{syntaxlinegroup}
+\edef\t!syntaxlinegroup{\syntaxlinegroup@id}
+\def\syntaxlinegroup@force_break{break}
+\edef\t!break{\syntaxlinegroup@force_break}
 
 %D Helper macro
 
@@ -96,7 +100,7 @@
   \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
       {\language\minusone}%
 
-  \def\obeyedline{\strut\par}
+  \def\obeyedline{\strut\par\writestatus{vimtyping}{obyeying new line}}
   \setcatcodetable\externalfilter@minimal_catcodes%
   \letcharcode\endoflineasciicode\obeyedline
   \letcharcode\spaceasciicode\obeyedspace
@@ -106,12 +110,12 @@
 
 \starttexdefinition syntaxhighlighting@read_command #1
     \syntaxhighlighting@linenumbering_start
-    \ReadFile{#1}
+   	\ReadFile{#1}
     \syntaxhighlighting@linenumbering_stop
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting@linenumbering_start
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
+   \doifinsetelse{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
        {\let\SYNBOL=\syntaxhighlighting_begin_number_lines
         \let\SYNEOL=\syntaxhighlighting_end_number_lines
         \startlinenumbering
@@ -122,6 +126,9 @@
                 \c!step=\externalfilterparameter{\c!number\c!step},
              \c!continue=\externalfilterparameter{\c!number\c!continue},
           ]}
+       {\let\SYNBOL=\syntaxhighlighting_begin_lines
+        \let\SYNEOL=\syntaxhighlighting_end_lines
+       }
    \dostarttagged\t!syntaxhighlighting\colorscheme@name
 \stoptexdefinition
 
@@ -134,14 +141,35 @@
 \newcount\nofsyntaxhighlightinglines
 
 \starttexdefinition syntaxhighlighting_begin_number_lines
+  \writestatus{vimtyping}{in begin number}
   \global\advance\nofsyntaxhighlightinglines\plusone
   \attribute\verbatimlineattribute\nofsyntaxhighlightinglines
+  \syntaxhighlighting_begin_lines
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting_end_number_lines
+   \syntaxhighlighting_end_lines
    \attribute\verbatimlineattribute\attributeunsetvalue
+   \writestatus{vimtyping}{in end number}
 \stoptexdefinition
 
+\starttexdefinition syntaxhighlighting_begin_lines
+  \writestatus{vimtyping}{in begin line}
+  \noindent\the\everyline %
+  \dostarttagged\t!syntaxlinegroup\empty%
+\stoptexdefinition
+
+\starttexdefinition syntaxhighlighting_end_lines
+  \writestatus{vimtyping}{in end line}
+  \dostoptagged
+  \writestatus{vimtyping}{before break}
+  \dostarttagged\t!break\empty
+  {  }
+  \strut %
+  \relax %
+  \dostoptagged
+  \writestatus{vimtypeing}{after break}
+\stoptexdefinition
 
 \setupsyntaxhighlighting
   [\c!tab=4,
@@ -217,7 +245,17 @@
 \installspacemethod {\????syntaxhighlighting\v!off}
   {\unexpanded\def\obeyedspace
       {\mathortext\normalspace
-          {\syntaxhighlighting@split\interwordspace\relax}}%
+          %% had to replace by \asciispacechar as \interwordspace
+          %% seems to be allways collapsed by exporter int one single
+          %% space in resulting xhtml and xml files
+          %% TODO possibly switch between the two version
+          %%      using \doifmodeelse or find way to properly
+          %%      setup \interwordspace such that it is not
+          %%      collapsed in single space by exporter
+          %{\syntaxhighlighting@split\interwordspace\relax}}%
+          {\syntaxhighlighting@split\zeropoint\relax
+           \hbox{\asciispacechar}%
+           \syntaxhighlighting@split\zeropoint\relax}}
    \letcharcode\spaceasciicode\obeyedspace}
 
 % Default

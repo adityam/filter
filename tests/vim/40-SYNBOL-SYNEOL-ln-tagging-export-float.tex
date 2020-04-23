@@ -1,37 +1,30 @@
-\setupbackend[
-export=yes,
-xhtml=yes
-]
-\setupexport[
-title={\type{SYNBOL}, \type{SYNEOL} tagging test},
-subtitle={},
-author={J.R.C.H.}%,
-%cssfile=38-SYNBOL-SYNEOL-ln-tagging-export-templates.css%
-]
-\usemodule[amsl]
+\setupbackend
+  [
+    export=yes,
+    xhtml=yes
+  ]
 \usemodule[vim]
 \writestatus{main}{we define Python}
 \definefloat[Beispiel]
 \setupfloat[Beispiel][width=.8\textwidth,location=middle,spacebefore=small,spaceafter=small]
 \setupcaption[Beispiel][] 
 \defineframedtext[PythonFramed][align=middle,frame=none,width=.9\textwidth]
-\definevimtyping[Python][syntax=python,tab=4,numbering=yes,lines=split,option={packed,hyphenated},before={\startPythonFramed\switchtobodyfont[10pt]},after=\stopPythonFramed]
+\definevimtyping[PYTHON][syntax=python,tab=4,numbering=yes,numberlocation=left,lines=split,option={packed,hyphenated},before={\startPythonFramed\switchtobodyfont[10pt]},after=\stopPythonFramed]
 \traceexternalfilters
 \writestatus{main}{we start now}
 \starttext
 %\exportparameter\c!cssfile
 This is a little test whether modifcation in \type{\SYNBOL} and \type{\SYNEOL} have any sideeffects
 when export is set to XML
-\placeBeispiel[]
+\startplaceBeispiel[]
 [code:complex_number_test]
 {this is a more realistic example on how vimtyping with active linenumbers may be used}
-{%
-\startPython
+\startPYTHON
 a=12
 def hello_world(hello)
     print("simon says:    {}".format(hello))
 hallo_welt("how do youdo")
-\stopPython%
-}
+\stopPYTHON%
+\stopplaceBeispiel
 \stoptext
 
