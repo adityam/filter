@@ -1,5 +1,5 @@
 " Author    : Aditya Mahajan <adityam [at] umich [dot] edu> 
-" version   : 2011.12.23
+" version   : 2020.04.25
 " license   : Simplified BSD License
 
 " This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
@@ -39,9 +39,21 @@ if !exists("highlight")
 endif
 
 " Set escapecomments
-if !exists("escapecomments")
-  let escapecomments=0
+if exists("escapecomments")
+  let s:escapecomments=escapecomments " 0=off, 1=comments, 2=command
+else 
+  let s:escapecomments=0
 endif
+
+" Add a new syntax region to detect ConTeXt tags
+if s:escapecomments==2
+  syntax region vimtypingTEXcomment start="/BTEX" end="/ETEX" transparent oneline containedin=ALL contains=NONE
+
+  " Find the id of /BTEX ... /ETEX syntax region
+  let s:texcommentid = hlID("vimtypingTEXcomment")
+else
+  let s:texcommentid = -1 " Assuming that all ids are positive. Not documented
+end
 
 let s:strip = strlen( matchstr( getline(s:lstart), '^\s*' ) )
 
@@ -74,6 +86,7 @@ let s:lnum = s:lstart
 while s:lnum <= s:lstop
 " Get the current line
   let s:line = getline(s:lnum)
+
   let s:len  = strlen(s:line)
   let s:new  = '' 
 
@@ -81,28 +94,53 @@ while s:lnum <= s:lstop
   let s:col = s:strip + 1
   while s:col <= s:len
     let s:startcol = s:col " The start column for processing text
-    let s:id       = synID (s:lnum, s:col, 1)
-    let s:col      = s:col + 1
+
+    " Check if the next transprarent syntax is "vimtypingTEXcomment". If not, 
+    " find the next non-transparent syntax id. 
+    let s:id = synID (s:lnum, s:col, 0)
+    if s:id == s:texcommentid
+      let s:texcomment = 1
+    else
+      let s:texcomment = 0
+      let s:id = synID (s:lnum, s:col, 1)
+    endif
+    let s:col = s:col + 1
 " Speed loop (it's small - that's the trick)
 " Go along till we find a change in synID
-    while s:col <= s:len && s:id == synID(s:lnum, s:col, 1) 
+    while s:col <= s:len 
+      " If there is a "vimtypingTEXcomment" inside another syntax id, 
+      " "vimtypingTEXcomment" should get preference
+      let s:nextid = synID(s:lnum, s:col, 0)
+      if !s:texcomment && s:nextid != s:texcommentid
+        let s:nextid = synID(s:lnum, s:col, 1)
+      endif
+
+      if s:nextid != s:id
+        break
+      endif
+         
       let s:col = s:col + 1 
     endwhile
 
 " Output the text with the same synID, with class set to {s:id_name}
     let s:id      = synIDtrans (s:id)
     let s:id_name = synIDattr  (s:id, "name", "gui")
-    let s:temp    = strpart(s:line, s:startcol - 1, s:col - s:startcol)
+    if s:texcomment
+      " Remove /BTEX and /ETEX which are 5 characters wide
+      let s:temp = strpart(s:line, s:startcol + 5 - 1, s:col - s:startcol - 5 - 5)
+    else
+      let s:temp = strpart(s:line, s:startcol - 1, s:col - s:startcol)
+    end
 " Remove line endings (on unix machines reading windows files)
     let s:temp    = substitute(s:temp, '\r*$', '', '')
 " It might have happened that that one has been the last item in a row, so
 " we don't need to print in in that case
     if strlen(s:temp) > 0
 " Change special TeX characters to escape sequences.
-      if !(escapecomments && s:id_name == "Comment")
+      if !(s:texcomment || (s:escapecomments == 1) && s:id_name == "Comment")
         let s:temp = escape( s:temp, '\{}')
       endif
-      if !empty(s:id_name)
+      if !(s:texcomment || empty(s:id_name))
         let s:temp = '\SYN[' . s:id_name . ']{' . s:temp .  '}'
       endif
       let s:new  = s:new . s:temp

@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2018.08.10,
+%D      version=2020.04.25,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2018.08.10)}
+\writestatus{loading}{Filter (ver: 2020.04.25)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -210,7 +210,7 @@
    \begingroup % to keep assignments local
    \edef\currentexternalfilter{#1}
 
-   \setupexternalfilter[#1][\c!numbering=,\c!name=,\c!location=\v!text,#2]
+   \setupexternalfilter[#1][\c!escape=\v!off,\c!numbering=,\c!name=,\c!location=\v!text,#2]
 
    \externalfilter@set_filenames
    \doifelse{\externalfilterparameter\c!write}\v!no

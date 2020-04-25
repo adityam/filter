@@ -112,7 +112,7 @@ defines three things:
 
         \inlineRUBY{...}
 
-    The contents of this environment are processed by a vim script
+    The contents of this macro are processed by a vim script
     (`2context.vim`) and the result is read back in ConTeXt.
 
 3. A macro
@@ -468,21 +468,27 @@ the bar starts from the first non-blank character.
 Using TeX code in Comments
 --------------------------
 
-Sometimes one wants to use TeX code in comments, especially for math. To
-enable this use
+Sometimes one wants to use TeX command in code. There are two different
+methods to do so.
+
+The first method is primarily aimed towards writing math in comments. To
+enable this, use
 
     \definevimtyping
         [...]
         [...
-         escape=on,
+         escape=comment,
         ]
       
-When `escape=on`, the `2context.vim` script passes the `Comment` syntax
-region (as identified by `vim`) verbatim to TeX. So, we may use TeX
-commands inside the comment region and they will be interpreted by TeX.
-For example
+For backward compatibility, this feature can also be enabled using
+`escape=on`.
 
-    \definevimtyping[C][syntax=c, escape=on]
+When `escape=comment` is enabled, the `2context.vim` script passes the
+`Comment` syntax region (as identified by `vim`) verbatim to TeX. So, we may
+use TeX commands inside the comment region and they will be interpreted by
+TeX. For example
+
+    \definevimtyping[C][syntax=c, escape=comment]
 
     \startC
     /* The following function computes the roots of \m{ax^2+bx+c=0}
@@ -492,9 +498,78 @@ For example
     \stopC
 
 **Note** that only `\ { }` have their usual meaning inside the `Comment`
-region when `escape=on` is set. Thus, to enter a math expression, use
+region when `escape=comment` is set. Thus, to enter a math expression, use
 `\m{...}` instead of `$...$`. Moreover, spaces are active inside the
 math mode, so, as in the above example, avoid spaces in the math expressions.
+
+The second method is to imitate the behavior of `\starttyping` environment,
+where one can write arbitrary TeX commands in code inside `/BTEX ... /ETEX`
+delimiters. To enable this, use
+
+    \definevimtyping
+        [...]
+        [...
+         escape=command,
+        ]
+
+When `escape=command` is enabled, the `2context.vim` script defines a new
+syntax region using
+
+    syntax region ... start="/BTEX" end="/ETEX" transparent oneline containedin=ALL contains=NONE
+      
+and passes content of this region verbatim to TeX. So, any TeX commands used
+inside this region are interpreted by TeX. For example,
+
+    \definevimtyping[C][syntax=c, escape=command]
+
+    \startC
+       /* Here is a comment describing a complicated function */
+       /BTEX\startframedtext[width=\textwidth,corner=round]/ETEX
+        double complicated (...) 
+        {
+          ....
+        }
+      /BTEX\stopframedtext/ETEX
+    \stopC
+
+**Note** that as in the case for `escape=comment`, only `\ { }` have their
+usual meaning inside `/BTEX ... /ETEX`. Moreover, spaces are active
+characters. So, using a space between `\startframedtext` and `[` or between
+after the comma in the options to `\startframedtext` will result in an error.
+
+Clearly, `/BTEX ... /ETEX` is not a valid syntax in any language, so if these
+tags are used outside of a comment region (as is the case in the above
+example), the code will not compile. So, if the code also needs to run, then
+these annotations have to be restricted to the comment region of the code. 
+
+Although, in practice, the use of both escape mechanisms is restricted to
+comments, the two mechanism have subtle differences. When using
+`escape=comment`, the `2context.vim` script simply passes the content of the
+comment region to TeX. This content is still typeset inside a
+`\SYN[Comment]{...}` group. While when using `escape=command`, the
+`2context.vim` script identifies the content of `/BTEX .. /ETEX` and passes it
+to TeX _without wrapping it insider any `\SYN[..]{...}` group_. This has an
+advantage when we want to use commands that cannot be used inside a group
+(e.g., `\inmargin`). For example, if we want to define a `\callout` macro that
+displays a note in the margin which we can refer to later, we can use:
+
+
+    \define[1]\callout{\inmargin{\rm #1}}
+    \definevimtyping[C][syntax=c, escape=command]
+
+    \startC
+       /* Here is a comment describing a complicated function */
+       double complicated (...) 
+       {
+          ... // /BTEX\callout{Fancy trick!}/ETEX
+       }
+    \stopC
+
+Finally, note that the value of `escape` set using `\definevimtyping` is not
+used to `\inline<vim>typing`. If for some reason, you do need the escape
+mechanism for inline code, use
+
+     \inline<vim>typing[escape=command]{...}
 
 Tuning color schemes
 --------------------

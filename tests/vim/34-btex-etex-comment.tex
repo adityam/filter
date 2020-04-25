@@ -1,0 +1,20 @@
+\usemodule[vim]
+\definevimtyping[PYTHON][syntax=python,tab=4,numbering=yes,escape=command]
+\traceexternalfilters
+
+\starttext
+More complex test for referencing linenumbers using \type{/BTEX} \type{/ETEX} markers.
+\startPYTHON
+"""small test""" # /BTEX \someline[ln:docstring] /ETEX
+/BTEX \startline[ln:method] /ETEX
+def funny_method(x,k)
+    print("I'm funny") # math formula inside comment and method /BTEX\m{\frac{x^2}{k+1}}/ETEX
+    return x**2 / (k + 1)  /BTEX \someline[ln:calculate] /ETEX
+/BTEX \stopline[ln:method] /ETEX
+\stopPYTHON
+
+In the above code snippet, there is a docstring on \inline[ln:docstring] and a
+method \inlinePYTHON{funny_method} is defined between lines
+\inlinerange[ln:method]. In \inline[ln:calclulate], the comment contains a
+formula.
+\stoptext
