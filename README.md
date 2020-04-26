@@ -1003,3 +1003,5 @@ Version History
     - Support for `left` and `right`
 - **2018-04-17**
     - Support for `strip=yes` (which is now default). 
+- **2020-04-25**
+    - Bugfix for MkIV (Replace `\@EA` by `\expandafter`)

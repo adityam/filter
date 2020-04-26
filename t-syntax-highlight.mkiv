@@ -87,13 +87,13 @@
 
   \forgetall
   \usealignparameter\externalfilterparameter
-  \doifinset{\externalfilterparameter\c!option}{\v!packed}
+  \doifinset{\v!packed}{\externalfilterparameter\c!option}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
   \doadaptleftskip{\externalfilterparameter\c!margin}%
 
   \setbreakpoints[compound]% Only works is `option=hyphenated` is set.
-  \doifnotinset{\externalfilterparameter\c!option}{\v!hyphenated}
+  \doifnotinset{\v!hyphenated}{\externalfilterparameter\c!option}
       {\language\minusone}%
 
   \def\obeyedline{\strut\par}

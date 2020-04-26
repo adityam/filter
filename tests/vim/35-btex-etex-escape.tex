@@ -1,0 +1,18 @@
+\usemodule[vim]
+\definevimtyping[PYTHON][syntax=python,tab=4,numbering=yes,escape=comment]
+\traceexternalfilters
+
+\starttext
+More complex test for referencing linenumbers using \type{/BTEX} \type{/ETEX} markers.
+\startPYTHON
+"""small test""" # /BTEX \someline[ln:docstring] /ETEX
+/BTEX \startline[ln:method] /ETEX
+def funny_method(x,k)
+    print("I'm funny") # math formula inside comment and method \m{\frac{x^2}{k+1}} \someline[ln:calculate]
+    return x**2 / (k + 1)  /BTEX \someline[ln:calculate] /ETEX
+/BTEX \stopline[ln:method] /ETEX
+\stopPYTHON
+
+In the above code snippet, the lines with \type{/BTEX} \type{/ETEX} are not
+parsed. There is a formula in \inline[ln:calculate], which is parsed.
+\stoptext

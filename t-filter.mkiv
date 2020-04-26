@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2018.08.10,
+%D      version=2020.04.25,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2018.08.10)}
+\writestatus{loading}{Filter (ver: 2020.04.25)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -210,7 +210,7 @@
    \begingroup % to keep assignments local
    \edef\currentexternalfilter{#1}
 
-   \setupexternalfilter[#1][\c!numbering=,\c!name=,\c!location=\v!text,#2]
+   \setupexternalfilter[#1][\c!escape=\v!off,\c!numbering=,\c!name=,\c!location=\v!text,#2]
 
    \externalfilter@set_filenames
    \doifelse{\externalfilterparameter\c!write}\v!no
@@ -295,10 +295,10 @@
 \def\externalfilter@get_first_character_indeed#1#2\relax{#1}
 
 \def\externalfilter@get_last_character#1%
-  {\@EA\externalfilter@get_last_character_indeed#1\relax}
+  {\expandafter\externalfilter@get_last_character_indeed#1\relax}
 
 \def\externalfilter@get_last_character_indeed#1#2%
-  {\ifx#2\relax#1\else\@EA\externalfilter@get_last_character_indeed\@EA#2\fi}
+  {\ifx#2\relax#1\else\expandafter\externalfilter@get_last_character_indeed\expandafter#2\fi}
 
 %D \subsubject {Setting font and color attributes}
 %D I want to use the same interface for MkII and MkIV
