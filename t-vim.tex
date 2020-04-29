@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2020.04.25,
+%D      version=2020.04.29,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2020.04.25)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2020.04.29)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -17,6 +17,7 @@
 
 \startinterface all
     \setinterfaceconstant {vimrc}           {vimrc}
+    \setinterfaceconstant {vimcommand}      {vim\c!command}
 \stopinterface
 
 \unprotectmodulecatcodes
@@ -112,15 +113,15 @@
       {\def\vimtyping@script_name{kpse:2context.vim}}}
 
 \def\vimtyping@filter_command
-  {vim -u \vimrc_filename\space % read global config file
+  {\externalfilterparameter\c!vimcommand\space
+        -u \vimrc_filename\space % read global config file
         % --startuptime log
         % -V3log
        -X % dont connect to X server
        -i NONE % dont use viminfo file
        --noplugin % dont load plugins
-       -e % run in ex mode
-       -s % silent
-       -C % set compatible
+       -es % run in ex mode in silent
+       % -C % set compatible
        -n % no swap file
        -c "syntax manual" % don't load filetype detection
        -c "set syntax=\externalfilterparameter\c!syntax" %
@@ -157,7 +158,8 @@
 \setvalue{\vimtyping@id-\c!escape-\v!yes}{1}
 
 \setupvimtyping
-  [% \c!tab=4,
+  [\c!vimcommand={vim},
+   % \c!tab=4,
    % \c!start=1,
    % \c!stop=0,
    % \c!syntax=context,

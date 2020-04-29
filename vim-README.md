@@ -679,6 +679,28 @@ a different meaning than `option=on`. To avoid confusion, I have made these
 synonyms. Thus, whenever the documentation says `option=yes`, you may use
 `option=on`. And vice-versa. One less thing to worry about!
 
+Name (and location) of the VIM executable
+-----------------------------------------
+
+By default, the `t-vim` module calls the program `vim` to do syntax
+highlighting. If the `vim` program is not in the `$PATH`, the `vimcommand`
+option may be used to specify the compete path of `vim`:
+
+    \setupvimtyping[vimcommand=/path/to/vim]
+
+This option may also be used to call [Neovim] instead of `vim` to do syntax
+highlighting, by either using
+
+    \setupvimtyping[vimcommand=nvim]
+
+or, if `nvim` is not in the `$PATH`, using
+
+    \setupvimtyping[vimcommand=/path/to/nvim]
+
+[Neovim]: https://neovim.io/
+
+As of 2020.04.29, `nvim` is about 10% faster than `vim`.
+
 A bit of a history
 ------------------
 
