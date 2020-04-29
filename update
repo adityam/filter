@@ -61,7 +61,13 @@ filename.file_name  = ask("filename: ", Pathname) do |q|
     q.default = current_module + ".zip"
 end.to_s
 
-message.value = ask("Log message: ")
+filename = ask("File specifying log message:", Pathname) do |q|
+    q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".txt"}
+    q.responses[:not_valid] = "Please select a txt file"
+    q.default = current_module + ".txt"
+end.to_s
+
+message.value = File.read(filename)
 method.check
 
 confirmation_page = agent.submit(version_form, version_form.buttons.first)
