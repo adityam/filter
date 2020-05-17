@@ -1,5 +1,5 @@
 " Author    : Aditya Mahajan <adityam [at] umich [dot] edu> 
-" version   : 2020.04.25
+" version   : 2020.05.17
 " license   : Simplified BSD License
 
 " This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
