@@ -42,7 +42,7 @@
 \stoptexdefinition
 
 % Mode to testing the dev version of 2context script.
-\doifmodeelse{vim-dev}
+\doifmodeelse{vim-dev,dev-vim}
   {\def\vimtyping@script_name{2context.vim}}
   {\doifmodeelse\s!mkiv
       {\ctxlua{context.setvalue("vimtyping@script_name",resolvers.resolve("full:2context.vim"))}}
