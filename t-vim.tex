@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2020.04.29,
+%D      version=2020.05.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2020.04.29)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2020.05.17)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -39,74 +39,10 @@
 
     \definesyntaxhighlighting[#1][\s!parent=\vimtyping@namespace#1]
     \setupsyntaxhighlighting [#1][#2]
-
-
-    \setvalue{\e!start raw#1}{\bgroup\obeylines\dodoubleargument\vimtyping@start_raw[#1]}
-    \setvalue{\e!stop  raw#1}{\vimtyping@stop_raw}
-    \setvalue{inlineraw#1}{\dodoubleargument\vimtyping@inline_raw[#1]}
-\stoptexdefinition
-
-\starttexdefinition vimtyping@start_raw [#1][#2]
-    % #1 = filter
-    % #2 = options
-    \egroup %\bgroup in \start#1
-
-    \edef\vimtyping@name{#1}
-    \edef\externalfilter@name{#1}
-    \edef\currentexternalfilter{#1}
-
-    \begingroup % to keep assignments local
-    \setupvimtyping[#1][\c!name=,#2]
-
-    \externalfilterparameter\c!before
-
-    \externalfilter@attributes_start \externalfilter@id \c!style \c!color
-    \syntaxhighlighting@linenumbering_start
-    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-    \gobbleoneargument % For some reason the next argument is \type{^M}
-\stoptexdefinition
-
-\starttexdefinition vimtyping@stop_raw
-    % The last argument of the environment is \type{^M},
-    % so we explicitly backup one line.
-    \nobreak
-    \vskip-\dimexpr\lineheight+\parskip\relax
-    \nobreak
-
-    \removeunwantedspaces
-    \syntaxhighlighting@linenumbering_stop
-    \externalfilter@attributes_stop
-    \externalfilterparameter\c!after
-    \endgroup
-
-\stoptexdefinition
-
-\starttexdefinition vimtyping@inline_raw [#1][#2]
-    % #1 = filter
-    % #2 = options
-
-    \edef\vimtyping@name{#1}
-    \edef\externalfilter@name{#1}
-    \edef\currentexternalfilter{#1}
-
-    \begingroup % to keep assignments local
-    \setupvimtyping[#1][\c!name=,\c!location=\v!text,#2]
-
-    \externalfilter@attributes_start \externalfilter@id \c!style \c!color
-    % We assume that the setups set minimal_catcodes
-    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
-
-    \vimtyping@inline_raw_indeed
-\stoptexdefinition
-
-\starttexdefinition vimtyping@inline_raw_indeed #1
-    #1
-    \externalfilter@attributes_stop
-    \endgroup
 \stoptexdefinition
 
 % Mode to testing the dev version of 2context script.
-\doifmodeelse{vim-dev}
+\doifmodeelse{vim-dev,dev-vim}
   {\def\vimtyping@script_name{2context.vim}}
   {\doifmodeelse\s!mkiv
       {\ctxlua{context.setvalue("vimtyping@script_name",resolvers.resolve("full:2context.vim"))}}
@@ -120,6 +56,7 @@
        -X % dont connect to X server
        -i NONE % dont use viminfo file
        --noplugin % dont load plugins
+       --clean % dont load scada file (nvim)
        -es % run in ex mode in silent
        % -C % set compatible
        -n % no swap file

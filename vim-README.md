@@ -611,7 +611,7 @@ To disable loading of `vimrc` file, use
      \definevimtyping
         [...]
         [...
-         vimrc=none,
+         vimrc=,
          ...]
     
 

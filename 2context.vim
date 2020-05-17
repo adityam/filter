@@ -1,8 +1,54 @@
 " Author    : Aditya Mahajan <adityam [at] umich [dot] edu> 
-" version   : 2020.04.25
+" version   : 2020.05.17
 " license   : Simplified BSD License
 
 " This script is part of the t-vim module for ConTeXt. It is based on 2html.vim.  
+
+" This script is invoked by the `t-vim` module with the options
+"     vim -c "syntax manual" -c "set syntax=name" ...
+" The option `syntax manual` loads `$VIMRUNTIME/syntax/manual.vim`, which
+" loads `$VIMRUNTIME/syntax/synload.vim`, which in turn loads,
+" `$VIMRUNTIME/syntax/syncolo.vim`, which defines syntax highlighting for
+" `preffered groups` and maps `minor groups` to `preffered groups`. See `:he
+" group-name` for details. We want the minor groups to appear in the output,
+" so we define a simple mapping for them:
+
+" Minor group of Constant
+hi String      cterm=NONE
+hi Character   cterm=NONE
+hi Number      cterm=NONE
+hi Boolean     cterm=NONE
+hi Float       cterm=NONE
+
+" Minor group of Identifier
+hi Function    cterm=NONE
+
+" Minor group of Statement
+hi Conditional cterm=NONE
+hi Repeat      cterm=NONE
+hi Label       cterm=NONE
+hi Operator    cterm=NONE
+hi Keyword     cterm=NONE
+hi Exception   cterm=NONE
+
+" Minor group of PreProc
+hi Include     cterm=NONE
+hi Define      cterm=NONE
+hi Macro       cterm=NONE
+hi PreCondit   cterm=NONE
+
+" Minor group of Type
+hi StorageClass cterm=NONE
+hi Structure    cterm=NONE
+hi Typedef      cterm=NONE
+
+" Minor group of Special
+hi Tag             cterm=NONE
+hi SpecialChar     cterm=NONE
+hi Delimiter       cterm=NONE
+hi SpecialComment  cterm=NONE
+hi Debug           cterm=NONE
+
 " Since this script is called by the t-vim module, we assume that Two buffers
 " are open. The first buffer is the input buffer, and the second buffer is the
 " output buffer. The script parses content line-by-line from the first buffer
