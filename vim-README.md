@@ -708,6 +708,7 @@ Defining a new colorscheme
 Vim recommends the following names for syntax highlighting groups (information
 copied from `:help group-name`):
 
+> ```
 > 	*Comment	any comment
 > 
 > 	*Constant	any constant
@@ -754,7 +755,8 @@ copied from `:help group-name`):
 > 
 > 	*Todo		anything that needs extra attention; mostly the
 > 			keywords TODO FIXME and XXX
-> 
+>``` 
+>
 > The names marked with * are the preferred groups; the others are minor groups.
 > For the preferred groups, the "syntax.vim" file contains default highlighting.
 > The minor groups are linked to the preferred groups, so they get the same
