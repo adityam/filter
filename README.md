@@ -4,9 +4,6 @@
 The filter module
 =================
 
-History
--------
-
 This module started with a simple idea. I wanted an environment
     
     \startmarkdown
@@ -30,6 +27,37 @@ Markdown? Or Matlab code instead R? Surely, copying the R-module for each
 program would be a waste of effort. Each new program requires only a few changes
 in the R-module; what I needed was a R-module _template_ so that I could fill in
 the blanks with the appropriate values. And so, the filter module was born.
+
+Table of Contents
+=================
+
+* [Compatibility](#compatibility)
+* [Installation](#installation)
+* [Basic Usage](#basic-usage)
+* [Inheriting setup from other commands](#inheriting-setup-from-other-commands)
+* [Dealing with slow filters](#dealing-with-slow-filters)
+* [Reading the input](#reading-the-input)
+* [Space around the environment](#space-around-the-environment)
+* [Stripping leading whitespace (MkIV only)](#stripping-leading-whitespace-mkiv-only)
+* [Names of temporary files](#names-of-temporary-files)
+* [Output Directory](#output-directory)
+* [Disabling filters](#disabling-filters)
+* [Deleting temporary files](#deleting-temporary-files)
+* [Standard options](#standard-options)
+* [Options to a specific environment](#options-to-a-specific-environment)
+* [A setup to control them all](#a-setup-to-control-them-all)
+* [Passing options to filters](#passing-options-to-filters)
+* [Macro variant](#macro-variant)
+* [Processing existing Files](#processing-existing-files)
+* [Processing remote files](#processing-remote-files)
+* [Processing existing buffers](#processing-existing-buffers)
+* [Prepend and append text](#prepend-and-append-text)
+* [Special use case:  \write18 with caching](#special-use-case--write18-with-caching)
+* [Dealing with expansion](#dealing-with-expansion)
+* [Limitations](#limitations)
+* [Messages and Tracing](#messages-and-tracing)
+* [Version History](#version-history)
+
 
 Compatibility
 ------------

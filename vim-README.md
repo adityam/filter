@@ -11,6 +11,36 @@ editors, and many other syntax highlighting programs, already syntax highlight
 many programming languages. Why not just leverage these external programs to
 generate syntax highlighting? This module does exactly that.
 
+Table of Contents
+=================
+
+* [Compatibility](#compatibility)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Start and stop lines](#start-and-stop-lines)
+* [Changing tab skip](#changing-tab-skip)
+* [Avoid clutter](#avoid-clutter)
+* [Before and after](#before-and-after)
+* [Changing the color scheme](#changing-the-color-scheme)
+* [Line numbering](#line-numbering)
+* [Number of the first line](#number-of-the-first-line)
+* [Standard options for line numbering](#standard-options-for-line-numbering)
+* [Spaces](#spaces)
+* [Removing leading spaces](#removing-leading-spaces)
+* [Adding left margin](#adding-left-margin)
+* [Wrapping lines](#wrapping-lines)
+* [Highlighting lines](#highlighting-lines)
+* [Using TeX code in Comments](#using-tex-code-in-comments)
+* [Tuning color schemes](#tuning-color-schemes)
+* [Messages and Tracing](#messages-and-tracing)
+* [Yes, on, whatever](#yes-on-whatever)
+* [Name (and location) of the VIM executable](#name-and-location-of-the-vim-executable)
+* [Defining a new colorscheme](#defining-a-new-colorscheme)
+* [Modifying an existing color scheme](#modifying-an-existing-color-scheme)
+* [A bit of a history](#a-bit-of-a-history)
+
+
+
 Compatibility
 ------------
 
