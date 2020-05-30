@@ -97,10 +97,10 @@
       {\language\minusone}%
 
   \def\obeyedline{\strut\par}
+  \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space:\externalfilterparameter\c!lines}
   \setcatcodetable\externalfilter@minimal_catcodes%
   \letcharcode\endoflineasciicode\obeyedline
   \letcharcode\spaceasciicode\obeyedspace
-  \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space}
   \raggedright
 \stopsetups
 
@@ -120,7 +120,7 @@
               \c!method=\v!type,
                \c!start=\externalfilterparameter{\c!number\c!start},
                 \c!step=\externalfilterparameter{\c!number\c!step},
-             \c!continue=\externalfilterparameter{\c!number\c!continue},
+            \c!continue=\externalfilterparameter{\c!number\c!continue},
           ]}
    \dostarttagged\t!syntaxhighlighting\colorscheme@name
 \stoptexdefinition
@@ -191,40 +191,40 @@
   ]
 
 % Space handler
-%
-% The space handing code for MkII and MkIV is not consistent. So, we provide our
-% own versions.
 
-\setvalue{\????syntaxhighlighting::\c!lines::\v!split}{\hskip}
-\setvalue{\????syntaxhighlighting::\c!lines::\v!fixed}{\dontleavehmode\kern}
+% Invisible space, don't split
+\installspacemethod {\????syntaxhighlighting\v!off:\v!fixed}
+  {\def\obeyedspace{\mathortext\normalspace\explicitfixedspace}}
 
-% default
-\setvalue{\????syntaxhighlighting::\c!lines::}{\dontleavehmode\kern}
+% Invisible space, allow split
+\installspacemethod {\????syntaxhighlighting\v!off:\v!split}
+  {\def\obeyedspace{\mathortext\normalspace\explicitobeyedspace}}
 
-\def\syntaxhighlighting@split%
-    {\getvalue{\????syntaxhighlighting::\c!lines::\externalfilterparameter\c!lines}}
+% Visible space, don't split
+\installspacemethod {\????syntaxhighlighting\v!on:\v!fixed}
+  {\def\obeyedspace{\mathortext\normalspace\optionalcontrolspace}}
 
-% Visible space
+% Visible space, allow split
+\installspacemethod {\????syntaxhighlighting\v!on:\v!split}
+  {\def\obeyedspace{\mathortext\normalspace\explicitcontrolspace}}
+
+% Default: line=empty
+\installspacemethod {\????syntaxhighlighting\v!off:}
+  {\activatespacehandler {\????syntaxhighlighting\v!off:\v!fixed}}
+
 \installspacemethod {\????syntaxhighlighting\v!on}
-  {\unexpanded\def\obeyedspace
-      {\mathortext\normalspace
-        {\syntaxhighlighting@split\zeropoint\relax
-         \hbox{\normalcontrolspace}%
-         \syntaxhighlighting@split\zeropoint\relax}}%
-  \letcharcode\spaceasciicode\obeyedspace}
+  {\activatespacehandler {\????syntaxhighlighting\v!on:\v!fixed}}
 
-% Invisible space
-\installspacemethod {\????syntaxhighlighting\v!off}
-  {\unexpanded\def\obeyedspace
-      {\mathortext\normalspace
-          {\syntaxhighlighting@split\interwordspace\relax}}%
-   \letcharcode\spaceasciicode\obeyedspace}
+% space=empty, line=something
+\installspacemethod {\????syntaxhighlighting:\v!fixed}
+  {\activatespacehandler {\????syntaxhighlighting\v!off:\v!fixed}}
 
-% Default
-\installspacemethod {\????syntaxhighlighting}
-  {\activatespacehandler {\????syntaxhighlighting\v!off}}
+\installspacemethod {\????syntaxhighlighting:\v!split}
+  {\activatespacehandler {\????syntaxhighlighting\v!off:\v!split}}
 
-% Line highlighting
+% Both empty
+\installspacemethod {\????syntaxhighlighting:}
+  {\activatespacehandler {\????syntaxhighlighting\v!off:\v!fixed}}
 
 \definebar[syntaxhighlightline]
           [\c!order=\v!background,
