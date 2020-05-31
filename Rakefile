@@ -1,15 +1,6 @@
 require 'fileutils'
 require 'rake/clean'
 
-def make_pandoc
-  File.open('t-pandoc.tex', 'w') do |file|
-    file.puts "\\startmodule [pandoc]"
-    file.puts "\\let\\strong\\bold"
-    file.puts "\\let\\emph\\italic"
-    file.puts "\\stopmodule"
-  end
-end
-
 def make_tds(name, files, doc)
   tex_dir = "#{name}/tex/context/third/#{name}"
   doc_dir = "#{name}/doc/context/third/#{name}"
@@ -30,10 +21,9 @@ def make_zip name
 end
 
 def run_tests tests, engine
-  make_pandoc
   FileUtils.mkdir_p "output"
   tests.each do |file|
-    sh "context --#{engine} --usemodule=pandoc --color --mode=vim-dev --noconsole --purgeall --purgeresult #{file}"
+    sh "context --#{engine} --color --mode=vim-dev --noconsole --purgeall --purgeresult #{file}"
   end
   sh "context --purgeall"
 end
@@ -42,7 +32,7 @@ FILTER_TEX  = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.mkii t-module-cat
 FILTER_DOC  = "README.md"
 FILTER_TEST = FileList['tests/[0-9][0-9]-*.tex']
 
-VIM_TEX  = %W[t-vim.tex t-syntax-groups.tex t-syntax-highlight.mkii t-syntax-highlight.mkiv 2context.vim]
+VIM_TEX  = %W[t-vim.tex t-syntax-groups.mkii t-syntax-groups.mkiv t-syntax-highlight.mkii t-syntax-highlight.mkiv 2context.vim vimtyping-default.css]
 VIM_DOC  = "vim-README.md"
 VIM_TEST = FileList['tests/vim/[0-9][0-9]-*.tex']
 

@@ -1,0 +1,13 @@
+\usemodule[vim]
+
+\setupbackend[export=yes]
+\setupexport[cssfile=\vimtypingcssfile]
+
+\definevimtyping[PYTHON][syntax=python]
+
+\starttext
+\startparagraph
+  Here is some inline python code \inlinePYTHON{print("Hello World")}. 
+  Let's see how it looks in display.
+\stopparagraph
+\stoptext

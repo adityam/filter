@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-highlight,
-%D      version=2018.08.10,
+%D      version=2020.06.29,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Code syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Code syntax highlighting (ver: 2018.08.10)}
+\writestatus{loading}{Code syntax highlighting (ver: 2020.06.29)}
 
 \startmodule    [syntax-highlight]
 \usemodule      [syntax-groups]
@@ -36,7 +36,10 @@
 
 \appendtoks
     \defineexternalfilter[\currentsyntaxhighlighting]
-                         [\s!parent=\????syntaxhighlighting\currentexternalfilter,\c!taglabel=\vimtyping@id]%
+                         [\s!parent=\????syntaxhighlighting\currentexternalfilter,
+                          \c!taglabel=\vimtyping@id,
+                          \c!tagdetail={\externalfilterparameter\c!alternative},
+                        ]%
     \normalexpanded{\definelinenumbering [\currentsyntaxhighlighting]}%
     \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
 \to\everydefinesyntaxhighlighting
@@ -64,7 +67,6 @@
 \to\everysetupsyntaxhighlighting
 
 \def\syntaxhighlighting@id {syntaxhighlighting}
-\edef\t!syntaxhighlighting {\syntaxhighlighting@id}
 
 %D Helper macro
 
@@ -114,7 +116,7 @@
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting@linenumbering_start
-   \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
+   \doifinsetelse{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
        {\let\SYNBOL=\syntaxhighlighting_begin_number_lines
         \let\SYNEOL=\syntaxhighlighting_end_number_lines
         \startlinenumbering
@@ -125,24 +127,34 @@
                 \c!step=\externalfilterparameter{\c!number\c!step},
             \c!continue=\externalfilterparameter{\c!number\c!continue},
           ]}
-   \dostarttagged\t!syntaxhighlighting\colorscheme@name
+        {\let\SYNBOL=\syntaxhighlighting_begin_lines
+         \let\SYNEOL=\syntaxhighlighting_end_lines}
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting@linenumbering_stop
-  \dostoptagged
    \doifinset{\externalfilterparameter\c!numbering}\syntaxhighlighting@yes
       {\stoplinenumbering}
 \stoptexdefinition
 
 \newcount\nofsyntaxhighlightinglines
 
+\starttexdefinition syntaxhighlighting_begin_lines
+  \dostarttaggednodetail\t!verbatimline
+\stoptexdefinition
+
+\starttexdefinition syntaxhighlighting_end_lines
+  \dostoptagged
+\stoptexdefinition
+
 \starttexdefinition syntaxhighlighting_begin_number_lines
   \global\advance\nofsyntaxhighlightinglines\plusone
+  \dostarttaggednodetail\t!verbatimline
   \attribute\verbatimlineattribute\nofsyntaxhighlightinglines
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting_end_number_lines
-   \attribute\verbatimlineattribute\attributeunsetvalue
+  \attribute\verbatimlineattribute\attributeunsetvalue
+  \dostoptagged
 \stoptexdefinition
 
 

@@ -1,0 +1,20 @@
+\usemodule[filter]
+
+\setupbackend[export=xml]
+\defineexternalfilter 
+  [markdown]
+  [filter={pandoc -w context -o \externalfilteroutputfile }]
+
+\starttext
+\startparagraph
+  Both inline markdown such as \inlinemarkdown{**this** sample} and display
+  markdown shown below are exported.
+\stopparagraph
+  \startmarkdown
+    This **display** sample
+  \stopmarkdown
+\startparagraph
+  Note that the overall document must have a valid structure.
+\stopparagraph
+\stoptext
+

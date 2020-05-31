@@ -37,6 +37,7 @@ Table of Contents
 * [Name (and location) of the VIM executable](#name-and-location-of-the-vim-executable)
 * [Defining a new colorscheme](#defining-a-new-colorscheme)
 * [Modifying an existing color scheme](#modifying-an-existing-color-scheme)
+* [XML export](#xml-export)
 * [A bit of a history](#a-bit-of-a-history)
 
 
@@ -974,6 +975,81 @@ typeset in bold red, we can use:
       [color=red, style=bold]
 \stopcolorscheme
 ```
+XML Export
+----------
+
+The vim module provides a basic support for XML export. If the user-document
+contains
+
+    \setupbackend[export=yes]
+
+or other valid options to `export` such as `export=xml`, then the vim typing
+environments are exported as well. For example, 
+
+    \definevimtyping[PYTHON][syntax=python]
+    \startPYTHON
+    # Python program listing
+    def foobar
+        print("Hello World")
+    \stopPYTHON
+
+
+is exported as
+
+    <vimtyping detail="pscolor">
+     <verbatimline><syntaxgroup detail="vimComment"># Python program listing</syntaxgroup></verbatimline>
+     <verbatimline><syntaxgroup detail="vimStatement">def</syntaxgroup> <syntaxgroup detail="vimFunction">foobar</syntaxgroup></verbatimline>
+     <verbatimline>    <syntaxgroup detail="vimFunction">print</syntaxgroup>(<syntaxgroup detail="vimString">"</syntaxgroup><syntaxgroup detail="vimString">Hello World</syntaxgroup><syntaxgroup detail="vimString">"</syntaxgroup>)</verbatimline>
+    </vimtyping>
+
+The name of the exported envionment is `vimtyping`. 
+
+Inline environments such as
+
+    \definevimtyping[PYTHON][syntax=python]
+    \inlinePYTHON{print("Hello World")}
+    
+is exported as
+
+    <inlinevimtyping detail="pscolor"><verbatimline><syntaxgroup detail="vimFunction">print</syntaxgroup>(<syntaxgroup detail="vimString">"</syntaxgroup><syntaxgroup detail="vimString">Hello World</syntaxgroup><syntaxgroup detail="vimString">"</syntaxgroup>)</verbatimline></inlinevimtyping>
+
+The name of the exported envionment is `inlinevimtyping`. 
+
+In both the display and inline environments, the name of the programming
+language (value of the `syntax` key) is
+not exported since it is not needed to display the parse output.
+Instead the name of the colorscheme (value of the `alternative` key) is
+exported as the parameter `detail` of `vimtyping`. Each line is exported as a
+`verbatimline`. Each syntaxgroup is exported as `<syntaxgroup detail="...">`.
+The value of `defail` equals to the name of the syntax highlighting group
+_prepended with `vim`_. The name is prepended with `vim` to avoid name clashes
+with other elements in the exported XML. Strictly speaking this is not
+necessary, but it does make it easier to write CSS selectors.
+
+The module comes with a CSS file with default mappings for the two
+colorschemes that are provided with the module (`pscolor` and
+`blackandwhite`). This is meant as a simple solution which gives approximately
+the same output as the PDF file. To use this CSS file, add
+
+    \setupexport[cssfile=\vimtypingcssfile]
+
+If you already have other values for `cssfile`, then use:
+
+    \setupexport[cssfile={...,...,\vimtypingcssfile}]
+
+Note that the macro `\vimtypingcssfile` is defined in the vim module, so the
+above line has to come after the `vim` module has been loaded.
+
+If you make changes to the default colorschemes, define colorschemes of your
+own, or want to tweak the visual appearance of the output, you need to tweak
+the default CSS file to suit your needs. It is suggested that you copy the
+default css file and tweak it. You can find the location of the default CSS
+file using
+
+    luatools vimtyping-default.css
+
+Copy it under a different name and tweak it as desired.
+
 
 A bit of a history
 ------------------

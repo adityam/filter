@@ -52,6 +52,7 @@ Table of Contents
 * [Processing remote files](#processing-remote-files)
 * [Processing existing buffers](#processing-existing-buffers)
 * [Prepend and append text](#prepend-and-append-text)
+* [XML export](#xml-export)
 * [Special use case:  \write18 with caching](#special-use-case--write18-with-caching)
 * [Dealing with expansion](#dealing-with-expansion)
 * [Limitations](#limitations)
@@ -753,6 +754,43 @@ Then you can use
       \inlinechess{1.e4 e5 2. Nf3 Nc6 3.Bb5}
 
 to get a chess board.
+
+XML export
+----------
+
+The filter module provides a basic support for XML export. If the
+user-document contains
+
+    \setupbackend[export=yes]
+
+or other valid options to `export` such as `export=xml`, then the filter
+environment is exported as well. For example, both
+
+    \startmarkdown
+      ...
+    \stopmarkdown
+
+and
+    \processmarkdownfile{...}
+
+are exported (in `\jobname-export/\jobname.xml`) as
+
+    <externalfilter detail="markdown">
+      ...
+    </externalfilter>
+
+Moreover, 
+
+    \inlinemarkdown{...}
+
+is exported as 
+
+    <inlineexternalfilter detail="markdown">....</inlineexternalfilter>
+
+
+Note that it is the responsibility of the filter to generate properly tagged
+content. For example, `pandoc` used in the `markdown` examples in this
+document converts `**bold**` to `{\bf bold}`, which is not exported. 
 
 Special use case:  `\write18` with caching
 ------------------------------------------
