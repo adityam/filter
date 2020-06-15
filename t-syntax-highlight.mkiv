@@ -133,7 +133,7 @@
 \newcount\nofsyntaxhighlightinglines
 
 \starttexdefinition syntaxhighlighting_begin_lines
-  \dostarttagged\t!verbatimline\empty
+  \dostarttaggednodetail\t!verbatimline
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting_end_lines
@@ -142,7 +142,7 @@
 
 \starttexdefinition syntaxhighlighting_begin_number_lines
   \global\advance\nofsyntaxhighlightinglines\plusone
-  \dostarttagged\t!verbatimline\empty
+  \dostarttaggednodetail\t!verbatimline
   \attribute\verbatimlineattribute\nofsyntaxhighlightinglines
 \stoptexdefinition
 
