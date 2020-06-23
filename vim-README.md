@@ -11,6 +11,36 @@ editors, and many other syntax highlighting programs, already syntax highlight
 many programming languages. Why not just leverage these external programs to
 generate syntax highlighting? This module does exactly that.
 
+Table of Contents
+=================
+
+* [Compatibility](#compatibility)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Start and stop lines](#start-and-stop-lines)
+* [Changing tab skip](#changing-tab-skip)
+* [Avoid clutter](#avoid-clutter)
+* [Before and after](#before-and-after)
+* [Changing the color scheme](#changing-the-color-scheme)
+* [Line numbering](#line-numbering)
+* [Number of the first line](#number-of-the-first-line)
+* [Standard options for line numbering](#standard-options-for-line-numbering)
+* [Spaces](#spaces)
+* [Removing leading spaces](#removing-leading-spaces)
+* [Adding left margin](#adding-left-margin)
+* [Wrapping lines](#wrapping-lines)
+* [Highlighting lines](#highlighting-lines)
+* [Using TeX code in Comments](#using-tex-code-in-comments)
+* [Tuning color schemes](#tuning-color-schemes)
+* [Messages and Tracing](#messages-and-tracing)
+* [Yes, on, whatever](#yes-on-whatever)
+* [Name (and location) of the VIM executable](#name-and-location-of-the-vim-executable)
+* [Defining a new colorscheme](#defining-a-new-colorscheme)
+* [Modifying an existing color scheme](#modifying-an-existing-color-scheme)
+* [A bit of a history](#a-bit-of-a-history)
+
+
+
 Compatibility
 ------------
 
@@ -209,7 +239,8 @@ A particular color scheme may be chosen using the options:
        alternative=pscolor,
        ...]
 
-The default color scheme is `pscolor`.
+The default color scheme is `pscolor`. See below for instructions on how to
+define a new colorscheme. 
 
 Line numbering
 ---------------
@@ -700,6 +731,246 @@ or, if `nvim` is not in the `$PATH`, using
 [Neovim]: https://neovim.io/
 
 As of 2020.04.29, `nvim` is about 10% faster than `vim`.
+
+Defining a new colorscheme
+--------------------------
+
+Vim recommends the following names for syntax highlighting groups (information
+copied from `:help group-name`):
+
+> ```
+> 	*Comment	any comment
+> 
+> 	*Constant	any constant
+> 	 String		a string constant: "this is a string"
+> 	 Character	a character constant: 'c', '\n'
+> 	 Number		a number constant: 234, 0xff
+> 	 Boolean	a boolean constant: TRUE, false
+> 	 Float		a floating point constant: 2.3e10
+> 
+> 	*Identifier	any variable name
+> 	 Function	function name (also: methods for classes)
+> 
+> 	*Statement	any statement
+> 	 Conditional	if, then, else, endif, switch, etc.
+> 	 Repeat		for, do, while, etc.
+> 	 Label		case, default, etc.
+> 	 Operator	"sizeof", "+", "*", etc.
+> 	 Keyword	any other keyword
+> 	 Exception	try, catch, throw
+> 
+> 	*PreProc	generic Preprocessor
+> 	 Include	preprocessor #include
+> 	 Define		preprocessor #define
+> 	 Macro		same as Define
+> 	 PreCondit	preprocessor #if, #else, #endif, etc.
+> 
+> 	*Type		int, long, char, etc.
+> 	 StorageClass	static, register, volatile, etc.
+> 	 Structure	struct, union, enum, etc.
+> 	 Typedef	A typedef
+> 
+> 	*Special	any special symbol
+> 	 SpecialChar	special character in a constant
+> 	 Tag		you can use CTRL-] on this
+> 	 Delimiter	character that needs attention
+> 	 SpecialComment	special things inside a comment
+> 	 Debug		debugging statements
+> 
+> 	*Underlined	text that stands out, HTML links
+> 
+> 	*Ignore		left blank, hidden  |hl-Ignore|
+> 
+> 	*Error		any erroneous construct
+> 
+> 	*Todo		anything that needs extra attention; mostly the
+> 			keywords TODO FIXME and XXX
+>``` 
+>
+> The names marked with * are the preferred groups; the others are minor groups.
+> For the preferred groups, the "syntax.vim" file contains default highlighting.
+> The minor groups are linked to the preferred groups, so they get the same
+> highlighting.  You can override these defaults by using ":highlight" commands
+> after sourcing the "syntax.vim" file.
+
+The syntax highlighting files for almost all languages define other highlight
+groups most of which get mapped to these basic groups. To define a new
+colorscheme, we need to define color mappings for each of these groups. 
+
+The basic syntax for defining a new color scheme is:
+
+```
+\startcolorscheme[name-of-scheme]
+...
+\stopcolorscheme
+```
+
+where the `name-of-scheme` is whatever name you want to call your colorscheme.
+This name has to be used as the value for `alternative` key in
+`\definevimtyping` or `setupvimtyping`. 
+
+The bare-minimum setup needed to define a new colorscheme is as follows:
+
+```
+\startcolorscheme[name-of-scheme]
+    % Vim Preferred groups
+    \definesyntaxgroup
+        [Constant]
+        [...]
+
+    \definesyntaxgroup
+        [Identifier]
+        [...]
+
+    \definesyntaxgroup
+        [Statement]
+        [...]
+
+    \definesyntaxgroup
+        [PreProc]
+        [...]
+
+    \definesyntaxgroup
+        [Type]
+        [...]
+
+    \definesyntaxgroup
+        [Special]
+        [...]
+
+    \definesyntaxgroup
+        [Comment]
+        [...]
+
+    \definesyntaxgroup
+         [Ignore]
+         [...]
+
+    \definesyntaxgroup
+        [Todo]
+        [...]
+
+
+    \definesyntaxgroup
+        [Error]
+        [...]
+
+    \definesyntaxgroup
+        [Underlined]
+        [...]
+
+    \definesyntaxgroup
+        [Todo]
+        [...]
+
+    \setups{vim-minor-groups}
+
+\stopcolorscheme
+```
+
+The detailed syntax of `\definesyntaxgroup` will be explained in a bit. 
+The `\setups{vim-minor-groups}` line at the end maps the minor color groups to
+the preferred color groups, as per the default mappings in vim. Suppose you
+want to override the default mappings for `Number` and `Function`, then you
+define those mappings after `\setups{vim-minor-groups}`.
+
+```
+\startcolorscheme[name-of-scheme]
+    % Vim Preferred groups
+    \definesyntaxgroup
+        [Constant]
+        [...]
+
+    ....
+
+    \setups{vim-minor-groups}
+
+    \definesyntaxgroup
+        [Number]
+        [...]
+
+    \definesyntaxgroup
+        [Function]
+        [...]
+
+\stopcolorscheme
+```
+
+A full setup for defining a new color scheme will be add `\definesyntaxgroup`
+for all the basic vim syntax highlighting groups listed from the vim help
+above. If you define the mappings for *all* groups, then you can omit the
+`\setups{vim-minor-groups}` line above. 
+
+The `\definesyntaxgroup` command has the following syntax:
+
+```
+\definesyntaxgroup
+    [name-of-group]
+    [
+      color=...,
+      style=...,
+      command=...,
+    ]
+```
+where `color` is the name of any predefined color in ConTeXt, `style` can be
+any predefined [style alternative][style] (such as `bold`, `italic`, etc.) or
+an explicit style formatting command (such as `\bf`, `\it`, etc.), and
+`command` can be any ConTeXt macro which takes one argument. 
+
+[style]: https://wiki.contextgarden.net/Style_Alternatives
+
+For example, if you want to highlight `Todo` with a frame, use can use:
+
+```
+\definesyntaxgroup
+    [Todo]
+    [command=\inframed]
+```
+
+_A convinience interface for `color`:_ A colorscheme uses a lot of colors and
+defining all of them just for the purpose of defining a new colorscheme can be
+cumbersome. So, the `\definesyntaxgroup` macro provides a shorthand:
+
+```
+\definesyntaxgroup
+    [...]
+    [
+      color={r=..., g=..., b=...},
+    ]
+```
+
+where `r`, `g`, `b`, values are the red, green, and blue values (between 0 and
+1) of the color, or
+
+```
+\definesyntaxgroup
+    [...]
+    [
+      color={h=...},
+    ]
+```
+
+where the `h` value is the hex value of the color.
+
+Modifying an existing color scheme
+----------------------------------
+
+It is possible to modify an existing color scheme by simply redefining
+some of the syntax highlighting groups. For example, if we want to update
+`pscolor` so that `Identifier` group is typeset in red color and `Function` is
+typeset in bold red, we can use:
+
+```
+\startcolorscheme[pscolor]
+  \definesyntaxgroup
+      [Identifier]
+      [color=red]
+
+  \definesyntaxgroup
+      [Function]
+      [color=red, style=bold]
+\stopcolorscheme
+```
 
 A bit of a history
 ------------------
