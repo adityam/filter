@@ -1,0 +1,40 @@
+\usemodule[vim]
+
+\starttext
+
+\definevimtyping [pythontest]
+    [
+        syntax=python,
+        alternative=pythoncolor,
+    ]
+
+\startcolorscheme [pythoncolor]
+    \definesyntaxgroup
+        [Comment]
+        [color=red]
+\stopcolorscheme
+
+\definevimtyping [contexttest]
+    [
+        syntax=context,
+        alternative=contextcolor,
+    ]
+
+\startcolorscheme [contextcolor]
+    \definesyntaxgroup
+        [Comment]
+        [color=blue]
+\stopcolorscheme
+
+
+This is Python:
+\startpythontest
+# a comment should be red
+\stoppythontest
+
+This is ConTeXt:
+\startcontexttest
+% a comment should be blue
+\stopcontexttest
+
+\stoptext

@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-groups,
-%D      version=2012.05.06,
+%D      version=2020.06.23,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Syntax highlighting support,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Syntax highlighting groups (ver: 2012.05.06)}
+\writestatus{loading}{Syntax highlighting groups (ver: 2020.06.23)}
 
 \startmodule [syntax-group]
 \usemodule   [module-catcodes]
@@ -52,9 +52,9 @@
                           [\s!parent=\syntaxgroup@namespace,\c!color=,\c!style=,\c!command=,#2]
          \doifsomething{\syntaxgroupparameter\c!color}
           {
-             \expanded{\definecolor[\syntaxgroup@namespace-##1-color]
+             \expanded{\definecolor[\syntaxgroup@namespace-\syntaxgroup@name-color]
                                    [\syntaxgroupparameter\c!color]}
-             \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-##1-color]
+             \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-\syntaxgroup@name-color]
           }
     }
   }{
