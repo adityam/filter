@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2020.04.25,
+%D      version=2020.06.23,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2020.04.25)}
+\writestatus{loading}{Filter (ver: 2020.06.23)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -35,6 +35,7 @@
     \setinterfaceconstant {write}            {write}
     \setinterfaceconstant {readcommand}      {readcommand}
     \setinterfaceconstant {taglabel}         {taglabel}
+    \setinterfaceconstant {tagdetail}        {tagdetail}
 \stopinterface
 
 
@@ -485,7 +486,7 @@
      {\externalfilterparameter\c!left}
 
    \begingroup
-   \dostarttagged{\externalfilterparameter\c!taglabel}\currentexternalfilter
+   \dostarttagged{\externalfilterparameter\c!taglabel}{\externalfilterparameter\c!tagdetail}
    \useexternalfilterstyleandcolor\c!style\c!color
    \processcommacommand[\externalfilterparameter\c!setups]\directsetup
    \externalfilterparameter\c!readcommand\externalfilter@output_file
@@ -528,6 +529,7 @@
    \c!buffer\c!before=,
    \c!buffer\c!after=,
    \c!taglabel=\externalfilter@id,
+   \c!tagdetail=\currentexternalfilter,
  ]
 
 \def\externalfilterbasefile  {\externalfilter@base_file}
