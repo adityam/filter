@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-groups,
-%D      version=2012.05.06,
+%D      version=2020.06.23,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Syntax highlighting support,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Syntax highlighting groups (ver: 2012.05.06)}
+\writestatus{loading}{Syntax highlighting groups (ver: 2020.06.23)}
 
 \startmodule [syntax-group]
 \usemodule   [module-catcodes]
@@ -32,13 +32,66 @@
 
 \installparameterhandler  \syntaxgroup@namespace \syntaxgroup@id
 \installsetuphandler      \syntaxgroup@namespace \syntaxgroup@id
-\doifmode{\s!mkiv}
-  {\installstyleandcolorhandler      \syntaxgroup@namespace \syntaxgroup@id}
 
 \def\m!syntaxgroup{t-syntax-group}
 
 \def\definesyntaxgroup
     {\dodoubleargument\syntaxgroup@define}
+
+
+\startluacode
+require("t-syntax-groups.lua")
+\stopluacode
+
+%% file handle used to create cssfile for each colorscheme defined
+\newwrite \colorscheme@cssout
+
+\def\colorscheme@formatcolor#1#2{\ctxlua{colorscheme.cssformatcolor("#1","#2","\letterhash")}}
+
+\starttexdefinition colorscheme@output_css_yes#1#2#3#4#5 
+    % #1 ... colorscheme name
+    % #2 ... syntaxgroup id
+    % #3 ... \syntaxgroupparameter\c!color
+    % #4 ... \syntaxgroupparameter\c!style
+    % #5 ... \syntaxgroupparameter\c!command
+    % helper method to write css sections for each syntaxgroup defined for 
+    % a specific colorscheme.
+    % exporter generates xml tag based xhtml (postfix: -tag) and html tag based xhtml (postifx: -div)
+    % css file selectors have to be formulated for both formats. to avoid unecessary duplication
+    % both are listed as alternative for ach other. see css spec for details 
+    \immediate\write\colorscheme@cssout{\vimtyping@id[detail=#1] \syntaxgroup@id[detail=#2], .\vimtyping@id.#1 .\syntaxgroup@id.#2 \letteropenbrace}
+    \doifsomething{\colorvalue{#3}}{
+         \immediate\write\colorscheme@cssout{\colorscheme@formatcolor{\colorvalue{#3}}{\transparencycomponents{#3}}}
+    }
+    \doifsomething{#4}{
+         % for now just print content of style value and assume css understnads it
+         % TODO better would be if style would be properly parsed and all found attributes set individually or
+         % reassembled to proper css font style string
+         \immediate\write\colorscheme@cssout{    font\lettercolon #4;}
+    }
+    \doifsomething{#5}{%
+         % for now just \underbar and \overbar are considered.
+         \doifelse{#5}{\underbar}{%
+             \immediate\write\colorscheme@cssout{    text-decoration\lettercolon underline;}
+        }{%
+             \doifelse{#5}{\overbar}{%
+                  \immediate\write\colorscheme@cssout{    text-decoration\lettercolon overline;}
+             }{%
+                 % TODO check for other relevant commands or decendants of framed and properly mapp their values
+                 % corresponding css attributes
+             }%
+         }%
+    }
+    \immediate\write\colorscheme@cssout{\letterclosebrace}
+\stoptexdefinition
+
+% if export mode is active output css sections else do nothing 
+\doifmodeelse{*export}{
+   \let\colorscheme@output_css\colorscheme@output_css_yes
+}{
+   \def\colorscheme@output_css#1#2#3#4#5{}
+}
+
 
 \starttexdefinition syntaxgroup@define [#1][#2]
   % #1 list name
@@ -56,6 +109,7 @@
                                    [\syntaxgroupparameter\c!color]}
              \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-##1-color]
           }
+          \colorscheme@output_css{\colorscheme@name}{##1}{\syntaxgroupparameter\c!color}{\syntaxgroupparameter\c!style}{\syntaxgroupparameter\c!command}
     }
   }{
     \def\syntaxgroup@get_parameters##1%
@@ -67,6 +121,7 @@
                         \c!command=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!command,
                          ]}
 
+        \colorscheme@output_css{\colorscheme@name}{##1}{\syntaxgroupparameter\c!color}{\syntaxgroupparameter\c!style}{\syntaxgroupparameter\c!command}
         % In MkII, \expanded messes up the definition of \currentsyntaxgroup
         \def\currentsyntaxgroup   {\syntaxgroup@name}
     }
@@ -78,14 +133,81 @@
 \def\startcolorscheme%
     {\dosingleargument\colorscheme@start}
 
+\starttexdefinition colorscheme@output_css_header#1#2#3
+     % first two sections in colorscheme css set display style of 
+     % syntaxhighlightingd and syntaxlinegroup tags therin
+     % for syntaxlinegroup tags in addition the white-space attribute is set
+     % to pre-wrap
+     % TODO switch between pre-wrap and pre dependent uppon 
+     %      \syntaxhighlightingparameter\c!lines and
+     %      \syntaxhighlightingparameter\c!option
+     %
+     \immediate\write\colorscheme@cssout{#1[detail=#2], .#1.#2 \letteropenbrace}
+     \immediate\write\colorscheme@cssout{    display\lettercolon block;}
+     \immediate\write\colorscheme@cssout{    white-swpace\lettercolon pre;}
+     \immediate\write\colorscheme@cssout{\letterclosebrace} 
+     \immediate\write\colorscheme@cssout{#1[detail=#2] #3, .#1.#2 .#3 \letteropenbrace}
+     \immediate\write\colorscheme@cssout{    display\lettercolon inline;}
+     \immediate\write\colorscheme@cssout{    white-space\lettercolon pre-wrap;}
+     \immediate\write\colorscheme@cssout{\letterclosebrace} 
+\stoptexdefinition
+
 \starttexdefinition colorscheme@start [#1]
      \pushmacro\colorscheme@name
      \setcolorscheme{#1}
      %\setupsyntaxgroup[\c!color=,\c!style=,\c!command=]
+     \doifmode{*export}{
+         % create css file for this colorsceme 
+         \setcssfilename{\jobname}{\colorscheme@name}
+         \writestatus{colorscheme}{cssfile: \colorscheme@css_file}
+         \writestatus{colorscheme}{export: \exportparameter\c!cssfile}
+         \writestatus{colorscheme}{expected: \jobname-templates.css}
+         \writestatus{colorscheme}{title: \exportparameter\c!title}
+         \immediate\openout \colorscheme@cssout \colorscheme@css_file
+         \colorscheme@output_css_header{\vimtyping@id}{\colorscheme@name}{\verbatimline@id}\relax
+     }    
 \stoptexdefinition
 
-\def\stopcolorscheme
-    {\popmacro\colorscheme@name}
+\def\stopcolorscheme{\colorscheme@stop}
+
+\starttexdefinition colorscheme@stop
+    \doifmode{*export}{
+        % all syntax groups relevant to this colorscheme are defined close css file
+        \immediate\closeout \colorscheme@cssout
+    }
+    \popmacro\colorscheme@name
+\stoptexdefinition
+
+\def\colorscheme@css_file{}
+\def\setcssfilename#1#2%
+{
+ \edef\colorscheme@css_file{\ctxlua{colorscheme.css_export_path("#1","#2")}}
+}
+
+\starttexdefinition colorscheme@setup_export#1
+    % color scheme is used by a newly define vimtyping environment
+    % ensure that the css file for the selected colorschme is included
+    % into the list of css files considered by the exporter through
+    % the \exportparameter\c!cssfile parameter
+    \writestatus{colorscheme}{setup cssfile}
+    \doifmode{*export}{
+        \def\inject_css_file##1##2{
+            \writestatus{colorscheme}{current: ##1 jobname ##2 scheme {#1}}
+            \edef\extended_css_file_list{\ctxlua{colorscheme.append_css_file("##1","##2","#1")}}
+            \writestatus{colorscheme}{extended css: \extended_css_file_list}
+            \setupexport[cssfile={\extended_css_file_list}]
+            % exporter works a bit differnet it has its' own hardcoded setup routine
+            % which is called on every \startdocument \starttext \startproject etc. call
+            % the nasty thing about is that \dosynchronizeexport empties the \currentexport
+            % macro therefor a new call to \setupexport has not effect unless \dosynchronizeexport
+            % is called immediately afterwards to update current setup stored internally in lua only
+            % TODO remove this comment and next line if mkii in latests releases also
+            % does not require call special export setup method
+            \dosynchronizeexport
+        }
+        \inject_css_file{\exportparameter\c!cssfile}{\jobname}
+    }
+\stoptexdefinition
 
 \def\setcolorscheme#1%
     {\edef\colorscheme@name{#1}}
@@ -99,14 +221,12 @@
       \iftracesyntaxgroups
           \syntaxgroup@show_values
       \fi
-      \doifmode{\s!mkiv}{\dostarttagged\t!syntaxgroup{#1}}
       \syntaxgroupparameter\c!command
       {
         \externalfilter@attributes_start\syntaxgroup@id\c!style\c!color
             #2
         \externalfilter@attributes_stop
       }
-      \doifmode{\s!mkiv}{\dostoptagged}
       \syntaxgroupparameter\c!after
       \endgroup
 \stoptexdefinition

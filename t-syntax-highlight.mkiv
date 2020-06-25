@@ -36,7 +36,10 @@
 
 \appendtoks
     \defineexternalfilter[\currentsyntaxhighlighting]
-                         [\s!parent=\????syntaxhighlighting\currentexternalfilter,\c!taglabel=\vimtyping@id]%
+                         [\s!parent=\????syntaxhighlighting\currentexternalfilter,
+                          \c!taglabel=\vimtyping@id,
+                          \c!tagdetail={\externalfilterparameter\c!alternative},
+                        ]%
     \normalexpanded{\definelinenumbering [\currentsyntaxhighlighting]}%
     \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
 \to\everydefinesyntaxhighlighting

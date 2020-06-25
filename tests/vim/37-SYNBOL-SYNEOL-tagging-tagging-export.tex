@@ -1,0 +1,18 @@
+\setupbackend
+  [
+    export=yes,
+    xhtml=yes
+  ]
+\usemodule[vim]
+\definevimtyping[PYTHON][syntax=python,tab=4,numbering=no]
+\starttext
+This is a little test whether modifcation in \type{\SYNBOL} and \type{\SYNEOL} have any sideeffects
+when export is set to XML
+\startPYTHON
+a=12
+def hello_world(hello)
+    print("simon says: {}".format(hello))
+hallo_welt("how do youdo")
+\stopPYTHON
+\stoptext
+
