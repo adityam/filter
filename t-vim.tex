@@ -31,6 +31,13 @@
 \installparameterhandler \vimtyping@namespace \vimtyping@id
 \installsetuphandler     \vimtyping@namespace \vimtyping@id
 
+\appendtoks
+    % \setupvimtyping[...][...] does not call
+    % \setupsyntaxhighlighting[...][...],
+    % So, the line numbering options are not reset. Reset them explicitly here
+   \syntaxhighlighting@set_linenumbers\vimtyping@id
+\to\everysetupvimtyping
+  
 \def\definevimtyping
   {\dodoubleargument\vimtyping@define}
 

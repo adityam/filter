@@ -41,23 +41,26 @@
     \setevalue{type\currentsyntaxhighlighting file}{\getvalue{process\currentsyntaxhighlighting file}}%
 \to\everydefinesyntaxhighlighting
 
+\define[1]\syntaxhighlighting@set_linenumbers
+    {\def\syntaxhighlighting@linenumbering{\getvalue{current#1}}%
+     \def\syntaxhighlighting@parameter{\getvalue{#1parameter}}%
+     \normalexpanded{\setuplinenumbering[\syntaxhighlighting@linenumbering]
+          [
+                \c!method=\syntaxhighlighting@parameter{\c!number\c!method},
+            \c!conversion=\syntaxhighlighting@parameter\c!numberconversion,
+              \c!location=\syntaxhighlighting@parameter{\c!number\c!location},
+                 \c!style=\syntaxhighlighting@parameter\c!numberstyle,
+                 \c!color=\syntaxhighlighting@parameter\c!numbercolor,
+                 \c!width=\syntaxhighlighting@parameter{\c!number\c!width},
+                  \c!left=\syntaxhighlighting@parameter{\c!number\c!left},
+                 \c!right=\syntaxhighlighting@parameter{\c!number\c!right},
+               \c!command=\syntaxhighlighting@parameter\c!numbercommand,
+              \c!distance=\syntaxhighlighting@parameter{\c!number\c!distance},
+                 \c!align=\syntaxhighlighting@parameter{\c!number\c!align},
+           ]}}
+
 \appendtoks
-    % \externalfitlterparameter does not work, so it is better to use
-    % \syntaxhighlighting parameter.
-    \normalexpanded{\setuplinenumbering[\currentsyntaxhighlighting]
-         [
-               \c!method=\syntaxhighlightingparameter{\c!number\c!method},
-           \c!conversion=\syntaxhighlightingparameter\c!numberconversion,
-             \c!location=\syntaxhighlightingparameter{\c!number\c!location},
-                \c!style=\syntaxhighlightingparameter\c!numberstyle,
-                \c!color=\syntaxhighlightingparameter\c!numbercolor,
-                \c!width=\syntaxhighlightingparameter{\c!number\c!width},
-                 \c!left=\syntaxhighlightingparameter{\c!number\c!left},
-                \c!right=\syntaxhighlightingparameter{\c!number\c!right},
-              \c!command=\syntaxhighlightingparameter\c!numbercommand,
-             \c!distance=\syntaxhighlightingparameter{\c!number\c!distance},
-                \c!align=\syntaxhighlightingparameter{\c!number\c!align},
-          ]}%
+  \syntaxhighlighting@set_linenumbers\syntaxhighlighting@id
 \to\everysetupsyntaxhighlighting
 
 \def\syntaxhighlighting@id {syntaxhighlighting}

@@ -297,9 +297,12 @@ If you want every fifth line to be numbered, use
 Standard options for line numbering
 -----------------------------------
 
-**Note**: These options can only be set using `\definevimtyping[...][...]` or
-`\setupvimtyping[...][...]`. They do not work when used with
-`\start<vimtyping>`.
+**Note**: Linenumbering options can only be set using `\definevimtyping[...][...]` 
+or `\setupvimtyping[...][...]`. They do not work when used with
+`\start<vimtyping>`. All the line numbers on a given page have the same
+properties. So, if you change these properties in the middle of the page, it
+will effect all the listings on that page, _even those defined earlier!_
+
 
 - To change the color or style of the numbers, use the `numbercolor=...` and
   `numberstyle=...` options. By default `numbercolor` is not set, while
