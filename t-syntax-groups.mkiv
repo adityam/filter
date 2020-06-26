@@ -108,6 +108,7 @@ require("t-syntax-groups")
                                    [\syntaxgroupparameter\c!color]}
              \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-##1-color]
           }
+          % NEW
           \colorscheme@output_css{\colorscheme@name}{##1}{\syntaxgroupparameter\c!color}{\syntaxgroupparameter\c!style}{\syntaxgroupparameter\c!command}
     }
   }{
@@ -119,8 +120,9 @@ require("t-syntax-groups")
                           \c!style=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!style,
                         \c!command=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!command,
                          ]}
-
+        % NEW
         \colorscheme@output_css{\colorscheme@name}{##1}{\syntaxgroupparameter\c!color}{\syntaxgroupparameter\c!style}{\syntaxgroupparameter\c!command}
+
         % In MkII, \expanded messes up the definition of \currentsyntaxgroup
         \def\currentsyntaxgroup   {\syntaxgroup@name}
     }
@@ -150,6 +152,7 @@ require("t-syntax-groups")
      \immediate\write\colorscheme@cssout{    white-space\lettercolon pre-wrap;}
      \immediate\write\colorscheme@cssout{\letterclosebrace} 
 \stoptexdefinition
+
 
 \starttexdefinition colorscheme@start [#1]
      \pushmacro\colorscheme@name

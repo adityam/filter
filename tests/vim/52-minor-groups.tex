@@ -1,0 +1,40 @@
+\usemodule[vim]
+
+\starttext
+
+\definevimtyping
+  [PYTHON]
+  [
+    syntax=python,
+    alternative=pythoncolor,
+  ]
+
+\startsetups[vim-minor-groups-python]
+    \definesyntaxgroup
+        [Function]
+        [Statement]
+\stopsetups
+
+\startcolorscheme [pythoncolor]
+    \definesyntaxgroup
+        [Comment]
+        [color=red]
+
+    \definesyntaxgroup
+        [Statement]
+        [color=orange]
+
+    \setups{vim-minor-groups-python}
+
+\stopcolorscheme
+
+This is Python:
+\startPYTHON
+# a comment should be red
+# the following should be orange except for the "():" chars
+def myfunction():
+    pass
+
+\stopPYTHON
+
+\stoptext

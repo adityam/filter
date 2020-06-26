@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-syntax-groups,
-%D      version=2020.06.23,
+%D      version=2020.06.25,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Syntax highlighting support,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Syntax highlighting groups (ver: 2020.06.23)}
+\writestatus{loading}{Syntax highlighting groups (ver: 2020.06.25)}
 
 \startmodule [syntax-group]
 \usemodule   [module-catcodes]
@@ -93,6 +93,7 @@ require("t-syntax-groups.lua")
 }
 
 
+
 \starttexdefinition syntaxgroup@define [#1][#2]
   % #1 list name
   % #2 options
@@ -105,11 +106,10 @@ require("t-syntax-groups.lua")
                           [\s!parent=\syntaxgroup@namespace,\c!color=,\c!style=,\c!command=,#2]
          \doifsomething{\syntaxgroupparameter\c!color}
           {
-             \expanded{\definecolor[\syntaxgroup@namespace-##1-color]
+             \expanded{\definecolor[\syntaxgroup@namespace-\syntaxgroup@name-color]
                                    [\syntaxgroupparameter\c!color]}
-             \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-##1-color]
+             \expanded{\setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-\syntaxgroup@name-color]}
           }
-          \colorscheme@output_css{\colorscheme@name}{##1}{\syntaxgroupparameter\c!color}{\syntaxgroupparameter\c!style}{\syntaxgroupparameter\c!command}
     }
   }{
     \def\syntaxgroup@get_parameters##1%
@@ -121,7 +121,9 @@ require("t-syntax-groups.lua")
                         \c!command=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!command,
                          ]}
 
+         % NEW
         \colorscheme@output_css{\colorscheme@name}{##1}{\syntaxgroupparameter\c!color}{\syntaxgroupparameter\c!style}{\syntaxgroupparameter\c!command}
+        
         % In MkII, \expanded messes up the definition of \currentsyntaxgroup
         \def\currentsyntaxgroup   {\syntaxgroup@name}
     }
@@ -133,6 +135,7 @@ require("t-syntax-groups.lua")
 \def\startcolorscheme%
     {\dosingleargument\colorscheme@start}
 
+% NEW
 \starttexdefinition colorscheme@output_css_header#1#2#3
      % first two sections in colorscheme css set display style of 
      % syntaxhighlightingd and syntaxlinegroup tags therin
@@ -208,6 +211,7 @@ require("t-syntax-groups.lua")
         \inject_css_file{\exportparameter\c!cssfile}{\jobname}
     }
 \stoptexdefinition
+
 
 \def\setcolorscheme#1%
     {\edef\colorscheme@name{#1}}
