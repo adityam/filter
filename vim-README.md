@@ -69,30 +69,30 @@ standalone, you can install the module using
 Depending on your TeX distribution, you may already have the module.
 To verify, check if
 
-    kpsewhich t-vim.tex
+    luatools t-vim.tex
 
 returns a meaningful path. If not, you have to manually install the module.
 Download the latest version of the `filter` and `vim` modules from
 [http://github.com/adityam/filter/downloads](http://github.com/adityam/filter/downloads)
 and unzip them either `$TEXMFHOME` or `$TEXMFLOCAL`. Run
 
-    mktexlsr
+    mtxrun --generate
 
 and
 
-    mtxrun --generate
+    mktexlsr
 
-to refresh the TeX file database (for MkII and MkIV, respectively). If
+to refresh the TeX file database (for MkIV and MkII, respectively). If
 everything went well
 
-    kpsewhich t-vim
+    luatools t-vim
 
 will return the path where you stored the file.
 
 Unfortunately, that is not enough. For the module to work, TeX must be able to
 call an external program. This feature is a potential security risk and is
-disabled by default on most TeX distributions. To enable this feature, you must
-set
+disabled by default on most TeX distributions. To enable this feature in MkII,
+you must set
 
     shell_escape=t
 

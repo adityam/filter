@@ -75,7 +75,7 @@ standalone, you can install the module using
 Depending on your TeX distribution, you may already have the module.
 To verify, check if
 
-    kpsewhich t-filter.mkii
+    luatools t-filter.mkiv
 
 returns a meaningful path. If not, you have to manually install the module.
 
@@ -83,22 +83,22 @@ Download the latest version of the module from
 [http://modules.contextgarden.net/filter](http://modules.contextgarden.net/filter)
 and unzip it either `$TEXMFHOME` or `$TEXMFLOCAL`. Run
 
-    mktexlsr
+    mtxrun --generate
 
 and
 
-    mtxrun --generate
+    mktexlsr
 
-to refresh the TeX file database (for MkII and MkIV, respectively). If
+to refresh the TeX file database (for MkIV and MkII, respectively). If
 everything went well
 
-    kpsewhich t-filter.mkii
+    luatools t-filter.mkiv
 
 will return the path where you stored the file.
 
 Unfortunately, that is not enough. For the module to work, TeX must be able to
 call an external program. This feature is a potential security risk and is
-disabled by default on most TeX distributions. To enable this feature, set
+disabled by default on most TeX distributions. To enable this feature in MkII, set
 
     shell_escape=t
 
