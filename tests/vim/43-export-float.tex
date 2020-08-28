@@ -1,0 +1,31 @@
+\setupbackend[export=yes]
+
+\usemodule[vim]
+
+\definevimtyping[PYTHON][syntax=python]
+
+\starttext
+  \startparagraph
+    This is a test of a code listing inside a float
+  \stopparagraph
+
+  \startplacefigure[location={here}, title={A code snippet in a float}]
+    \startPYTHON
+        a=12
+        def hello_world(hello)
+            print("simon says: {}".format(hello))
+        hallo_welt("How do you do?")
+    \stopPYTHON
+  \stopplacefigure
+
+  \setupvimtyping[PYTHON][numbering=yes]
+  \startplacefigure[location={here}, title={A code snippet with line numbering in a float}]
+    \startPYTHON
+        a=12
+        def hello_world(hello)
+            print("simon says: {}".format(hello))
+        hallo_welt("How do you do?")
+    \stopPYTHON
+  \stopplacefigure
+\stoptext
+

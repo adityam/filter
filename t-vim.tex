@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2020.05.17,
+%D      version=2020.06.29,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2020.05.17)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2020.06.29)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -31,6 +31,13 @@
 \installparameterhandler \vimtyping@namespace \vimtyping@id
 \installsetuphandler     \vimtyping@namespace \vimtyping@id
 
+\appendtoks
+    % \setupvimtyping[...][...] does not call
+    % \setupsyntaxhighlighting[...][...],
+    % So, the line numbering options are not reset. Reset them explicitly here
+   \syntaxhighlighting@set_linenumbers\vimtyping@id
+\to\everysetupvimtyping
+  
 \def\definevimtyping
   {\dodoubleargument\vimtyping@define}
 
@@ -43,10 +50,15 @@
 
 % Mode to testing the dev version of 2context script.
 \doifmodeelse{vim-dev,dev-vim}
-  {\def\vimtyping@script_name{2context.vim}}
+  {\def\vimtyping@script_name{2context.vim}%
+   \doifmode\s!mkiv{\def\vimtyping@css_name{vimtyping-default.css}}}
   {\doifmodeelse\s!mkiv
-      {\ctxlua{context.setvalue("vimtyping@script_name",resolvers.resolve("full:2context.vim"))}}
+      {\ctxlua{context.setvalue("vimtyping@script_name",resolvers.resolve("full:2context.vim"))}%
+      \ctxlua{context.setvalue("vimtyping@css_name",
+      resolvers.resolve("full:vimtyping-default.css"))}}
       {\def\vimtyping@script_name{kpse:2context.vim}}}
+
+\def\vimtypingcssfile{\vimtyping@css_name}
 
 \def\vimtyping@filter_command
   {\externalfilterparameter\c!vimcommand\space
@@ -258,7 +270,6 @@
         [\c!color={h=800000},
          \c!command=\vimtodoframed]
 
-
     \definesyntaxgroup
         [Error]
         [\c!color={h=c03000}]
@@ -267,11 +278,6 @@
         [Underlined]
         [\c!color={h=6a5acd},
          \c!command=\underbar]
-
-    \definesyntaxgroup
-        [Todo]
-        [\c!color={h=800000},
-         \c!command=\vimtodoframed]
 
     \setups{vim-minor-groups}
 
@@ -322,58 +328,6 @@
         [\c!command=\underbar]
 
     \setups{vim-minor-groups}
-
-\stopcolorscheme
-
-\startcolorscheme[kate]
-    % Temporary definition... will change
-    % . kw dsKeyword
-    % . dt dsDataType
-    % . dv dsDecVal
-    % . bn dsBaseN
-    % . fl dsFloat
-    % . ch dsChar
-    % . st dsString
-    % . co dsComment
-    % . ot dsOthers
-    % . al dsAlert
-    % . fu dsFunction
-    % . re dsRegionMarker
-    % . er dsError
-    \definesyntaxgroup
-        [kw]
-        [\c!color={h=007020}, \c!style=bold]
-
-    \definesyntaxgroup
-        [dt]
-        [\c!color={h=902000}]
-
-    \definesyntaxgroup
-        [dv, bn, fl]
-        [\c!color={h=40a070}]
-
-    \definesyntaxgroup
-        [ch, st]
-        [\c!color={h=4070a0}]
-
-    \definesyntaxgroup
-        [co]
-        [\c!color={h=60a0b0}, \c!style=italic]
-
-    \definesyntaxgroup
-        [ot]
-        [\c!color={h=007020}]
-
-    \definesyntaxgroup
-        [al, er]
-        [\c!color=red, \c!style=bold]
-
-    \definesyntaxgroup
-        [fu]
-        [\c!color={h=06287e}]
-
-    \definesyntaxgroup
-        [re]
 
 \stopcolorscheme
 \protectmodulecatcodes

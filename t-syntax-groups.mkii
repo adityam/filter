@@ -1,0 +1,126 @@
+%D \module
+%D   [     file=t-syntax-groups,
+%D      version=2020.06.25,
+%D        title=\CONTEXT\ User Module,
+%D     subtitle=Syntax highlighting support,
+%D       author=Aditya Mahajan,
+%D         date=\currentdate,
+%D    copyright=Aditya Mahajan,
+%D        email=adityam <at> ieee <dot> org,
+%D      license=Simplified BSD License]
+
+\writestatus{loading}{Syntax highlighting groups (ver: 2020.06.25)}
+
+\startmodule [syntax-group]
+\usemodule   [module-catcodes]
+
+\unprotectmodulecatcodes
+
+% Colors are specified in hex; in MkII the hex mode needs to be activated.
+\doifmode\s!mkii
+    {\setupcolor[hex]}
+
+
+\def\colorscheme@name {}
+
+\def\syntaxgroup@id          {syntaxgroup}
+\def\syntaxgroup@namespace   {@@@@\syntaxgroup@id}
+\def\syntaxgroup@name        {}
+
+\edef\t!syntaxgroup           {\syntaxgroup@id}
+
+
+\installparameterhandler  \syntaxgroup@namespace \syntaxgroup@id
+\installsetuphandler      \syntaxgroup@namespace \syntaxgroup@id
+
+\def\m!syntaxgroup{t-syntax-group}
+
+\def\definesyntaxgroup
+    {\dodoubleargument\syntaxgroup@define}
+
+\starttexdefinition syntaxgroup@define [#1][#2]
+  % #1 list name
+  % #2 options
+  \doifassignmentelse{#2}
+  {
+    \def\syntaxgroup@get_parameters##1%
+    {
+         \edef\syntaxgroup@name {\colorscheme@name##1}
+         \setupsyntaxgroup[\syntaxgroup@name]
+                          [\s!parent=\syntaxgroup@namespace,\c!color=,\c!style=,\c!command=,#2]
+         \doifsomething{\syntaxgroupparameter\c!color}
+          {
+             \expanded{\definecolor[\syntaxgroup@namespace-\syntaxgroup@name-color]
+                                   [\syntaxgroupparameter\c!color]}
+             \expanded{\setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-\syntaxgroup@name-color]}
+          }
+    }
+  }{
+    \def\syntaxgroup@get_parameters##1%
+    {
+        \edef\syntaxgroup@name {\colorscheme@name##1}
+        \expanded{\setupsyntaxgroup[\syntaxgroup@name]
+                         [\c!color=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!color,
+                          \c!style=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!style,
+                        \c!command=\namedsyntaxgroupparameter{\colorscheme@name#2}\c!command,
+                         ]}
+
+        % In MkII, \expanded messes up the definition of \currentsyntaxgroup
+        \def\currentsyntaxgroup   {\syntaxgroup@name}
+    }
+  }
+
+  \processcommalist[#1]\syntaxgroup@get_parameters
+\stoptexdefinition
+
+\def\startcolorscheme%
+    {\dosingleargument\colorscheme@start}
+
+\starttexdefinition colorscheme@start [#1]
+     \pushmacro\colorscheme@name
+     \setcolorscheme{#1}
+     %\setupsyntaxgroup[\c!color=,\c!style=,\c!command=]
+\stoptexdefinition
+
+\def\stopcolorscheme
+    {\popmacro\colorscheme@name}
+
+\def\setcolorscheme#1%
+    {\edef\colorscheme@name{#1}}
+
+\starttexdefinition syntaxgroup [#1]#2
+  % #1 = style
+  % #2 = content
+      \begingroup
+      \edef\syntaxgroup@name{\colorscheme@name#1}%
+      \syntaxgroupparameter\c!before
+      \iftracesyntaxgroups
+          \syntaxgroup@show_values
+      \fi
+      \syntaxgroupparameter\c!command
+      {
+        \externalfilter@attributes_start\syntaxgroup@id\c!style\c!color
+            #2
+        \externalfilter@attributes_stop
+      }
+      \syntaxgroupparameter\c!after
+      \endgroup
+\stoptexdefinition
+
+%D Tracing macros
+
+\newif\iftracesyntaxgroups
+\let\tracesyntaxgroups\tracesyntaxgroupstrue
+
+\def\currentsyntaxgroup   {\syntaxgroup@name}
+
+\starttexdefinition syntaxgroup@show_values
+  \writestatus\m!syntaxgroup{color scheme : \colorscheme@name}
+  \writestatus\m!syntaxgroup{current group: \syntaxgroup@name}
+  \writestatus\m!syntaxgroup{command      : \syntaxgroupparameter\c!command}
+  \writestatus\m!syntaxgroup{style        : \syntaxgroupparameter\c!style}
+  \writestatus\m!syntaxgroup{color        : \syntaxgroupparameter\c!color}
+\stoptexdefinition
+
+\protectmodulecatcodes
+\stopmodule

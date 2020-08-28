@@ -1,0 +1,43 @@
+\usemodule[vim]
+
+\setupbackend[export=yes]
+\setupexport[cssfile=\vimtypingcssfile]
+
+\definevimtyping[PYTHON][syntax=python]
+
+\starttext
+\startsection[title={A code listing}]
+  \startparagraph
+    This is a code listing
+  \stopparagraph
+  \startPYTHON
+    # Python program listing
+    # TODO: Define a more elaborate function
+    def foobar
+        print("Hello World")
+  \stopPYTHON
+  
+  \startparagraph
+    Now the same example with line numbering
+  \stopparagraph
+  \startPYTHON[numbering=yes]
+    # Python program listing
+    def foobar
+        print("Hello World")
+  \stopPYTHON
+
+  \startparagraph
+    Now with the line numbering on the right. Location of line numbering is
+    fixed per page, hence a page break here
+  \stopparagraph
+
+  \page
+
+  \setupvimtyping[PYTHON][numberlocation=right]
+  \startPYTHON[numbering=yes]
+    # Python program listing
+    def foobar
+        print("Hello World")
+  \stopPYTHON
+\stopsection
+\stoptext
