@@ -99,7 +99,8 @@
 
   \setbreakpoints[compound]% Only works is `option=hyphenated` is set.
   \doifnotinset{\v!hyphenated}{\externalfilterparameter\c!option}
-      {\language\minusone}%
+      {\language\minusone
+       \resetbreakpoints}%
 
   \def\obeyedline{\strut\par}
   \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space:\externalfilterparameter\c!lines}
