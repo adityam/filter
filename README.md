@@ -70,7 +70,7 @@ Installation
 
 ### ConTeXt LMTX
 
-ConTeXt LMTX does not yet provide built-in way to manage modules. Please refer to [ConTeXt Garden](https://wiki.contextgarden.net/index.php?title=Modules&oldid=30263) for a workaround.
+ConTeXt LMTX does not yet provide built-in way to manage modules. Please refer to [ConTeXt Garden](https://wiki.contextgarden.net/index.php?title=Modules&oldid=30263#ConTeXt_LMTX) for a workaround.
 
 ### ConTeXt standalone
 
