@@ -68,13 +68,19 @@ This module works with both MkII and MkIV.
 Installation
 ------------
 
-Writing installation instructions is always boring. If you are using ConTeXt
-standalone, you can install the module using
+### ConTeXt LMTX
+
+ConTeXt LMTX does not yet provide built-in way to manage modules. Please refer to [ConTeXt Garden](https://wiki.contextgarden.net/index.php?title=Modules&oldid=30263) for a workaround.
+
+### ConTeXt standalone
+
+If you are using [ConTeXt standalone](https://wiki.contextgarden.net/ConTeXt_Standalone) installed with `first-setup.sh`, you can install the module using
 
     first-setup.sh --modules="t-filter"
 
-Depending on your TeX distribution, you may already have the module.
-To verify, check if
+### TexLive and others
+
+To verify wether you already have the module, check if
 
     luatools t-filter.mkiv
 
@@ -104,7 +110,7 @@ disabled by default on most TeX distributions. To enable this feature in MkII, s
     shell_escape=t
 
 in your `texmf.cnf` file. See this page
-[http://wiki.contextgarden.net/write18](http://wiki.contextgarden.net/write18)
+[http://wiki.contextgarden.net/Write18](http://wiki.contextgarden.net/Write18)
 on the ConTeXt wiki for detailed instructions.
 
 Basic Usage
