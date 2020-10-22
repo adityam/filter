@@ -68,17 +68,33 @@ This module works with both MkII and MkIV.
 Installation
 ------------
 
-Writing installation instructions is always boring. If you are using ConTeXt
-standalone, you can install the module using
+The method to install the module depends on your installation. 
+
+### ConTeXt standalone
+
+If you are using [ConTeXt standalone](https://wiki.contextgarden.net/ConTeXt_Standalone) installed with `first-setup.sh`, you can install the module using
 
     first-setup.sh --modules="t-filter"
 
-Depending on your TeX distribution, you may already have the module.
-To verify, check if
+### ConTeXt LMTX
+
+[ConteXt LMTX](https://wiki.contextgarden.net/Installation), which uses the
+new `luametatex` engine does not yet provide a built-in way to install and
+manage modules. See [the ConTeXt
+Wiki](https://wiki.contextgarden.net/Modules#ConTeXt_LMTX) for a workaround.
+
+### TexLive 
+
+TexLive comes with its own manager `tlmgr` to install modules. The module is
+listed there as `context-fiter`. 
+
+### Manual installation
+Depending on your setup, it might already be installed on your system. To verify wether you already have the module, check if
 
     luatools t-filter.mkiv
 
 returns a meaningful path. If not, you have to manually install the module.
+
 
 Download the latest version of the module from
 [http://modules.contextgarden.net/filter](http://modules.contextgarden.net/filter)
@@ -86,7 +102,7 @@ and unzip it either `$TEXMFHOME` or `$TEXMFLOCAL`. Run
 
     mtxrun --generate
 
-and
+and (if you are using MkII)
 
     mktexlsr
 
@@ -104,7 +120,7 @@ disabled by default on most TeX distributions. To enable this feature in MkII, s
     shell_escape=t
 
 in your `texmf.cnf` file. See this page
-[http://wiki.contextgarden.net/write18](http://wiki.contextgarden.net/write18)
+[http://wiki.contextgarden.net/Write18](http://wiki.contextgarden.net/Write18)
 on the ConTeXt wiki for detailed instructions.
 
 Basic Usage
