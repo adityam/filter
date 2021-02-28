@@ -48,9 +48,9 @@
                           [\s!parent=\syntaxgroup@namespace,\c!color=,\c!style=,\c!command=,#2]
          \doifsomething{\syntaxgroupparameter\c!color}
           {
-             \expanded{\definecolor[\syntaxgroup@namespace-##1-color]
+             \expanded{\definecolor[\syntaxgroup@namespace-\syntaxgroup@name-color]
                                    [\syntaxgroupparameter\c!color]}
-             \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-##1-color]
+             \setupsyntaxgroup[\syntaxgroup@name][\s!parent=\syntaxgroup@namespace,\c!color=\syntaxgroup@namespace-\syntaxgroup@name-color]
           }
     }
   }{
