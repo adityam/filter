@@ -1,10 +1,12 @@
 \usemodule[vim]
 
 \definevimtyping[MATLAB]
-                [syntax=matlab, lines=split, strip=no]
+                [syntax=matlab, lines=split]
 
-\setupsyntaxgroup[after={\allowbreak}]
-\tracesyntaxgroups
+\startcolorscheme[pscolor]
+  \definesyntaxgroup[Operator][after=\allowbreak]
+\stopcolorscheme
+
 \showframe
 \starttext
 
