@@ -91,18 +91,19 @@
       {\dorecurse{##1}{\obeyedspace}}%
 
   \forgetall
+  \the\everyinitializeverbatim
   \usealignparameter\externalfilterparameter
   \doifinset{\v!packed}{\externalfilterparameter\c!option}
       {\setupwhitespace[\v!none,\v!flexible]}%
 
   \doadaptleftskip{\externalfilterparameter\c!margin}%
 
-  \setbreakpoints[compound]% Only works is `option=hyphenated` is set.
-  \doifnotinset{\v!hyphenated}{\externalfilterparameter\c!option}
+  \doifinsetelse{\v!hyphenated}{\externalfilterparameter\c!option}
+      {\setbreakpoints[compound]}
       {\language\minusone
        \resetbreakpoints}%
 
-  \def\obeyedline{\strut\par}
+  \def\obeyedline{\strut\par}%
   \activatespacehandler{\????syntaxhighlighting\externalfilterparameter\c!space:\externalfilterparameter\c!lines}
   \setcatcodetable\externalfilter@minimal_catcodes%
   \letcharcode\endoflineasciicode\obeyedline
