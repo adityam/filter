@@ -441,6 +441,7 @@ Second, you can allow lines to break between _compound_ words, such as
          ...]
 
 The default value of `option` is `packed`.  
+[**Note:** This option is not yet working in LMTX.]
 
 Note that with both these alternatives do not hyphenate a word, merely break
 lines at spaces or at the boundary of compound words. If you really need to
@@ -455,6 +456,7 @@ hyphenate words, use
 
 Note that you have to add **both** `option=hyphenated` and `align=hyphenated`.
 The default value of align is `nothypenated`. 
+[**Note:** This option is not yet working in LMTX.]
 
 Highlighting lines
 ------------------
