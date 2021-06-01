@@ -6,6 +6,7 @@
 # If the optional argument [module] is provided, then the module tries to update that module
 
 require 'rubygems'
+require 'bundler/setup'
 require 'mechanize'
 require 'highline/import'
 
