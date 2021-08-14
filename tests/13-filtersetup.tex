@@ -1,6 +1,8 @@
 % Test filtersetup option
 
+
 \usemodule[filter]
+\traceexternalfilters
 
 \def\barcodelabeloption{}
 
@@ -24,7 +26,7 @@
 \def\barcodereadcommand#1%
   {\externalfigure[#1]}
 
-\unprotected\def\barcodefiltercommand
+\def\barcodefiltercommand
   {barcode -i \externalfilterinputfile\space -o \externalfilteroutputfile\space
    -E % EPS output
    -e \externalfilterparameter{encoding}
