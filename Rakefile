@@ -52,7 +52,7 @@ task :test_filter_mkii => FILTER_TEST do
 end
 
 desc "Run tests for vim module (LMTX)"
-task :test_vim_mkiv => VIM_TEST do
+task :test_vim_lmtx => VIM_TEST do
   run_tests VIM_TEST, :luametatex
 end
 
