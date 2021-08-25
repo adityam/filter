@@ -36,6 +36,11 @@ VIM_TEX  = %W[t-vim.tex t-syntax-groups.mkii t-syntax-groups.mkiv t-syntax-highl
 VIM_DOC  = "vim-README.md"
 VIM_TEST = FileList['tests/vim/[0-9][0-9]-*.tex']
 
+desc "Run tests for filter module (LMTX)"
+task :test_filter_lmtx => FILTER_TEST do
+  run_tests FILTER_TEST, :luametatex
+end
+
 desc "Run tests for filter module (MkIV)"
 task :test_filter_mkiv => FILTER_TEST do
   run_tests FILTER_TEST, :luatex
@@ -44,6 +49,11 @@ end
 desc "Run tests for filter module (MkII)"
 task :test_filter_mkii => FILTER_TEST do
   run_tests FILTER_TEST, :pdftex
+end
+
+desc "Run tests for vim module (LMTX)"
+task :test_vim_lmtx => VIM_TEST do
+  run_tests VIM_TEST, :luametatex
 end
 
 desc "Run tests for vim module (MkIV)"
