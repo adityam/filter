@@ -98,7 +98,7 @@ you must set
     shell_escape=t
 
 in your `texmf.cnf` file. See this page
-[http://wiki.contextgarden.net/write18](http://wiki.contextgarden.net/write18)
+[http://wiki.contextgarden.net/Write18](http://wiki.contextgarden.net/Write18)
 on the ConTeXt wiki for detailed instructions.
 
 
