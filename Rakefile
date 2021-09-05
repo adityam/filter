@@ -28,7 +28,7 @@ def run_tests tests, engine
   sh "context --purgeall"
 end
 
-FILTER_TEX  = %W[t-filter.mkii t-filter.mkiv t-module-catcodes.mkii t-module-catcodes.mkiv]
+FILTER_TEX  = %W[t-filter.mkii t-filter.mkiv t-filter.mkxl t-module-catcodes.mkii t-module-catcodes.mkiv]
 FILTER_DOC  = "README.md"
 FILTER_TEST = FileList['tests/[0-9][0-9]-*.tex']
 
