@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-filter,
-%D      version=2020.06.29,
+%D      version=2021.09.05,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Filter,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Filter (ver: 2020.06.29)}
+\writestatus{loading}{Filter (ver: 2021.09.05)}
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
@@ -163,8 +163,8 @@
 
     \edef\externalfilter@input_file{\externalfilter@any_filename{#3}}
     \splitfilename{#3}
-    %NOTE: \edef doesn not work because \splitoffname is not expandable
-    \def\externalfilter@base_file   {\splitoffname}
+    %NOTE: \edef doesn not work because \splitoffbase is not expandable
+    \def\externalfilter@base_file   {\splitoffbase}
 
     % The output is always in the directory specified by
     % \c!directory; even if the input is from some other directory
