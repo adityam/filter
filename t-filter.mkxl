@@ -163,8 +163,8 @@
 
     \edef\externalfilter@input_file{\externalfilter@any_filename{#3}}
     \splitfilename{#3}
-    %NOTE: \edef doesn not work because \splitoffname is not expandable
-    \def\externalfilter@base_file   {\splitoffname}
+    %NOTE: \edef doesn not work because \splitoffbase is not expandable
+    \def\externalfilter@base_file   {\splitoffbase}
 
     % The output is always in the directory specified by
     % \c!directory; even if the input is from some other directory
