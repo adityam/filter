@@ -315,7 +315,7 @@ will effect all the listings on that page, _even those defined earlier!_
 - To change the width of the box in which the numbers are typeset, use
   `numberwidth=...` option. Default value is `2em`.
 
-- By default, the numbers are placed on the right of the text area. To change
+- By default, the numbers are placed on the left of the text area. To change
   the distance between the numbers and the text area, use `numberdistance=...`
   option. Default value is `0.5em`.
 
@@ -424,7 +424,7 @@ margin, also change the `numberdistance`. For example,
          numberdistance=-3.5em,
          ...]
 
-will place the numbers `4em - 3.5em = 0.5em` to the right of the code.
+will place the numbers `4em - 3.5em = 0.5em` to the left of the code.
     
 
 
