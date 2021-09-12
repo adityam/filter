@@ -13,7 +13,7 @@
 
 \startmodule [filter]
 \usemodule   [module-catcodes]
-\unprotect
+\unprotectmodulecatcodes
 
 % \f!temporaryextension was removed from the core in July 2012.
 \ifx\f!temporaryextension\undefined \def\f!temporaryextension{tmp} \fi
@@ -546,5 +546,5 @@
 \def\externalfilter@input_file {}
 \def\externalfilter@output_file{}
 
-\protect
+\protectmodulecatcodes
 \stopmodule
