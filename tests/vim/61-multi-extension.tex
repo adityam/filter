@@ -1,0 +1,20 @@
+\startbuffer[A]
+\def\AAA{\relax}
+\stopbuffer
+
+\startbuffer[B]
+\def\BBB{\relax}
+\stopbuffer
+
+\savebuffer[list=A,file=test.A]
+\savebuffer[list=B,file=test.B]
+
+\usemodule[vim]
+\definevimtyping[TEX][syntax=tex]
+
+\starttext
+    \section{A}
+    \typeTEXfile[name=test.A.vimout]{\jobname-test.A}
+    \section{B}
+    \typeTEXfile[name=test.B.vimout]{\jobname-test.B}
+\stoptext

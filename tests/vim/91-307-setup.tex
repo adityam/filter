@@ -1,0 +1,76 @@
+\defineframedtext
+  [leftbartext]
+  [
+    width=local,
+    frame=off,
+    framecolor=darkblue,
+    leftframe=on,
+    rulethickness=1ex,
+    offset=0.25ex,
+    loffset=3ex, 
+    background=color,
+    backgroundcolor=lightblue,
+  ]
+
+\definecolor  [darkblue]   [r=0.1,  g=0.11, b=0.84]
+\definecolor  [darkgreen]  [g=0.7]
+
+\definecolor  [lightblue]   [h=87cefa]
+\definecolor  [lightgreen]  [g=0.95,b=0.8,r=0.8] 
+
+\usemodule[vim]
+\definevimtyping
+  [MATLABCODE]
+  [
+    syntax=matlab,
+    directory=output,
+    strip=yes,
+    escape=yes,
+    before={\blank[quarterline]\startleftbartext},
+    after={\stopleftbartext},
+  ]
+
+\defineexternalfilter
+  [MATLAB]
+  [filtercommand={octave 
+    --no-gui 
+    --no-history
+    --norc
+    --silent 
+    \externalfilterinputfile\space 
+    > \externalfilteroutputfile},
+   cache=yes,
+   bufferbefore={octave},
+   output={\externalfilterbasefile.out},
+   directory=output,
+   readcommand=\ShowOutput]
+
+\traceexternalfilters
+
+\startbuffer[octave]
+pkg load symbolic;
+% Symbolic toolbox uses python2
+setenv PYTHON python2
+sympref reset
+sympref quiet on
+sympref display flat
+pkg load control;
+pkg load signal;
+\stopbuffer
+
+\define[1]\ShowOutput
+    {\typeMATLABCODEfile[start=9]{\externalfilterinputfile}
+     \startleftbartext[framecolor=darkgreen, backgroundcolor=lightgreen]
+       \setupalign[flushleft, verytolerant]
+       \typefile{#1}
+     \stopleftbartext}
+
+\define[1]\ShowInput
+    {\typeMATLABCODEfile[start=9]{\externalfilterinputfile}}
+
+\starttext
+\startMATLAB
+  roots([1, 24, 84, 80])
+\stopMATLAB
+\stoptext
+

@@ -315,8 +315,9 @@ will effect all the listings on that page, _even those defined earlier!_
 - To change the width of the box in which the numbers are typeset, use
   `numberwidth=...` option. Default value is `2em`.
 
-- To change the distance between the numbers and the rest of the code, use
-  `numberdistance=...` option. Default value is `0.5em`.
+- By default, the numbers are placed on the left of the text area. To change
+  the distance between the numbers and the text area, use `numberdistance=...`
+  option. Default value is `0.5em`.
 
 - To change the conversion of numbers, use `numberconversion=...` option.
   Default value is `numbers`.
@@ -411,8 +412,19 @@ of each line:
          margin=<dimen>,
          ...]
 
-where `<dimen>` is a valid TeX dimension.
+where `<dimen>` is a valid TeX dimension. Note that this does not change the
+location of the line numbers. So, if you are using line numbers along with
+margin, also change the `numberdistance`. For example,
 
+
+    \definevimtyping
+        [...]
+        [...
+         margin=4em,
+         numberdistance=-3.5em,
+         ...]
+
+will place the numbers `4em - 3.5em = 0.5em` to the left of the code.
     
 
 
