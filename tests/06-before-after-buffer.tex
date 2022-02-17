@@ -2,6 +2,10 @@
 
 \usemodule[filter]
 
+% pandoc now translates numbered list to `enumerate` environment
+\defineitemgroup[enumerate]
+\setupenumerate[each][fit][itemalign=left,distance=.5em]
+
 \defineexternalfilter 
   [markdown]
   [filter={pandoc -w context -o \externalfilteroutputfile },
