@@ -162,9 +162,13 @@
     \externalfilter@set_directory
 
     \edef\externalfilter@input_file{\externalfilter@any_filename{#3}}
+    \startluacode
+      context.setevalue("externalfilter@hash",
+                        md5.hex("#3\externalfilterparameter{\c!cache\c!option}"):sub(1,8))
+    \stopluacode
     \splitfilename{#3}
     %NOTE: \edef doesn not work because \splitoffbase is not expandable
-    \def\externalfilter@base_file   {\splitoffbase-\splitofftype}
+    \def\externalfilter@base_file {\splitoffbase-\splitofftype-\externalfilter@hash}
 
     % The output is always in the directory specified by
     % \c!directory; even if the input is from some other directory

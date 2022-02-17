@@ -1,0 +1,12 @@
+\setupcolors[state=start]
+\usemodule[vim]
+
+\definevimtyping[TEX][syntax=context,directory=output]
+
+\starttext
+First range
+\typeTEXfile[start=10, stop=15]{t-vim.tex}
+\blank[big]
+Different range
+\typeTEXfile[start=20, stop=25]{t-vim.tex}
+\stoptext
