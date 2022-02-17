@@ -1,6 +1,6 @@
 %D \module
 %D   [     file=t-vim,
-%D      version=2021.09.05,
+%D      version=2022.02.17,
 %D        title=\CONTEXT\ User Module,
 %D     subtitle=Vim syntax highlighting,
 %D       author=Aditya Mahajan,
@@ -9,7 +9,7 @@
 %D        email=adityam <at> ieee <dot> org,
 %D      license=Simplified BSD License]
 
-\writestatus{loading}{Vim syntax highlighting (ver: 2021.09.05)}
+\writestatus{loading}{Vim syntax highlighting (ver: 2022.02.17)}
 
 \startmodule [vim]
 \usemodule   [filter]           % loads module catcodes
@@ -123,6 +123,15 @@
    % \c!highlightcolor=lightgray,
    \c!filtercommand=\vimtyping@filter_command,
    % \c!continue=yes,
+   % All options that effect the call to vim. When syntax highlighting
+   % external files, changing any one of these options will result in a new
+   % call to vim and the result will be saved in a different file
+   \c!cache\c!option={\externalfilterparameter\c!start
+                      \externalfilterparameter\c!stop
+                      \externalfilterparameter\c!syntax
+                      \externalfilterparameter\c!strip
+                      \externalfilterparameter\c!escape
+                      \externalfilterparameter\c!highlight},
    % \c!read=\v!yes,
    % \c!readcommand=\syntaxhighlighting@read_command,
    \c!output=\externalfilterbasefile.vimout,
