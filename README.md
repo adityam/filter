@@ -359,7 +359,11 @@ Names of temporary files
 By default, `\externalfilterinputfile` is set to `\jobname-temp-<filter>.tmp`, where
 `<filter>` is the first argument of `\defineexternalfilter`. When `cache=yes`
 is set, `\externalfilterinputfile` equals `\jobname-temp-<filter>-<n>.tmp`, where
-`<n>` is the number of filter environments that have appeared so far. In MkII,
+`<n>` is the number of filter environments that have appeared so far. When
+processing external files, the name of temp file is different and is explained
+in the [section on processing external files](#processing-existing-files)
+
+In MkII,
 a `\jobname-temp-<filter>-<n>.tmp.md5` file, which stores the `md5` sum of the
 input file is also created.
 
@@ -628,6 +632,39 @@ options:
     \process<filter>file[...]{...}
 
 The options in the `[...]` are the same as those for `\defineexternalfilter`.
+
+The processed file is stored as `\jobname-<filename>-<ext>-<hash>.tmp`, where
+`<filename>-<ext>` is the basename (excluding parent directories) and
+extension of the file, and `<hash>` is a truncated 8 character md5 hash of the
+full file name and the value of `cacheoption`. To understand why `cacheoption`
+is useful, consider the pandoc filter:
+
+    \defineexternalfilter
+      [pandoc]
+      [filtercommand={pandoc -f \externalfilterparameter{format} -t context 
+                       -o \externalfilteroutputfile\space \externalfilterinputfile},
+       format=markdown]
+
+Suppose you process an external file using `format=markdown`:
+
+    \processpandocfile{filename.md}
+
+but realize that the file uses MultiMarkodown, so the format should be
+`markdown_mmd`. If we simply edit the above line to:
+
+    \processpandocfile[format=markdown_mmd]{filename.md}
+
+pandoc will not be rerun, because the original file hasn't changed. To
+circumvent this, we can define the filter as:
+
+    \defineexternalfilter
+      [pandoc]
+      [
+        cacheoption={\externalfilterparameter{layout}},
+      ]
+
+As a result of this the md5 hash used in the name of the output file changes,
+which forces the filter to be rerun. 
 
 Processing remote files
 -----------------------
