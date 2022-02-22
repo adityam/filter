@@ -283,6 +283,24 @@ Sometimes, it is desirable to ignore the output, which is done by
        read=no,
        ...]
 
+
+**Note regarding reading image files.** If the filter generates an image file, you need to define a macro to read it. For example, we can use
+
+    \defineexternalfilter
+      [...]
+      [....
+       cache=yes,
+       readcommand=\ReadFigure,
+       ...]
+
+    \define[1]\ReadFigure
+        {\externalfigure[#1]}
+
+Note that when reading image files, ConTeXt reads and includes the image at
+different times. So, we must use `cache=yes` as well, which ensures that all
+invocations of the filter use a different filename. For more information about
+`cache=yes`, see the section on [dealing with slow filters](#dealing-with-slow-filters).
+
 Space around the environment
 ----------------------------
 
@@ -900,7 +918,7 @@ For example, to generate swirl backgrounds described above, define:
           readcommand=\ReadFigure,
         ]
 
-    \def\ReadFigure#1%
+    \define[1]\ReadFigure
         {\externalfigure[#1]}
 
 
