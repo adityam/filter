@@ -36,6 +36,13 @@ inlinevimtyping verbatimline,
     white-space:pre-wrap;
 }
 
+floatcontent vimtyping verbatimline,
+.floatcontent .vimtyping .verbatimline
+{
+    display:block;
+    white-space:pre-wrap;
+}
+
 vimtyping syntaxgroup,
 inlinevimtyping syntaxgroup,
 .vimtyping .syntaxgroup,
