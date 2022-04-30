@@ -142,6 +142,7 @@
 \newcount\nofsyntaxhighlightinglines
 
 \starttexdefinition syntaxhighlighting_begin_lines
+  \dotagsetparcounter
   \dostarttaggednodetail\t!verbatimline
 \stoptexdefinition
 
@@ -150,6 +151,7 @@
 \stoptexdefinition
 
 \starttexdefinition syntaxhighlighting_begin_number_lines
+  \dotagsetparcounter
   \global\advance\nofsyntaxhighlightinglines\plusone
   \dostarttaggednodetail\t!verbatimline
   \attribute\verbatimlineattribute\nofsyntaxhighlightinglines
