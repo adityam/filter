@@ -572,8 +572,10 @@ syntax region using
 and passes content of this region verbatim to TeX. So, any TeX commands used
 inside this region are interpreted by TeX. For example,
 
+    \usemodule[vim]
     \definevimtyping[C][syntax=c, escape=command]
 
+    \starttext
     \startC
        /* Here is a comment describing a complicated function */
        /BTEX\startframedtext[width=\textwidth,corner=round]/ETEX
@@ -583,11 +585,33 @@ inside this region are interpreted by TeX. For example,
         }
       /BTEX\stopframedtext/ETEX
     \stopC
+    \stoptext
 
 **Note** that as in the case for `escape=comment`, only `\ { }` have their
 usual meaning inside `/BTEX ... /ETEX`. Moreover, spaces are active
 characters. So, using a space between `\startframedtext` and `[` or between
 after the comma in the options to `\startframedtext` will result in an error.
+
+Another, common use case is the referencing on individual lines, which this mode
+makes possible. For example,
+
+    \usemodule[vim]
+    \definevimtyping[python][syntax=python, numbering=yes, escape=command]
+
+    \starttext
+    \startpython
+    import sys
+
+    def eprint(*args, **kwargs):/BTEX\startline[eprint]/ETEX
+        """Print something on stderr."""
+        print(*args, **kwargs, file=sys.stderr)/BTEX\stopline[eprint]/ETEX
+
+    print("something")
+    eprint("on stderr")/BTEX\someline[eprint-use]/ETEX
+    \stoppython
+
+    The function \inlinepython{eprint} is defined in \inline[eprint] and used in \inline[eprint-use].
+    \stoptext
 
 Clearly, `/BTEX ... /ETEX` is not a valid syntax in any language, so if these
 tags are used outside of a comment region (as is the case in the above
@@ -608,9 +632,11 @@ advantage when we want to use commands that cannot be used inside a group
 displays a note in the margin which we can refer to later, we can use:
 
 
+    \usemodule[vim]
     \define[1]\callout{\inmargin{\rm #1}}
     \definevimtyping[C][syntax=c, escape=command]
 
+    \starttext
     \startC
        /* Here is a comment describing a complicated function */
        double complicated (...) 
@@ -618,6 +644,7 @@ displays a note in the margin which we can refer to later, we can use:
           ... // /BTEX\callout{Fancy trick!}/ETEX
        }
     \stopC
+    \stoptext
 
 Finally, note that the value of `escape` set using `\definevimtyping` is not
 used to `\inline<vim>typing`. If for some reason, you do need the escape
