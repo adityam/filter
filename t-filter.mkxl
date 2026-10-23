@@ -343,7 +343,10 @@
 
 \starttexdefinition externalfilter@check_writable #1
 
-    \ctxcommand{doifnot(file.is_writable("#1"))}
+    % file.is_writable only accepts existing files in current LMTX.
+    % For new files, check the parent directory instead. ConTeXt's
+    % file.canbewritten currently needs an explicit ./ for bare filenames.
+    \ctxcommand{doifnot(file.canbewritten(file.pathpart("#1") == "" and "./#1" or "#1"))}
         {\showmessage\m!externalfilter{unwriteable}{#1}
          \batchmode
          \errmessage{}

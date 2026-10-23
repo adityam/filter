@@ -1,0 +1,16 @@
+%T Regression: input/output files need not exist before the first run.
+%T Run in a fresh writable directory with cp in PATH.
+
+\usemodule[filter]
+
+\defineexternalfilter
+  [copy]
+  [filtercommand={cp \externalfilterinputfile\space \externalfilteroutputfile}]
+
+\starttext
+
+\startcopy
+The filter can create its input and output files.
+\stopcopy
+
+\stoptext

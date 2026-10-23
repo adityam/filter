@@ -1,0 +1,13 @@
+%T Regression: the vim integration must create fresh input/output files.
+%T Run in a fresh writable directory with vim in PATH.
+
+\usemodule[vim]
+\definevimtyping[PYTHON][syntax=python]
+
+\starttext
+
+\startPYTHON
+print("hello world")
+\stopPYTHON
+
+\stoptext
