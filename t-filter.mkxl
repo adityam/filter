@@ -343,7 +343,7 @@
 
 \starttexdefinition externalfilter@check_writable #1
 
-    \ctxcommand{doifnot(file.is_writable("#1"))}
+    \ctxcommand{doifnot(file.canbewritten("#1"))}
         {\showmessage\m!externalfilter{unwriteable}{#1}
          \batchmode
          \errmessage{}
