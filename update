@@ -6,6 +6,7 @@
 # If the optional argument [module] is provided, then the module tries to update that module
 
 require 'rubygems'
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('Gemfile', __dir__)
 require 'bundler/setup'
 require 'mechanize'
 require 'highline/import'
@@ -57,13 +58,13 @@ method   = version_form.radiobutton_with(:name => "pv_source_method", :value => 
 
 version.value       = ask("version: ") { |q| q.default = Time.now.strftime("%Y.%m.%d") }
 filename.file_name  = ask("filename: ", Pathname) do |q|
-    q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".zip"}
+    q.validate = Proc.new {|file| File.exist?(file) && File.extname(file) == ".zip"}
     q.responses[:not_valid] = "Please select a zip file"
     q.default = current_module + ".zip"
 end.to_s
 
 filename = ask("File specifying log message:", Pathname) do |q|
-    q.validate = Proc.new {|file| File.exists?(file) && File.extname(file) == ".txt"}
+    q.validate = Proc.new {|file| File.exist?(file) && File.extname(file) == ".txt"}
     q.responses[:not_valid] = "Please select a txt file"
     q.default = current_module + ".txt"
 end.to_s
